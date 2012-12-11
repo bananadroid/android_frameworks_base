@@ -296,4 +296,8 @@
     <!-- Sleep Mode -->
     <string name="quick_settings_sleep_mode_label">Sleep Mode</string>
 
+    <!-- Navigation bar dpad -->
+    <string name="accessibility_dpad_left">Cursor left</string>
+    <string name="accessibility_dpad_right">Cursor right</string>
+
 </resources>
