@@ -498,6 +498,9 @@ public final class PowerManagerService extends SystemService
     // A bitfield of battery conditions under which to make the screen stay on.
     private int mStayOnWhilePluggedInSetting;
 
+    // True if the device should wake up when plugged or unplugged
+    private int mWakeUpWhenPluggedOrUnpluggedSetting;
+
     // True if the device should stay on.
     private boolean mStayOn;
 
@@ -1221,6 +1224,9 @@ public final class PowerManagerService extends SystemService
         resolver.registerContentObserver(Settings.Global.getUriFor(
                 Settings.Global.WAKELOCK_BLOCKING_LIST),
                 false, mSettingsObserver, UserHandle.USER_ALL);
+        resolver.registerContentObserver(Settings.System.getUriFor(
+                Settings.System.WAKE_WHEN_PLUGGED_OR_UNPLUGGED),
+                false, mSettingsObserver, UserHandle.USER_ALL);
 
         IVrManager vrManager = IVrManager.Stub.asInterface(getBinderService(Context.VR_SERVICE));
 
@@ -1388,6 +1394,9 @@ public final class PowerManagerService extends SystemService
         // depends on AOD_NOTIFICATION_PULSE_ACTIVATED - so MUST be afterwards
         // no need to call us again
         mAlwaysOnEnabled = mAmbientDisplayConfiguration.alwaysOnEnabled(UserHandle.USER_CURRENT);
+        mWakeUpWhenPluggedOrUnpluggedSetting = Settings.System.getIntForUser(resolver,
+                Settings.System.WAKE_WHEN_PLUGGED_OR_UNPLUGGED, 1,
+                UserHandle.USER_CURRENT);
 
         mWakeLockBlockingEnabled = Settings.Global.getInt(resolver,
                 Settings.Global.WAKELOCK_BLOCKING_ENABLED, 0);
@@ -2277,7 +2286,7 @@ public final class PowerManagerService extends SystemService
     private boolean shouldWakeUpWhenPluggedOrUnpluggedLocked(
             boolean wasPowered, int oldPlugType, boolean dockedOnWirelessCharger) {
         // Don't wake when powered unless configured to do so.
-        if (!mWakeUpWhenPluggedOrUnpluggedConfig) {
+        if (mWakeUpWhenPluggedOrUnpluggedSetting == 0) {
             return false;
         }
 
