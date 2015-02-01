@@ -53,6 +53,7 @@ import com.android.systemui.qs.tiles.SmartPixelsTile;
 import com.android.systemui.qs.tiles.SoundTile;
 import com.android.systemui.qs.tiles.ScreenshotTile;
 import com.android.systemui.qs.tiles.SyncTile;
+import com.android.systemui.qs.tiles.UsbTetherTile;
 import com.android.systemui.qs.tiles.UserTile;
 import com.android.systemui.qs.tiles.WifiTile;
 import com.android.systemui.qs.tiles.WorkModeTile;
@@ -101,6 +102,7 @@ public class QSFactoryImpl implements QSFactory {
     private final Provider<CompassTile> mCompassTileProvider;
     private final Provider<SyncTile> mSyncTileProvider;
     private final Provider<LocaleTile> mLocaleTileProvider;
+    private final Provider<UsbTetherTile> mUsbTetherTileProvider;
 
     private final Lazy<QSHost> mQsHostLazy;
 
@@ -137,7 +139,8 @@ public class QSFactoryImpl implements QSFactory {
             Provider<GamingModeTile> gamingModeTileProvider,
             Provider<CompassTile> compassTileProvider,
             Provider<SyncTile> syncTileProvider,
-            Provider<LocaleTile> localeTileProvider) {
+            Provider<LocaleTile> localeTileProvider,
+            Provider<UsbTetherTile> usbTetherTileProvider) {
 
         mQsHostLazy = qsHostLazy;
         mWifiTileProvider = wifiTileProvider;
@@ -172,6 +175,7 @@ public class QSFactoryImpl implements QSFactory {
         mCompassTileProvider = compassTileProvider;
         mSyncTileProvider = syncTileProvider;
         mLocaleTileProvider = localeTileProvider;
+        mUsbTetherTileProvider = usbTetherTileProvider;
     }
 
     public QSTile createTile(String tileSpec) {
@@ -247,6 +251,8 @@ public class QSFactoryImpl implements QSFactory {
                 return mSyncTileProvider.get();
             case "locale":
                 return mLocaleTileProvider.get();
+            case "usb_tether":
+                return mUsbTetherTileProvider.get();
         }
 
         // Custom tiles
