@@ -6411,6 +6411,13 @@ public final class Settings {
         public static final String STATUS_BAR_LOGO_POSITION = "status_bar_logo_position";
 
         /**
+         * Whether to answer the call with the volume keys, the value is boolean.
+         * 0 = 0ff, 1 = on
+         * @hide
+         */
+        public static final String VOLUME_ANSWER_CALL = "volume_answer_call";
+
+        /**
          * Statusbar logo custom style
          * @hide
          */
