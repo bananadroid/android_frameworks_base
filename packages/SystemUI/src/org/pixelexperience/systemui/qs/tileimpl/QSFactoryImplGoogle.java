@@ -55,6 +55,7 @@ import com.android.systemui.qs.tiles.UsbTetherTile;
 import com.android.systemui.qs.tiles.SyncTile;
 import com.android.systemui.qs.tiles.ScreenshotTile;
 import com.android.systemui.qs.tiles.DataSwitchTile;
+import com.android.systemui.qs.tiles.VolumeTile;
 import com.android.systemui.util.leak.GarbageMonitor;
 import com.android.systemui.qs.tiles.QRCodeTile;
 
@@ -111,6 +112,7 @@ public class QSFactoryImplGoogle extends QSFactoryImpl {
             Provider<SyncTile> SyncTileProvider,
             Provider<ScreenshotTile> ScreenshotTileProvider,
             Provider<DataSwitchTile> DataSwitchTileProvider,
+            Provider<VolumeTile> volumeTileProvider,
             Provider<ReverseChargingTile> reverseChargingTileProvider) {
         super(qsHostLazy,
                 customTileBuilderProvider,
@@ -149,7 +151,8 @@ public class QSFactoryImplGoogle extends QSFactoryImpl {
                 UsbTetherTileProvider,
                 SyncTileProvider,
                 ScreenshotTileProvider,
-                DataSwitchTileProvider);
+                DataSwitchTileProvider,
+                volumeTileProvider);
         mReverseChargingTileProvider = reverseChargingTileProvider;
         mBatterySaverTileGoogleProvider = batterySaverTileGoogleProvider;
     }
