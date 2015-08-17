@@ -56,6 +56,7 @@ import com.android.systemui.qs.tiles.ScreenshotTile;
 import com.android.systemui.qs.tiles.SyncTile;
 import com.android.systemui.qs.tiles.UsbTetherTile;
 import com.android.systemui.qs.tiles.UserTile;
+import com.android.systemui.qs.tiles.VolumeTile;
 import com.android.systemui.qs.tiles.VpnTile;
 import com.android.systemui.qs.tiles.WifiTile;
 import com.android.systemui.qs.tiles.WorkModeTile;
@@ -107,6 +108,7 @@ public class QSFactoryImpl implements QSFactory {
     private final Provider<UsbTetherTile> mUsbTetherTileProvider;
     private final Provider<VpnTile> mVpnTileProvider;
     private final Provider<PowerMenuTile> mPowerMenuTileProvider;
+    private final Provider<VolumeTile> mVolumeTileProvider;
 
     private final Lazy<QSHost> mQsHostLazy;
 
@@ -146,7 +148,8 @@ public class QSFactoryImpl implements QSFactory {
             Provider<LocaleTile> localeTileProvider,
             Provider<UsbTetherTile> usbTetherTileProvider,
             Provider<VpnTile> vpnTileProvider,
-            Provider<PowerMenuTile> powerMenuTileProvider) {
+            Provider<PowerMenuTile> powerMenuTileProvider,
+            Provider<VolumeTile> volumeTileProvider) {
 
         mQsHostLazy = qsHostLazy;
         mWifiTileProvider = wifiTileProvider;
@@ -184,6 +187,7 @@ public class QSFactoryImpl implements QSFactory {
         mUsbTetherTileProvider = usbTetherTileProvider;
         mVpnTileProvider = vpnTileProvider;
         mPowerMenuTileProvider = powerMenuTileProvider;
+        mVolumeTileProvider = volumeTileProvider;
     }
 
     public QSTile createTile(String tileSpec) {
@@ -265,6 +269,8 @@ public class QSFactoryImpl implements QSFactory {
                 return mVpnTileProvider.get();
             case "powermenu":
                 return mPowerMenuTileProvider.get();
+            case "volume_panel":
+                return mVolumeTileProvider.get();
         }
 
         // Custom tiles
