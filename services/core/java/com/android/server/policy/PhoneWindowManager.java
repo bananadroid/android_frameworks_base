@@ -658,6 +658,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     // Maps global key codes to the components that will handle them.
     private GlobalKeyManager mGlobalKeyManager;
 
+    private boolean mGlobalActionsOnLockEnable = true;
+
     // Fallback actions by key code.
     private final SparseArray<KeyCharacterMap.FallbackAction> mFallbackActions =
             new SparseArray<KeyCharacterMap.FallbackAction>();
@@ -935,6 +937,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.CAMERA_LAUNCH), false, this,
+                    UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.LOCKSCREEN_ENABLE_POWER_MENU), true, this,
                     UserHandle.USER_ALL);
             if (mLineageHardware.isSupported(LineageHardwareManager.FEATURE_KEY_SWAP)) {
                 resolver.registerContentObserver(Settings.Secure.getUriFor(
@@ -1760,10 +1765,14 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     }
 
     void showGlobalActionsInternal() {
+        final boolean keyguardShowing = isKeyguardShowingAndNotOccluded();
+        if (keyguardShowing && isKeyguardSecure(mCurrentUserId) &&
+                !mGlobalActionsOnLockEnable) {
+            return;
+        }
         if (mGlobalActions == null) {
             mGlobalActions = new GlobalActions(mContext, mWindowManagerFuncs);
         }
-        final boolean keyguardShowing = isKeyguardShowingAndNotOccluded();
         mGlobalActions.showDialog(keyguardShowing, isDeviceProvisioned());
         // since it took two seconds of long press to bring this up,
         // poke the wake lock so they have some time to see the dialog.
@@ -2909,6 +2918,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             mVolBtnMusicControls = Settings.System.getIntForUser(resolver,
                     Settings.System.VOLBTN_MUSIC_CONTROLS, 0,
                     UserHandle.USER_CURRENT) == 1;
+            mGlobalActionsOnLockEnable = Settings.System.getIntForUser(resolver,
+                    Settings.System.LOCKSCREEN_ENABLE_POWER_MENU, 1,
+                    UserHandle.USER_CURRENT) != 0;
         }
         if (updateRotation) {
             updateRotation(true);
