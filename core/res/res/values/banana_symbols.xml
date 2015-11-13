@@ -16,4 +16,7 @@
     <java-symbol type="id" name="aerr_copy" />
     <java-symbol type="string" name="url_copy_success" />
     <java-symbol type="string" name="url_copy_failed" />
+
+    <!-- Vendor mismatch fingerprint warning -->
+    <java-symbol type="string" name="system_error_vendorprint" />
 </resources>
