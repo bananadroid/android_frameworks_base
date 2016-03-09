@@ -5941,6 +5941,14 @@ public final class Settings {
         public static final String TOUCHSCREEN_GESTURE_HAPTIC_FEEDBACK = "touchscreen_gesture_haptic_feedback";
 
         /**
+         * Whether the HighTouchSensitivity is activated or not.
+         * 0 = off, 1 = on
+         * @hide
+         */
+        public static final String HIGH_TOUCH_SENSITIVITY_ENABLE =
+                "high_touch_sensitivity_enable";
+
+        /**
          * QS battery style
          * @hide
          */
@@ -6161,6 +6169,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(INCREASING_RING_START_VOLUME);
             PRIVATE_SETTINGS.add(INCREASING_RING_RAMP_UP_TIME);
             PRIVATE_SETTINGS.add(TOUCHSCREEN_GESTURE_HAPTIC_FEEDBACK);
+            PRIVATE_SETTINGS.add(HIGH_TOUCH_SENSITIVITY_ENABLE);
         }
 
         /**
@@ -11443,6 +11452,12 @@ public final class Settings {
         @Readable
         public static final String GAME_DASHBOARD_ALWAYS_ON = "game_dashboard_always_on";
 
+
+        /**
+         * Whether touch hovering is enabled on supported hardware
+         * @hide
+         */
+        public static final String FEATURE_TOUCH_HOVERING = "feature_touch_hovering";
 
         /**
          * For this device state, no specific auto-rotation lock setting should be applied.
