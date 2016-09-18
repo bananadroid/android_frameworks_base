@@ -43,6 +43,12 @@
     <string name="accessibility_quick_settings_reading_mode_on">Reading mode on.</string>
     <string name="accessibility_quick_settings_reading_mode_off">Reading mode off.</string>
 
+    <!-- Sound QS Tile -->
+    <string name="quick_settings_sound_label">Sound</string>
+    <string name="quick_settings_sound_ring">Ring</string>
+    <string name="quick_settings_sound_vibrate">Vibrate</string>
+    <string name="quick_settings_sound_dnd">Do not disturb</string>
+
     <!-- Sync QS tile -->
     <string name="quick_settings_sync_label">Sync</string>
     <string name="accessibility_quick_settings_sync_off">Sync off.</string>
