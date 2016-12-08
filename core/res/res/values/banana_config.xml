@@ -204,4 +204,6 @@
     <!-- Whether to show a custom view for FOD -->
     <bool name="config_needCustomFODView">false</bool>
 
+    <!-- Whether doze feature is enabled by default in settings -->
+    <bool name="config_dozeDefaultEnabled">false</bool>
 </resources>
