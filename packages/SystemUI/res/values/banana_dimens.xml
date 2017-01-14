@@ -56,4 +56,8 @@
     <dimen name="navigation_home_handle_width_medium">140dp</dimen>
     <dimen name="navigation_home_handle_width_long">170dp</dimen>
     <dimen name="navigation_home_handle_width_very_long">190dp</dimen>
+
+    <!-- BurnIn protection -->
+    <dimen name="burnin_protection_horizontal_shift">3dp</dimen>
+    <dimen name="burnin_protection_vertical_shift">1dp</dimen>
 </resources>
