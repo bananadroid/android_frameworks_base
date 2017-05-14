@@ -49,6 +49,16 @@
         android:paddingTop="@dimen/status_bar_padding_top"
         android:orientation="horizontal"
         >
+
+        <com.android.systemui.statusbar.logo.LogoImageView
+            android:id="@+id/custom_logo"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:paddingStart="3dp"
+            android:paddingEnd="3dp"
+            android:scaleType="center"
+            android:visibility="gone" />
+
         <FrameLayout
             android:layout_height="match_parent"
             android:layout_width="0dp"
