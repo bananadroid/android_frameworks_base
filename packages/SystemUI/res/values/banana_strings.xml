@@ -12,6 +12,7 @@
     <string name="status_bar_firewall">Firewall</string>
     <string name="status_bar_firewall_slot" translatable="false">firewall</string>
     <string name="status_bar_vpn">VPN</string>
+    <string name="status_bar_ims">VoLTE/VoWiFi</string>
 
     <!-- Custom QS tiles -->
     <!-- Ambient display QS tile -->
