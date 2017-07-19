@@ -117,6 +117,7 @@
     <string name="status_bar_data_saver">Data saver</string>
     <string name="status_bar_vpn">VPN</string>
     <string name="status_bar_firewall">Firewall</string>
+    <string name="status_bar_ims">VoLTE/VoWiFi</string>
 
     <!-- Name of the clock in status bar [CHAR LIMIT=30] -->
     <string name="clock">Clock</string>
