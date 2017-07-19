@@ -30,6 +30,11 @@
         android:key="managed_profile"
         android:title="@string/status_bar_work" />
 
+    <com.android.systemui.tuner.TunerSwitch
+        android:key="ims"
+        android:title="@string/status_bar_ims"
+        sysui:defValue="false" />
+
     <!-- ime -->
     <!-- sync_failing -->
     <!-- sync_active -->

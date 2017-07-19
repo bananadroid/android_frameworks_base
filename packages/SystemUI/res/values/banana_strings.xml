@@ -110,4 +110,7 @@
     <!-- QS customizer -->
     <string name="reset_customizer">Reset order</string>
 
+    <!-- Name of the volte/vowifi status bar icon. -->
+    <string name="status_bar_ims">VoLTE/VoWiFi</string>
+
 </resources>
