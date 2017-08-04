@@ -101,5 +101,6 @@ public class SystemSettings {
         Settings.System.CAMERA_FLASH_NOTIFICATION,
         Settings.System.SCREEN_FLASH_NOTIFICATION,
         Settings.System.SCREEN_FLASH_NOTIFICATION_COLOR,
+        Settings.System.SENSOR_BLOCK,
     };
 }

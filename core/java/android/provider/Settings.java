@@ -7040,6 +7040,12 @@ public final class Settings {
                 "lockscreen_quick_unlock_control";
 
         /**
+         * Sensor block per-package
+         * @hide
+         */
+        public static final String SENSOR_BLOCK = "sensor_block";
+
+        /**
          * Keys we no longer back up under the current schema, but want to continue to
          * process when restoring historical backup datasets.
          *
@@ -7180,6 +7186,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(SWAP_VOLUME_KEYS_ON_ROTATION);
             PRIVATE_SETTINGS.add(KEY_EDGE_LONG_SWIPE_ACTION);
             PRIVATE_SETTINGS.add(BACK_GESTURE_HAPTIC);
+            PRIVATE_SETTINGS.add(SENSOR_BLOCK);
         }
 
         /**
