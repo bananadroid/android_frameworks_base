@@ -4801,6 +4801,12 @@ public final class Settings {
          */
         public static final String SCREENSHOT_SHUTTER_SOUND = "screenshot_shutter_sound";
 
+	/**
+         *  Enable statusbar double tap gesture on to put device to sleep
+         * @hide
+         */
+        public static final String DOUBLE_TAP_SLEEP_GESTURE = "double_tap_sleep_gesture";
+
         /**
          * Wheter to play notification sound and vibration if screen is ON
          * 0 - never
@@ -4947,6 +4953,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(SHOW_BATTERY_PERCENT);
             PRIVATE_SETTINGS.add(DISPLAY_COLOR_MODE);
             PRIVATE_SETTINGS.add(CALL_CONNECTED_TONE_ENABLED);
+            PRIVATE_SETTINGS.add(DOUBLE_TAP_SLEEP_GESTURE);
         }
 
         /**
