@@ -534,6 +534,11 @@ public class CentralSurfacesCommandQueueCallbacks implements CommandQueue.Callba
     }
 
     @Override
+    public void toggleCameraFlash() {
+        mCentralSurfaces.toggleCameraFlash();
+    }
+
+    @Override
     public void showWirelessChargingAnimation(int batteryLevel) {
         mCentralSurfaces.showWirelessChargingAnimation(batteryLevel);
     }

@@ -241,4 +241,9 @@ interface IStatusBarService
     void setBlockedGesturalNavigation(boolean blocked);
 
     void screenPinningStateChanged(boolean enabled);
+
+    /**
+     * Additional extensions
+     */
+    void toggleCameraFlash();
 }

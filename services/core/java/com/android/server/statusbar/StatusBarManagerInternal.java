@@ -246,4 +246,9 @@ public interface StatusBarManagerInternal {
      * Window manager notifies SystemUI of navigation bar "left in landscape" changes
      */
     void leftInLandscapeChanged(boolean isLeft);
+
+    /**
+     * Additional extensions
+     */
+    void toggleCameraFlash();
 }
