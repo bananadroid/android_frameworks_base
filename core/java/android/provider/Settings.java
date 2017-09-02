@@ -14547,6 +14547,18 @@ public final class Settings {
                 "power_button_very_long_press";
 
         /**
+         * Whether to enable Wakelock blocker
+         * @hide
+         */
+        public static final String WAKELOCK_BLOCKING_ENABLED = "wakelock_blocking_enabled";
+
+        /**
+         * List of blocked wakelocks
+         * @hide
+         */
+        public static final String WAKELOCK_BLOCKING_LIST = "wakelock_blocking_list";
+
+        /**
          * Global settings that shouldn't be persisted.
          *
          * @hide

@@ -102,4 +102,7 @@ interface IPowerManager
 
     // update the uids being synchronized by network socket request manager
     void updateBlockedUids(int uid, boolean isBlocked);
+
+    // Wakelock blocker
+    String getSeenWakeLocks();
 }
