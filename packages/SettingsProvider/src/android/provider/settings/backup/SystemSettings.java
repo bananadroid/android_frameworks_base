@@ -88,5 +88,6 @@ public class SystemSettings {
         Settings.System.DOUBLE_TAP_SLEEP_LOCKSCREEN,
         Settings.System.LOCKSCREEN_BATTERY_INFO,
         Settings.System.QS_SHOW_BATTERY_PERCENT,
+        Settings.System.INCALL_FEEDBACK_VIBRATE,
     };
 }
