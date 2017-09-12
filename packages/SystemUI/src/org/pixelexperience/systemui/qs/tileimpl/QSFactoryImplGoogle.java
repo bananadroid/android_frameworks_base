@@ -53,6 +53,7 @@ import com.android.systemui.qs.tiles.CaffeineTile;
 import com.android.systemui.qs.tiles.SoundTile;
 import com.android.systemui.qs.tiles.UsbTetherTile;
 import com.android.systemui.qs.tiles.SyncTile;
+import com.android.systemui.qs.tiles.ScreenshotTile;
 import com.android.systemui.util.leak.GarbageMonitor;
 import com.android.systemui.qs.tiles.QRCodeTile;
 
@@ -107,6 +108,7 @@ public class QSFactoryImplGoogle extends QSFactoryImpl {
             Provider<SoundTile> soundTileProvider,
             Provider<UsbTetherTile> UsbTetherTileProvider,
             Provider<SyncTile> SyncTileProvider,
+            Provider<ScreenshotTile> ScreenshotTileProvider,
             Provider<ReverseChargingTile> reverseChargingTileProvider) {
         super(qsHostLazy,
                 customTileBuilderProvider,
@@ -143,7 +145,8 @@ public class QSFactoryImplGoogle extends QSFactoryImpl {
                 qrCodeTileProvider,
                 soundTileProvider,
                 UsbTetherTileProvider,
-                SyncTileProvider);
+                SyncTileProvider,
+                ScreenshotTileProvider);
         mReverseChargingTileProvider = reverseChargingTileProvider;
         mBatterySaverTileGoogleProvider = batterySaverTileGoogleProvider;
     }
