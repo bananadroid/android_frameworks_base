@@ -391,6 +391,9 @@
     <!-- Enforce DisplayModeDirector to select user preferred resolution -->
     <bool name="config_forceToUseSelectedResolution">false</bool>
 
+    <!-- Does the device have a notification led -->
+    <bool name="config_hasNotificationLed">true</bool>
+
     <!-- Is the battery LED intrusive? Used to decide if there should be a disable option -->
     <bool name="config_intrusiveBatteryLed">true</bool>
 
