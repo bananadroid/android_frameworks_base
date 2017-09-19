@@ -64,6 +64,7 @@
         <item>settings</item>
         <item>lockdown</item>
         <item>bugreport</item>
+        <item>torch</item>
     </string-array>
 
     <!-- Whether to cleanup fingerprints upon connection to the daemon and when user switches -->
