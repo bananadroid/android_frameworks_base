@@ -56,6 +56,7 @@ import com.android.systemui.qs.tiles.SyncTile;
 import com.android.systemui.qs.tiles.ScreenshotTile;
 import com.android.systemui.qs.tiles.DataSwitchTile;
 import com.android.systemui.qs.tiles.VolumeTile;
+import com.android.systemui.qs.tiles.LiveDisplayTile;
 import com.android.systemui.util.leak.GarbageMonitor;
 import com.android.systemui.qs.tiles.QRCodeTile;
 
@@ -108,11 +109,12 @@ public class QSFactoryImplGoogle extends QSFactoryImpl {
             Provider<AODTile> aodTileProvider,
             Provider<QRCodeTile> qrCodeTileProvider,
             Provider<SoundTile> soundTileProvider,
-            Provider<UsbTetherTile> UsbTetherTileProvider,
-            Provider<SyncTile> SyncTileProvider,
-            Provider<ScreenshotTile> ScreenshotTileProvider,
-            Provider<DataSwitchTile> DataSwitchTileProvider,
+            Provider<UsbTetherTile> usbTetherTileProvider,
+            Provider<SyncTile> syncTileProvider,
+            Provider<ScreenshotTile> screenshotTileProvider,
+            Provider<DataSwitchTile> dataSwitchTileProvider,
             Provider<VolumeTile> volumeTileProvider,
+            Provider<LiveDisplayTile> liveDisplayTileProvider,
             Provider<ReverseChargingTile> reverseChargingTileProvider) {
         super(qsHostLazy,
                 customTileBuilderProvider,
@@ -148,11 +150,12 @@ public class QSFactoryImplGoogle extends QSFactoryImpl {
                 aodTileProvider,
                 qrCodeTileProvider,
                 soundTileProvider,
-                UsbTetherTileProvider,
-                SyncTileProvider,
-                ScreenshotTileProvider,
-                DataSwitchTileProvider,
-                volumeTileProvider);
+                usbTetherTileProvider,
+                syncTileProvider,
+                screenshotTileProvider,
+                dataSwitchTileProvider,
+                volumeTileProvider,
+                liveDisplayTileProvider);
         mReverseChargingTileProvider = reverseChargingTileProvider;
         mBatterySaverTileGoogleProvider = batterySaverTileGoogleProvider;
     }
