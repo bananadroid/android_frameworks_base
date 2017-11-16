@@ -42,6 +42,7 @@ import com.android.systemui.qs.tiles.HotspotTile;
 import com.android.systemui.qs.tiles.LocationTile;
 import com.android.systemui.qs.tiles.NfcTile;
 import com.android.systemui.qs.tiles.NightDisplayTile;
+import com.android.systemui.qs.tiles.RebootTile;
 import com.android.systemui.qs.tiles.RotationLockTile;
 import com.android.systemui.qs.tiles.ScreenRecordTile;
 import com.android.systemui.qs.tiles.UiModeNightTile;
@@ -89,6 +90,7 @@ public class QSFactoryImpl implements QSFactory {
     private final Provider<DataSwitchTile> mDataSwitchTileProvider;
     private final Provider<SmartPixelsTile> mSmartPixelsTileProvider;
     private final Provider<AODTile> mAODTileProvider;
+    private final Provider<RebootTile> mRebootTileProvider;
     private final Provider<SoundTile> mSoundTileProvider;
     private final Provider<ScreenshotTile> mScreenshotTileProvider;
 
@@ -121,6 +123,7 @@ public class QSFactoryImpl implements QSFactory {
             Provider<DataSwitchTile> dataSwitchTileProvider,
             Provider<SmartPixelsTile> smartPixelsTileProvider,
             Provider<AODTile> aodTileProvider,
+            Provider<RebootTile> rebootTileProvider,
             Provider<SoundTile> soundTileProvider,
             Provider<ScreenshotTile> screenshotTileProvider) {
         mQsHostLazy = qsHostLazy;
@@ -149,6 +152,7 @@ public class QSFactoryImpl implements QSFactory {
         mDataSwitchTileProvider = dataSwitchTileProvider;
         mSmartPixelsTileProvider = smartPixelsTileProvider;
         mAODTileProvider = aodTileProvider;
+        mRebootTileProvider = rebootTileProvider;
         mSoundTileProvider = soundTileProvider;
         mScreenshotTileProvider = screenshotTileProvider;
     }
@@ -212,6 +216,8 @@ public class QSFactoryImpl implements QSFactory {
                 return mSmartPixelsTileProvider.get();
             case "aod":
                 return mAODTileProvider.get();
+            case "reboot":
+                return mRebootTileProvider.get();
             case "sound":
                 return mSoundTileProvider.get();
             case "screenshot":
