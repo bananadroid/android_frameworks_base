@@ -202,4 +202,7 @@
     <!-- App Lock -->
     <string name="applock_unlock">Unlock app</string>
 
+    <!-- Screenshot Delete Toast -->
+    <string name="delete_screenshot_toast">Screenshot deleted</string>
+
 </resources>
