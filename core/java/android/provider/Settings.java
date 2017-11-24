@@ -6515,6 +6515,13 @@ public final class Settings {
         public static final String APP_SWITCH_WAKE_SCREEN = "app_switch_wake_screen";
 
         /**
+         * Whether or not volume button music controls should be enabled to seek media tracks
+         * 0 = 0ff, 1 = on
+         * @hide
+         */
+        public static final String VOLBTN_MUSIC_CONTROLS = "volbtn_music_controls";
+
+        /**
          * Keys we no longer back up under the current schema, but want to continue to
          * process when restoring historical backup datasets.
          *
