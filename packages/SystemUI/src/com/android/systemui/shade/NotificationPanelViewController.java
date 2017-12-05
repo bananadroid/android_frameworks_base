@@ -783,10 +783,10 @@ public final class NotificationPanelViewController extends PanelViewController {
             UnlockedScreenOffAnimationController unlockedScreenOffAnimationController,
             ShadeTransitionController shadeTransitionController,
             SystemClock systemClock,
-            TunerService tunerService,
             CameraGestureHelper cameraGestureHelper,
             KeyguardBottomAreaViewModel keyguardBottomAreaViewModel,
-            KeyguardBottomAreaInteractor keyguardBottomAreaInteractor) {
+            KeyguardBottomAreaInteractor keyguardBottomAreaInteractor,
+            TunerService tunerService) {
         super(view,
                 falsingManager,
                 dozeLog,
@@ -2199,6 +2199,9 @@ public final class NotificationPanelViewController extends PanelViewController {
                 break;
             case 2: // Left side pulldown
                 showQsOverride = mView.isLayoutRtl() ? w - region < x : x < region;
+                break;
+            case 3: // pull down anywhere
+                showQsOverride = true;
                 break;
         }
         showQsOverride &= mBarState == StatusBarState.SHADE;
@@ -4836,13 +4839,8 @@ public final class NotificationPanelViewController extends PanelViewController {
 
         @Override
         public void onTuningChanged(String key, String newValue) {
-            switch (key) {
-                case STATUS_BAR_QUICK_QS_PULLDOWN:
-                    mOneFingerQuickSettingsIntercept =
-                            TunerService.parseInteger(newValue, 1);
-                    break;
-                default:
-                    break;
+            if (STATUS_BAR_QUICK_QS_PULLDOWN.equals(key)) {
+                mOneFingerQuickSettingsIntercept = TunerService.parseInteger(newValue, 1);
             }
         }
     }
