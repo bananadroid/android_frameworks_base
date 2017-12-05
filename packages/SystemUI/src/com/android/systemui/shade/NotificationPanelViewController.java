@@ -5804,7 +5804,7 @@ public final class NotificationPanelViewController implements Dumpable {
         @Override
         public void onTuningChanged(String key, String newValue) {
             if (STATUS_BAR_QUICK_QS_PULLDOWN.equals(key)) {
-                mOneFingerQuickSettingsIntercept = TunerService.parseInteger(newValue, 1);
+                mOneFingerQuickSettingsIntercept = TunerService.parseInteger(newValue, 0);
             }
         }
     }
