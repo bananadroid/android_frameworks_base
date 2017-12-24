@@ -35,6 +35,7 @@ import com.android.systemui.qs.tiles.CellularTile;
 import com.android.systemui.qs.tiles.CaffeineTile;
 import com.android.systemui.qs.tiles.ColorInversionTile;
 import com.android.systemui.qs.tiles.CompassTile;
+import com.android.systemui.qs.tiles.CPUInfoTile;
 import com.android.systemui.qs.tiles.DataSaverTile;
 import com.android.systemui.qs.tiles.DndTile;
 import com.android.systemui.qs.tiles.FlashlightTile;
@@ -109,6 +110,7 @@ public class QSFactoryImpl implements QSFactory {
     private final Provider<VpnTile> mVpnTileProvider;
     private final Provider<PowerMenuTile> mPowerMenuTileProvider;
     private final Provider<VolumeTile> mVolumeTileProvider;
+    private final Provider<CPUInfoTile> mCPUInfoTileProvider;
 
     private final Lazy<QSHost> mQsHostLazy;
 
@@ -149,7 +151,8 @@ public class QSFactoryImpl implements QSFactory {
             Provider<UsbTetherTile> usbTetherTileProvider,
             Provider<VpnTile> vpnTileProvider,
             Provider<PowerMenuTile> powerMenuTileProvider,
-            Provider<VolumeTile> volumeTileProvider) {
+            Provider<VolumeTile> volumeTileProvider,
+            Provider<CPUInfoTile> cpuInfoTileProvider) {
 
         mQsHostLazy = qsHostLazy;
         mWifiTileProvider = wifiTileProvider;
@@ -188,6 +191,7 @@ public class QSFactoryImpl implements QSFactory {
         mVpnTileProvider = vpnTileProvider;
         mPowerMenuTileProvider = powerMenuTileProvider;
         mVolumeTileProvider = volumeTileProvider;
+        mCPUInfoTileProvider = cpuInfoTileProvider;
     }
 
     public QSTile createTile(String tileSpec) {
@@ -271,6 +275,8 @@ public class QSFactoryImpl implements QSFactory {
                 return mPowerMenuTileProvider.get();
             case "volume_panel":
                 return mVolumeTileProvider.get();
+            case "cpuinfo":
+                return mCPUInfoTileProvider.get();
         }
 
         // Custom tiles
