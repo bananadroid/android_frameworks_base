@@ -3232,7 +3232,9 @@ public class NotificationPanelViewController extends PanelViewController {
                 if (!mQsExpanded
                         && mDoubleTapToSleepEnabled
                         && event.getY() < mStatusBarHeaderHeight) {
-                    mDoubleTapGesture.onTouchEvent(event);
+                    if (mDoubleTapGesture.onTouchEvent(event)) {
+                        return false;
+                    }
                 }
 
                 if (mIsLockscreenDoubleTapEnabled
