@@ -14,11 +14,11 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-    <!-- Power menu -->
-    <java-symbol type="string" name="system_error_vendorprint" />
-
-    <java-symbol type="array" name="config_vendorPlatformSignatures" />
+    <!-- The list of vendor package signatures that should also be considered
+       platform signatures, specifically for use on devices with a vendor partition. -->
+    <string-array name="config_vendorPlatformSignatures">
+    </string-array>
 
 </resources>
