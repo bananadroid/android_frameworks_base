@@ -5244,6 +5244,12 @@ public final class Settings {
         public static final String LESS_BORING_HEADS_UP = "less_boring_heads_up";
 
         /**
+         * Whether to change the transparency of the qs panel
+         * @hide
+         */
+        public static final String QS_PANEL_BG_ALPHA = "qs_panel_bg_alpha";
+
+        /**
          * Gaming mode master switch
          * @hide
          */
@@ -6501,6 +6507,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(AUTO_ACCENT_TYPE);
             PRIVATE_SETTINGS.add(AUTO_GRADIENT_TYPE);
             PRIVATE_SETTINGS.add(EDGE_MUSIC_CONTROL);
+            PRIVATE_SETTINGS.add(QS_PANEL_BG_ALPHA);
         }
 
         /**
