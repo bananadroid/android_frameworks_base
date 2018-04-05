@@ -5656,20 +5656,8 @@ public class ActivityTaskManagerService extends IActivityTaskManager.Stub {
                 }
 
                 if (!Build.isBuildConsistent()) {
-                    Slog.e(TAG, "Build fingerprint is not consistent, warning user");
-                    mUiHandler.post(() -> {
-                        if (mShowDialogs) {
-                            AlertDialog d = new BaseErrorDialog(mUiContext);
-                            d.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ERROR);
-                            d.setCancelable(false);
-                            d.setTitle(mUiContext.getText(R.string.android_system_label));
-                            d.setMessage(mUiContext.getText(R.string.system_error_manufacturer));
-                            d.setButton(DialogInterface.BUTTON_POSITIVE,
-                                    mUiContext.getText(R.string.ok),
-                                    mUiHandler.obtainMessage(DISMISS_DIALOG_UI_MSG, d));
-                            d.show();
-                        }
-                    });
+                    Slog.e(TAG, "Build fingerprint is not consistent");
+                    // Do not emit warning about vendor mismatch
                 }
             }
         }
