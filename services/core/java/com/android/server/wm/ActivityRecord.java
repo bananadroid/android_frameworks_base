@@ -907,6 +907,10 @@ final class ActivityRecord extends WindowToken implements WindowManagerService.A
                 }
             });
 
+    // Full screen aspect ratio
+    private final float mFullScreenAspectRatio = Resources.getSystem().getFloat(
+                    com.android.internal.R.dimen.config_screenAspectRatio);
+
     /**
      * Current sequencing integer of the configuration, for skipping old activity configurations.
      */
@@ -8743,7 +8747,9 @@ final class ActivityRecord extends WindowToken implements WindowManagerService.A
     // TODO(b/36505427): Consider moving this method and similar ones to ConfigurationContainer.
     private boolean applyAspectRatio(Rect outBounds, Rect containingAppBounds,
             Rect containingBounds, float desiredAspectRatio) {
-        final float maxAspectRatio = info.getMaxAspectRatio();
+        final boolean higherAspectRatio = Resources.getSystem().getBoolean(
+                com.android.internal.R.bool.config_haveHigherAspectRatioScreen);
+        final float maxAspectRatio = higherAspectRatio ? mFullScreenAspectRatio : info.getMaxAspectRatio();
         final Task rootTask = getRootTask();
         final float minAspectRatio = getMinAspectRatio();
         final TaskFragment organizedTf = getOrganizedTaskFragment();

@@ -244,4 +244,8 @@
 
     <!-- Whether doze feature is enabled by default in settings -->
     <bool name="config_doze_enabled_by_default">false</bool>
+
+    <!-- Full screen aspect ratio -->
+    <bool name="config_haveHigherAspectRatioScreen">false</bool>
+    <item name="config_screenAspectRatio" format="float" type="dimen">2.1</item>
 </resources>
