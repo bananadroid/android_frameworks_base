@@ -702,6 +702,12 @@ final class ActivityRecord extends WindowToken implements WindowManagerService.A
     // Token for targeting this activity for assist purposes.
     final Binder assistToken = new Binder();
 
+    // additions start
+    private final float mFullScreenAspectRatio = Resources.getSystem().getFloat(
+            com.android.internal.R.dimen.config_screenAspectRatio);
+    private final boolean mHigherAspectRatio = Resources.getSystem().getBoolean(
+            com.android.internal.R.bool.config_haveHigherAspectRatioScreen);
+
     private final Runnable mPauseTimeoutRunnable = new Runnable() {
         @Override
         public void run() {
@@ -6425,12 +6431,22 @@ final class ActivityRecord extends WindowToken implements WindowManagerService.A
             return true;
         }
 
+        float maxAspectRatio = info.maxAspectRatio;
+        if (maxAspectRatio != 0.0f && mHigherAspectRatio && mAtmService.getAspectRatioApps() != null) {
+            if (mAtmService.getAspectRatioApps().contains(packageName)) {
+                if (ActivityTaskManagerService.DEBUG_ASPECT_RATIO) {
+                    Log.d(ActivityTaskManagerService.TAG_DEBUG_ASPECT_RATIO,
+                            "Force aspect ratio for " + packageName + " " + maxAspectRatio);
+                }
+                maxAspectRatio = mFullScreenAspectRatio;
+            }
+        }
         // The rest of the condition is that only one side is smaller than the parent, but it still
         // needs to exclude the cases where the size is limited by the fixed aspect ratio.
-        if (info.maxAspectRatio > 0) {
+        if (maxAspectRatio > 0) {
             final float aspectRatio = (0.5f + Math.max(appWidth, appHeight))
                     / Math.min(appWidth, appHeight);
-            if (aspectRatio >= info.maxAspectRatio) {
+            if (aspectRatio >= maxAspectRatio) {
                 // The current size has reached the max aspect ratio.
                 return false;
             }
@@ -6863,9 +6879,19 @@ final class ActivityRecord extends WindowToken implements WindowManagerService.A
     // TODO(b/36505427): Consider moving this method and similar ones to ConfigurationContainer.
     private void applyAspectRatio(Rect outBounds, Rect containingAppBounds,
             Rect containingBounds) {
-        final float maxAspectRatio = info.maxAspectRatio;
+        float maxAspectRatio = info.maxAspectRatio;
         final ActivityStack stack = getRootTask();
         final float minAspectRatio = info.minAspectRatio;
+
+        if (maxAspectRatio != 0.0f && mHigherAspectRatio && mAtmService.getAspectRatioApps() != null) {
+            if (mAtmService.getAspectRatioApps().contains(packageName)) {
+                if (ActivityTaskManagerService.DEBUG_ASPECT_RATIO) {
+                    Log.d(ActivityTaskManagerService.TAG_DEBUG_ASPECT_RATIO,
+                            "Force aspect ratio for " + packageName + " " + maxAspectRatio);
+                }
+                maxAspectRatio = mFullScreenAspectRatio;
+            }
+        }
 
         if (task == null || stack == null || (inMultiWindowMode() && !shouldUseSizeCompatMode())
                 || (maxAspectRatio == 0 && minAspectRatio == 0)
