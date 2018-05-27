@@ -17,4 +17,7 @@
     <!-- Whether to enable the volume panel accent tinting, disable if you're going to use a custom seekbar style or gradients -->
     <bool name="config_enableVolumePanelTint">true</bool>
 
+    <!-- Config to enable/diaable qs tile tinting -->
+    <bool name="config_enable_qs_tile_tinting">false</bool>
+
 </resources>
