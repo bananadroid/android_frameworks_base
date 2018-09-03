@@ -245,4 +245,7 @@
     <!-- Hide IME space -->
     <java-symbol type="dimen" name="navigation_bar_frame_height_hide_ime" />
     <java-symbol type="dimen" name="navigation_bar_frame_height_landscape_hide_ime" />
+
+    <!-- Bootleg unneccesary gradient declaration | Just for our shishu bars -->
+    <java-symbol type="color" name="bootleg_accent_gradient_end_color" />
 </resources>
