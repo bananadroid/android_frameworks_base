@@ -213,4 +213,7 @@
 
     <!-- Whether the device supports Smart Pixels -->
     <java-symbol type="bool" name="config_supportSmartPixels" />
+
+    <!-- Bootleg unneccesary gradient declaration | Just for our shishu bars -->
+    <java-symbol type="color" name="bootleg_accent_gradient_end_color" />
 </resources>
