@@ -43,4 +43,7 @@ interface IAlarmManager {
     long currentNetworkTimeMillis();
     // update the uids being synchronized by network socket request manager
     void updateBlockedUids(int uid, boolean isBlocked);
+
+    // Alarm blocker
+    String getSeenAlarms();
 }
