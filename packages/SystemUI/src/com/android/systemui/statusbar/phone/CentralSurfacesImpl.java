@@ -25,6 +25,8 @@ import static android.view.InsetsState.containsType;
 import static android.view.WindowInsetsController.APPEARANCE_LOW_PROFILE_BARS;
 import static android.view.WindowInsetsController.APPEARANCE_OPAQUE_STATUS_BARS;
 import static android.view.WindowInsetsController.APPEARANCE_SEMI_TRANSPARENT_STATUS_BARS;
+import static android.view.WindowManagerPolicyConstants.NAV_BAR_MODE_3BUTTON_OVERLAY;
+import static android.view.WindowManagerPolicyConstants.NAV_BAR_MODE_GESTURAL_OVERLAY;
 
 import static androidx.core.view.ViewCompat.IMPORTANT_FOR_ACCESSIBILITY_AUTO;
 import static androidx.core.view.ViewCompat.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS;
@@ -67,6 +69,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.om.IOverlayManager;
 import android.content.pm.IPackageManager;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -262,6 +265,8 @@ import com.android.wm.shell.bubbles.Bubbles;
 import com.android.wm.shell.startingsurface.SplashscreenContentDrawer;
 import com.android.wm.shell.startingsurface.StartingSurface;
 
+import com.android.internal.util.custom.NavbarUtils;
+
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.List;
@@ -291,6 +296,9 @@ import dagger.Lazy;
 public class CentralSurfacesImpl extends CoreStartable implements
         TunerService.Tunable,
         CentralSurfaces {
+
+    private static final String NAVIGATION_BAR_SHOW =
+            "customsystem:" + Settings.System.NAVIGATION_BAR_SHOW;
 
     private static final String BANNER_ACTION_CANCEL =
             "com.android.systemui.statusbar.banner_action_cancel";
@@ -701,6 +709,7 @@ public class CentralSurfacesImpl extends CoreStartable implements
     private final LifecycleRegistry mLifecycle = new LifecycleRegistry(this);
     protected final BatteryController mBatteryController;
     protected boolean mPanelExpanded;
+    private IOverlayManager mOverlayManager;
     private UiModeManager mUiModeManager;
     private LogMaker mStatusBarStateLog;
     protected final NotificationIconAreaController mNotificationIconAreaController;
@@ -961,6 +970,8 @@ public class CentralSurfacesImpl extends CoreStartable implements
     public void start() {
         mScreenLifecycle.addObserver(mScreenObserver);
         mWakefulnessLifecycle.addObserver(mWakefulnessObserver);
+        mOverlayManager = IOverlayManager.Stub.asInterface(
+                ServiceManager.getService(Context.OVERLAY_SERVICE));
         mUiModeManager = mContext.getSystemService(UiModeManager.class);
         if (mBubblesOptional.isPresent()) {
             mBubblesOptional.get().setExpandListener(mBubbleExpandListener);
@@ -979,6 +990,7 @@ public class CentralSurfacesImpl extends CoreStartable implements
         mTunerService.addTunable(this, PULSE_ON_NEW_TRACKS);
         mTunerService.addTunable(this, LESS_BORING_HEADS_UP);
         mTunerService.addTunable(this, RETICKER_STATUS);
+        mTunerService.addTunable(this, NAVIGATION_BAR_SHOW);
 
         mWindowManager = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
 
@@ -1008,6 +1020,8 @@ public class CentralSurfacesImpl extends CoreStartable implements
         } catch (RemoteException ex) {
             ex.rethrowFromSystemServer();
         }
+
+        initCoreOverlays();
 
         createAndAddWindows(result);
 
@@ -1209,6 +1223,13 @@ public class CentralSurfacesImpl extends CoreStartable implements
                 // below makes shade stay open when going from folded to unfolded
                 mStatusBarStateController.setLeaveOpenOnKeyguardHide(true);
             }
+        }
+    }
+
+    private void initCoreOverlays(){
+        boolean navbarEnabled = NavbarUtils.isEnabled(mContext);
+        if (!navbarEnabled) {
+            setNavBarInteractionMode(NAV_BAR_MODE_3BUTTON_OVERLAY);
         }
     }
 
@@ -4504,9 +4525,32 @@ public class CentralSurfacesImpl extends CoreStartable implements
         }
         return mStatusBarKeyguardViewManager.isSecure();
     }
+
     @Override
     public NotificationPanelViewController getPanelController() {
         return mNotificationPanelViewController;
+    }
+
+    private void setNavBarInteractionMode(String overlayPackage) {
+        try {
+            mOverlayManager.setEnabledExclusiveInCategory(overlayPackage, UserHandle.USER_CURRENT);
+        } catch (Exception e) {
+        }
+    }
+
+    private void saveNavBarCurrentModeOverlay() {
+        String navigationBarModeOverlay = NavbarUtils.getNavigationBarModeOverlay(mContext, mOverlayManager);
+        Settings.System.putString(mContext.getContentResolver(),
+                Settings.System.NAVIGATION_BAR_MODE_OVERLAY, navigationBarModeOverlay);
+    }
+
+    private String getOldNavBarModeOverlay() {
+        String navigationBarModeOverlay = Settings.System.getStringForUser(mContext.getContentResolver(),
+                Settings.System.NAVIGATION_BAR_MODE_OVERLAY, UserHandle.USER_CURRENT);
+        if (TextUtils.isEmpty(navigationBarModeOverlay)){
+            navigationBarModeOverlay = NAV_BAR_MODE_GESTURAL_OVERLAY;
+        }
+        return navigationBarModeOverlay;
     }
 
     @Override
@@ -4541,6 +4585,22 @@ public class CentralSurfacesImpl extends CoreStartable implements
                 boolean reTicker =
                         TunerService.parseIntegerSwitch(newValue, false);
                 mNotificationInterruptStateProvider.setUseReticker(reTicker);
+                break;
+            case NAVIGATION_BAR_SHOW:
+                if (mDisplayId != Display.DEFAULT_DISPLAY || mWindowManagerService == null)
+                    return;
+                boolean navbarEnabled = NavbarUtils.isEnabled(mContext);
+                    TunerService.parseIntegerSwitch(newValue, false);
+                boolean hasNavbar = getNavigationBarView() != null;
+                if (navbarEnabled) {
+                    if (!hasNavbar) {
+                            mNavigationBarController.onDisplayReady(mDisplayId);
+                    }
+                } else {
+                    if (hasNavbar) {
+                        mNavigationBarController.onDisplayRemoved(mDisplayId);
+                    }
+                }
                 break;
             default:
                 break;
