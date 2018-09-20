@@ -124,6 +124,23 @@ public class Clock extends TextView implements DemoMode, CommandQueue.Callbacks,
     public static final int FONT_BOLD = 1;
     public static final int FONT_ITALIC = 2;
     public static final int FONT_BOLD_ITALIC = 3;
+    public static final int FONT_DANCINGSCRIPT = 4;
+    public static final int FONT_DANCINGSCRIPT_BOLD = 5;
+    public static final int FONT_COMINGSOON = 6;
+    public static final int FONT_NOTOSERIF = 7;
+    public static final int FONT_NOTOSERIF_ITALIC = 8;
+    public static final int FONT_NOTOSERIF_BOLD = 9;
+    public static final int FONT_NOTOSERIF_BOLD_ITALIC = 10;
+    public static final int GOBOLD_LIGHT = 11;
+    public static final int ROADRAGE = 12;
+    public static final int SNOWSTORM = 13;
+    public static final int NEONEON = 14;
+    public static final int THEMEABLE = 15;
+    public static final int SHAMSHUNG = 16;
+    public static final int MEXCELLENT = 17;
+    public static final int BURNSTOWN = 18;
+    public static final int DUMBLEDOR = 19;
+    public static final int PHANTOMBOLD = 20;
     public int DEFAULT_CLOCK_SIZE = 14;
     public int DEFAULT_CLOCK_COLOR = 0xffffffff;
 
@@ -870,6 +887,57 @@ public class Clock extends TextView implements DemoMode, CommandQueue.Callbacks,
                 break;
             case FONT_BOLD_ITALIC:
                 setTypeface(Typeface.create("sans-serif", Typeface.BOLD_ITALIC));
+                break;
+            case FONT_DANCINGSCRIPT:
+                setTypeface(Typeface.create("cursive", Typeface.NORMAL));
+                break;
+            case FONT_DANCINGSCRIPT_BOLD:
+                setTypeface(Typeface.create("cursive", Typeface.BOLD));
+                break;
+            case FONT_COMINGSOON:
+                setTypeface(Typeface.create("casual", Typeface.NORMAL));
+                break;
+            case FONT_NOTOSERIF:
+                setTypeface(Typeface.create("serif", Typeface.NORMAL));
+                break;
+            case FONT_NOTOSERIF_ITALIC:
+                setTypeface(Typeface.create("serif", Typeface.ITALIC));
+                break;
+            case FONT_NOTOSERIF_BOLD:
+                setTypeface(Typeface.create("serif", Typeface.BOLD));
+                break;
+            case FONT_NOTOSERIF_BOLD_ITALIC:
+                setTypeface(Typeface.create("serif", Typeface.BOLD_ITALIC));
+                break;
+            case GOBOLD_LIGHT:
+                setTypeface(Typeface.create("gobold-light-sys", Typeface.NORMAL));
+                break;
+            case ROADRAGE:
+                setTypeface(Typeface.create("roadrage-sys", Typeface.NORMAL));
+                break;
+            case SNOWSTORM:
+                setTypeface(Typeface.create("snowstorm-sys", Typeface.NORMAL));
+                break;
+            case NEONEON:
+                setTypeface(Typeface.create("neoneon-sys", Typeface.NORMAL));
+                break;
+            case THEMEABLE:
+                setTypeface(Typeface.create("themeable-sys", Typeface.NORMAL));
+                break;
+            case SHAMSHUNG:
+                setTypeface(Typeface.create("samsung-sys", Typeface.NORMAL));
+                break;
+            case MEXCELLENT:
+                setTypeface(Typeface.create("mexcellent-sys", Typeface.NORMAL));
+                break;
+            case BURNSTOWN:
+                setTypeface(Typeface.create("burnstown-sys", Typeface.NORMAL));
+                break;
+            case DUMBLEDOR:
+                setTypeface(Typeface.create("dumbledor-sys", Typeface.NORMAL));
+                break;
+            case PHANTOMBOLD:
+                setTypeface(Typeface.create("phantombold-sys", Typeface.NORMAL));
                 break;
         }
     }
