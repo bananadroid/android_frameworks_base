@@ -25,6 +25,7 @@ import android.content.IntentFilter;
 import android.content.res.TypedArray;
 import android.database.ContentObserver;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
@@ -113,6 +114,14 @@ public class Clock extends TextView implements DemoMode, CommandQueue.Callbacks,
     public static final int STYLE_CLOCK_CENTER = 1;
     public static final int STYLE_CLOCK_RIGHT = 2;
 
+    private int mClockFontStyle = FONT_NORMAL;
+    public static final int FONT_NORMAL = 0;
+    public static final int FONT_BOLD = 1;
+    public static final int FONT_ITALIC = 2;
+    public static final int FONT_BOLD_ITALIC = 3;
+    public int DEFAULT_CLOCK_SIZE = 14;
+    public int DEFAULT_CLOCK_COLOR = 0xffffffff;
+
     protected int mClockDateDisplay = CLOCK_DATE_DISPLAY_GONE;
     protected int mClockDateStyle = CLOCK_DATE_STYLE_REGULAR;
     protected int mClockStyle = STYLE_CLOCK_LEFT;
@@ -120,6 +129,8 @@ public class Clock extends TextView implements DemoMode, CommandQueue.Callbacks,
     protected int mClockDatePosition;
     protected boolean mShowClock = true;
     private int mAmPmStyle;
+    private int mClockColor = 0xffffffff;
+    private int mClockSize = 14;
     private final boolean mShowDark;
     protected boolean mQsHeader;
     private boolean mShowSeconds;
@@ -168,12 +179,24 @@ public class Clock extends TextView implements DemoMode, CommandQueue.Callbacks,
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUSBAR_CLOCK_DATE_POSITION),
                     false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_CLOCK_COLOR),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_CLOCK_SIZE),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_CLOCK_FONT_STYLE),
+                    false, this, UserHandle.USER_ALL);
             updateSettings();
         }
 
         @Override
         public void onChange(boolean selfChange) {
             updateSettings();
+            updateClockColor();
+            updateClockSize();
+            updateClockFontStyle();
         }
     }
 
@@ -281,6 +304,9 @@ public class Clock extends TextView implements DemoMode, CommandQueue.Callbacks,
         mSettingsObserver.observe();
         updateSettings();
         updateShowSeconds();
+        updateClockColor();
+        updateClockSize();
+        updateClockFontStyle();
     }
 
     @Override
@@ -408,8 +434,10 @@ public class Clock extends TextView implements DemoMode, CommandQueue.Callbacks,
     @Override
     public void onDarkChanged(Rect area, float darkIntensity, int tint) {
         mNonAdaptedColor = DarkIconDispatcher.getTint(area, this, tint);
-        if (!mUseWallpaperTextColor) {
+        if (mClockColor == 0xFFFFFFFF) {
             setTextColor(mNonAdaptedColor);
+        } else {
+            setTextColor(mClockColor);
         }
     }
 
@@ -430,18 +458,9 @@ public class Clock extends TextView implements DemoMode, CommandQueue.Callbacks,
      * to dark-mode-based/tinted colors.
      *
      * @param shouldUseWallpaperTextColor whether we should use wallpaperTextColor for text color
-     */
+     **/
     public void useWallpaperTextColor(boolean shouldUseWallpaperTextColor) {
-        if (shouldUseWallpaperTextColor == mUseWallpaperTextColor) {
-            return;
-        }
-        mUseWallpaperTextColor = shouldUseWallpaperTextColor;
-
-        if (mUseWallpaperTextColor) {
-            setTextColor(Utils.getColorAttr(mContext, R.attr.wallpaperTextColor));
-        } else {
-            setTextColor(mNonAdaptedColor);
-        }
+        setTextColor(mClockColor);
     }
 
     private void updateShowSeconds() {
@@ -705,6 +724,9 @@ public class Clock extends TextView implements DemoMode, CommandQueue.Callbacks,
             updateClockVisibility();
             updateClock();
             updateShowSeconds();
+            updateClockColor();
+            updateClockSize();
+            updateClockFontStyle();
         }
     }
 
@@ -716,5 +738,52 @@ public class Clock extends TextView implements DemoMode, CommandQueue.Callbacks,
         mQsHeader = true;
         mClockVisibleByUser = true;
         mClockDateDisplay = CLOCK_DATE_DISPLAY_GONE;
+    }
+
+    public void updateClockSize() {
+        mClockSize = Settings.System.getIntForUser(mContext.getContentResolver(),
+                Settings.System.STATUS_BAR_CLOCK_SIZE, DEFAULT_CLOCK_SIZE,
+                UserHandle.USER_CURRENT);
+        setTextSize(mClockSize);
+        updateClock();
+    }
+
+    private void updateClockColor() {
+        mClockColor = Settings.System.getIntForUser(mContext.getContentResolver(),
+                Settings.System.STATUS_BAR_CLOCK_COLOR, DEFAULT_CLOCK_COLOR,
+                UserHandle.USER_CURRENT);
+
+        if (mClockColor == 0xFFFFFFFF) {
+            setTextColor(mNonAdaptedColor);
+        } else {
+            setTextColor(mClockColor);
+        }
+        updateClock();
+    }
+
+    private void updateClockFontStyle() {
+        mClockFontStyle = Settings.System.getIntForUser(mContext.getContentResolver(),
+                Settings.System.STATUS_BAR_CLOCK_FONT_STYLE, FONT_NORMAL,
+		UserHandle.USER_CURRENT);
+        getClockFontStyle(mClockFontStyle);
+        updateClock();
+    }
+
+    public void getClockFontStyle(int font) {
+        switch (font) {
+            case FONT_NORMAL:
+            default:
+                setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
+                break;
+            case FONT_ITALIC:
+                setTypeface(Typeface.create("sans-serif", Typeface.ITALIC));
+                break;
+            case FONT_BOLD:
+                setTypeface(Typeface.create("sans-serif", Typeface.BOLD));
+                break;
+            case FONT_BOLD_ITALIC:
+                setTypeface(Typeface.create("sans-serif", Typeface.BOLD_ITALIC));
+                break;
+        }
     }
 }
