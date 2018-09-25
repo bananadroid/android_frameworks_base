@@ -3910,6 +3910,12 @@ public final class Settings {
                 "lockscreen_quick_unlock_control";
 
         /**
+         * Unlock keystore with fingerprint after reboot
+         * @hide
+         */
+        public static final String FP_UNLOCK_KEYSTORE = "fp_unlock_keystore";
+
+        /**
          * A formatted string of the next alarm that is set, or the empty string
          * if there is no alarm set.
          *
@@ -5373,6 +5379,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(QS_SHOW_BATTERY_PERCENT);
             PRIVATE_SETTINGS.add(ASPECT_RATIO_APPS_ENABLED);
             PRIVATE_SETTINGS.add(ASPECT_RATIO_APPS_LIST);
+            PRIVATE_SETTINGS.add(FP_UNLOCK_KEYSTORE);
         }
 
         /**
