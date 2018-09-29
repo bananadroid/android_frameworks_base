@@ -16,6 +16,8 @@
 
 package com.android.systemui.recents;
 
+import static android.view.Display.DEFAULT_DISPLAY;
+
 import static com.android.systemui.shared.recents.utilities.Utilities.isTablet;
 import static com.android.systemui.util.leak.RotationUtils.ROTATION_LANDSCAPE;
 import static com.android.systemui.util.leak.RotationUtils.ROTATION_NONE;
@@ -34,6 +36,8 @@ import android.graphics.PixelFormat;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Binder;
 import android.os.RemoteException;
+import android.os.UserHandle;
+import android.provider.Settings;
 import android.text.SpannableStringBuilder;
 import android.text.style.BulletSpan;
 import android.util.DisplayMetrics;
@@ -53,6 +57,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
+import com.android.internal.util.banana.BananaUtils;
 import com.android.systemui.R;
 import com.android.systemui.broadcast.BroadcastDispatcher;
 import com.android.systemui.navigationbar.NavigationBarView;
@@ -343,6 +348,11 @@ public class ScreenPinningRequest implements View.OnClickListener,
          * @return whether there is a soft nav bar on specific display.
          */
         private boolean hasSoftNavigationBar(Context context, int displayId) {
+            if (displayId == DEFAULT_DISPLAY) {
+                return Settings.System.getIntForUser(context.getContentResolver(),
+                                Settings.System.FORCE_SHOW_NAVBAR, BananaUtils.hasNavbarByDefault(context) ? 1 : 0,
+                                UserHandle.USER_CURRENT) == 1;
+            }
             try {
                 return WindowManagerGlobal.getWindowManagerService().hasNavigationBar(displayId);
             } catch (RemoteException e) {
