@@ -50,14 +50,21 @@
         android:orientation="horizontal"
         >
 
-        <com.android.systemui.statusbar.logo.LogoImageView
-            android:id="@+id/custom_logo"
+        <com.android.keyguard.AlphaOptimizedLinearLayout
+            android:id="@+id/left_icon_area"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:paddingStart="3dp"
-            android:paddingEnd="3dp"
-            android:scaleType="center"
-            android:visibility="gone" />
+            android:orientation="horizontal" >
+
+            <com.android.systemui.statusbar.logo.LogoImageView
+                android:id="@+id/custom_logo"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:paddingStart="3dp"
+                android:paddingEnd="3dp"
+                android:scaleType="center"
+                android:visibility="gone" />
+        </com.android.keyguard.AlphaOptimizedLinearLayout>
 
         <FrameLayout
             android:layout_height="match_parent"
