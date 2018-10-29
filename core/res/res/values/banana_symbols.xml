@@ -63,4 +63,7 @@
 
     <!-- These are system packages exempted from privacy indicator -->
     <java-symbol type="array" name="config_indicatorExemptedPackageNames" />
+
+    <!-- Whether device supports gestures on fingerprint sensor -->
+    <java-symbol type="bool" name="config_supportsGesturesOnFingerprintSensor" />
 </resources>
