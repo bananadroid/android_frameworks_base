@@ -69,6 +69,8 @@ public class StatusBarIconHolder {
 
     public static final int TYPE_IMS = 6;
 
+    public static final int TYPE_NETWORK_TRAFFIC = 42;
+
     @IntDef({
             TYPE_ICON,
             TYPE_WIFI,
@@ -190,6 +192,12 @@ public class StatusBarIconHolder {
 
     public void setIcon(StatusBarIcon icon) {
         mIcon = icon;
+    }
+
+    public static StatusBarIconHolder fromNetworkTraffic() {
+        StatusBarIconHolder holder = new StatusBarIconHolder();
+        holder.mType = TYPE_NETWORK_TRAFFIC;
+        return holder;
     }
 
     @Nullable
