@@ -42,6 +42,7 @@ import java.lang.reflect.Method;
 /** @hide */
 public class BoostFramework {
 
+    private static final boolean DEBUG = false;
     private static final String TAG = "BoostFramework";
     private static final String PERFORMANCE_JAR = "/system/framework/QPerformance.jar";
     private static final String PERFORMANCE_CLASS = "com.qualcomm.qti.Performance";
@@ -213,7 +214,7 @@ public class BoostFramework {
             }
         }
         catch(Exception e) {
-            Log.e(TAG,"BoostFramework() : Exception_3 = " + e);
+            if (DEBUG) Log.e(TAG,"BoostFramework() : Exception_3 = " + e);
         }
     }
 
@@ -232,7 +233,7 @@ public class BoostFramework {
             }
         }
         catch(Exception e) {
-            Log.e(TAG,"BoostFramework() : Exception_5 = " + e);
+            if (DEBUG) Log.e(TAG,"BoostFramework() : Exception_5 = " + e);
         }
     }
 
@@ -304,13 +305,13 @@ public class BoostFramework {
                         sUXEngineTrigger =  sPerfClass.getDeclaredMethod("perfUXEngine_trigger",
                                                                            argClasses);
                     } catch (Exception e) {
-                        Log.i(TAG, "BoostFramework() : Exception_4 = PreferredApps not supported");
+                        if (DEBUG) Log.i(TAG, "BoostFramework() : Exception_4 = PreferredApps not supported");
                     }
 
                     sIsLoaded = true;
                 }
                 catch(Exception e) {
-                    Log.e(TAG,"BoostFramework() : Exception_1 = " + e);
+                    if (DEBUG) Log.e(TAG,"BoostFramework() : Exception_1 = " + e);
                 }
                 // Load UXE Class now Adding new try/catch block to avoid
                 // any interference with Qperformance
@@ -323,7 +324,7 @@ public class BoostFramework {
                     sUxIsLoaded = true;
                 }
                 catch(Exception e) {
-                    Log.e(TAG,"BoostFramework() Ux Perf: Exception = " + e);
+                    if (DEBUG) Log.e(TAG,"BoostFramework() Ux Perf: Exception = " + e);
                 }
             }
         }
@@ -338,7 +339,7 @@ public class BoostFramework {
                 ret = (int)retVal;
             }
         } catch(Exception e) {
-            Log.e(TAG,"Exception " + e);
+            if (DEBUG) Log.e(TAG,"Exception " + e);
         }
         return ret;
     }
@@ -352,7 +353,7 @@ public class BoostFramework {
                 ret = (int)retVal;
             }
         } catch(Exception e) {
-            Log.e(TAG,"Exception " + e);
+            if (DEBUG) Log.e(TAG,"Exception " + e);
         }
         return ret;
     }
@@ -366,7 +367,7 @@ public class BoostFramework {
                 ret = (int)retVal;
             }
         } catch(Exception e) {
-            Log.e(TAG,"Exception " + e);
+            if (DEBUG) Log.e(TAG,"Exception " + e);
         }
         return ret;
     }
@@ -390,7 +391,7 @@ public class BoostFramework {
                 ret = (int)retVal;
             }
         } catch(Exception e) {
-            Log.e(TAG,"Exception " + e);
+            if (DEBUG) Log.e(TAG,"Exception " + e);
         }
         return ret;
     }
@@ -432,7 +433,7 @@ public class BoostFramework {
                 ret = (int)retVal;
             }
         } catch(Exception e) {
-            Log.e(TAG,"Exception " + e);
+            if (DEBUG) Log.e(TAG,"Exception " + e);
         }
         return ret;
     }
@@ -444,13 +445,13 @@ public class BoostFramework {
             Object retVal = sIOPStart.invoke(mPerf, pid, pkgName, codePath);
             ret = (int) retVal;
         } catch (Exception e) {
-            Log.e(TAG, "Exception " + e);
+            if (DEBUG) Log.e(TAG, "Exception " + e);
         }
         try {
              Object retVal = sUxIOPStart.invoke(mUxPerf, pid, pkgName, codePath);
              ret = (int) retVal;
          } catch (Exception e) {
-             Log.e(TAG, "Ux Perf Exception " + e);
+             if (DEBUG) Log.e(TAG, "Ux Perf Exception " + e);
          }
 
         return ret;
@@ -463,7 +464,7 @@ public class BoostFramework {
             Object retVal = sIOPStop.invoke(mPerf);
             ret = (int) retVal;
         } catch (Exception e) {
-            Log.e(TAG, "Exception " + e);
+            if (DEBUG) Log.e(TAG, "Exception " + e);
         }
         return ret;
     }
@@ -484,7 +485,7 @@ public class BoostFramework {
             Object retVal = sUXEngineEvents.invoke(mPerf, opcode, pid, pkgName, lat,codePath);
             ret = (int) retVal;
         } catch (Exception e) {
-            Log.e(TAG, "Exception " + e);
+            if (DEBUG) Log.e(TAG, "Exception " + e);
         }
         return ret;
     }
@@ -500,7 +501,7 @@ public class BoostFramework {
             Object retVal = sUXEngineTrigger.invoke(mPerf, opcode);
             ret = (String) retVal;
         } catch (Exception e) {
-            Log.e(TAG, "Exception " + e);
+            if (DEBUG) Log.e(TAG, "Exception " + e);
         }
         return ret;
     }
@@ -531,7 +532,7 @@ public class BoostFramework {
                 ret = def_val;
             }
         } catch(Exception e) {
-            Log.e(TAG,"Exception " + e);
+            if (DEBUG) Log.e(TAG,"Exception " + e);
         }
         return ret;
     }
