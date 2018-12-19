@@ -49,6 +49,7 @@ import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.database.ContentObserver;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.ColorDrawable;
@@ -60,6 +61,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.os.SystemClock;
+import android.os.UserHandle;
 import android.os.VibrationEffect;
 import android.provider.Settings;
 import android.provider.Settings.Global;
@@ -113,6 +115,8 @@ import com.android.systemui.statusbar.phone.ExpandableIndicator;
 import com.android.systemui.statusbar.policy.AccessibilityManagerWrapper;
 import com.android.systemui.statusbar.policy.ConfigurationController;
 import com.android.systemui.statusbar.policy.DeviceProvisionedController;
+import com.android.systemui.tuner.TunerService;
+import com.android.systemui.util.NotificationChannels;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -193,7 +197,6 @@ public class VolumeDialogImpl implements VolumeDialog,
     private ViewStub mODICaptionsTooltipViewStub;
     private View mODICaptionsTooltipView = null;
     private boolean mHasAlertSlider;
-    private boolean mLeftVolumeRocker;
 
     private LocalMediaManager mLocalMediaManager;
     private Animator mCurrAnimator;
@@ -209,6 +212,54 @@ public class VolumeDialogImpl implements VolumeDialog,
 
     private final List<MediaOutputRow> mMediaOutputRows = new ArrayList<>();
 
+    private TunerService mTunerService;
+
+    // Volume panel placement left or right
+    private boolean mVolumePanelOnLeft;
+
+    private class CustomSettingsObserver extends ContentObserver {
+        CustomSettingsObserver(Handler handler) {
+            super(handler);
+        }
+
+        void observe() {
+            mContext.getContentResolver().registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.VOLUME_PANEL_ON_LEFT),
+                    false, this, UserHandle.USER_ALL);
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+            update();
+        }
+
+        public void update() {
+            int volumePanelOnLeftInt = Settings.System.getInt(mContext.getContentResolver(),
+                        Settings.System.VOLUME_PANEL_ON_LEFT, -1);
+
+            if (volumePanelOnLeftInt == -1) {
+                volumePanelOnLeftInt = mDevicePanelOnLeft ? 1 : 0;
+                Settings.System.putInt(mContext.getContentResolver(),
+                        Settings.System.VOLUME_PANEL_ON_LEFT, volumePanelOnLeftInt);
+            }
+
+            final boolean volumePanelOnLeft = volumePanelOnLeftInt == 1;
+            if (!mShowActiveStreamOnly) {
+                if (mVolumePanelOnLeft != volumePanelOnLeft) {
+                    mVolumePanelOnLeft = volumePanelOnLeft;
+                    mHandler.post(() -> {
+                        // Trigger panel rebuild on next show
+                        mConfigChanged = true;
+                    });
+                }
+            }
+        }
+    }
+
+    private CustomSettingsObserver mCustomSettingsObserver;
+
+    private boolean mDevicePanelOnLeft;
+
     public VolumeDialogImpl(Context context) {
         mContext =
                 new ContextThemeWrapper(context, R.style.qs_theme);
@@ -221,10 +272,13 @@ public class VolumeDialogImpl implements VolumeDialog,
         mHasSeenODICaptionsTooltip =
                 Prefs.getBoolean(context, Prefs.Key.HAS_SEEN_ODI_CAPTIONS_TOOLTIP, false);
         mHasAlertSlider = mContext.getResources().getBoolean(com.android.internal.R.bool.config_hasAlertSlider);
-        mLeftVolumeRocker = mContext.getResources().getBoolean(R.bool.config_audioPanelOnLeftSide);
         mVibrateOnSlider = mContext.getResources().getBoolean(R.bool.config_vibrateOnIconAnimation);
         mElevation = mContext.getResources().getDimension(R.dimen.volume_dialog_elevation);
         mSpacer = mContext.getResources().getDimension(R.dimen.volume_dialog_row_spacer);
+        mDevicePanelOnLeft = mContext.getResources().getBoolean(R.bool.config_audioPanelOnLeftSide);
+        mCustomSettingsObserver = new CustomSettingsObserver(mHandler);
+        mCustomSettingsObserver.observe();
+        mCustomSettingsObserver.update();
 
         setDarkMode();
     }
@@ -295,7 +349,7 @@ public class VolumeDialogImpl implements VolumeDialog,
         lp.format = PixelFormat.TRANSLUCENT;
         lp.width = MATCH_PARENT;
         lp.height = WRAP_CONTENT;
-        if(!isAudioPanelOnLeftSide()){
+        if(!isAudioPanelOnLeftSide() && !mShowActiveStreamOnly){
             lp.gravity = Gravity.RIGHT | Gravity.CENTER_VERTICAL;
         } else {
             lp.gravity = Gravity.LEFT | Gravity.CENTER_VERTICAL;
@@ -305,7 +359,7 @@ public class VolumeDialogImpl implements VolumeDialog,
         mDialog.setContentView(R.layout.volume_dialog);
         mDialogView = mDialog.findViewById(R.id.volume_dialog);
         FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) mDialogView.getLayoutParams();
-        if(!isAudioPanelOnLeftSide()){
+        if(!isAudioPanelOnLeftSide() && !mShowActiveStreamOnly){
             params.gravity = Gravity.RIGHT | Gravity.CENTER_VERTICAL;
         } else {
             params.gravity = Gravity.LEFT | Gravity.CENTER_VERTICAL;
@@ -436,6 +490,11 @@ public class VolumeDialogImpl implements VolumeDialog,
             mainLocation[1] + mDialogView.getHeight()
         );
     };
+
+    private float getAnimatorX() {
+        final float x = mDialogView.getWidth() / 2.0f;
+        return mVolumePanelOnLeft ? -x : x;
+    }
 
     protected ViewGroup getDialogView() {
         return mDialogView;
@@ -1283,9 +1342,8 @@ public class VolumeDialogImpl implements VolumeDialog,
                     cleanExpandedRows();
                     mExpandRows.setExpanded(mExpanded);
                 }, 50));
-        if (!isLandscape()) {
-            animator.translationX(
-                    (mDialogView.getWidth() / 2.0f) * (!isAudioPanelOnLeftSide() ? 1 : -1));
+        if (!isLandscape() || !mShowActiveStreamOnly) {
+            animator.translationX(getAnimatorX());
         }
         animator.start();
         mDialog.getWindow().getDecorView().getViewTreeObserver()
@@ -2038,7 +2096,7 @@ public class VolumeDialogImpl implements VolumeDialog,
     }
 
     private boolean isAudioPanelOnLeftSide() {
-	    return mLeftVolumeRocker;
+	    return mVolumePanelOnLeft;
     }
 
     private static class VolumeRow {
