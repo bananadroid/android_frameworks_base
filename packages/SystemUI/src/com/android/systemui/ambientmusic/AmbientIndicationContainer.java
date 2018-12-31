@@ -30,6 +30,8 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.airbnb.lottie.LottieAnimationView;
+
 import com.android.systemui.AutoReinflateContainer;
 import com.android.systemui.Dependency;
 import com.android.systemui.R;
@@ -46,6 +48,7 @@ public class AmbientIndicationContainer extends AutoReinflateContainer implement
 
     private final int mFODmargin;
     private View mAmbientIndication;
+    private LottieAnimationView mIcon;
     private boolean mDozing;
     private boolean mKeyguard;
     private boolean mVisible;
@@ -134,6 +137,7 @@ public class AmbientIndicationContainer extends AutoReinflateContainer implement
     public void updateAmbientIndicationView(View view) {
         mAmbientIndication = findViewById(R.id.ambient_indication);
         mText = (TextView)findViewById(R.id.ambient_indication_text);
+        mIcon = (LottieAnimationView)findViewById(R.id.ambient_indication_icon);
         if (getAmbientMusicTickerStyle() == 1) {
             boolean nowPlayingAvailable = mMediaManager.getNowPlayingTrack() != null;
             setIndication(nowPlayingAvailable);
@@ -194,6 +198,8 @@ public class AmbientIndicationContainer extends AutoReinflateContainer implement
                 updatePosition();
             }
         }
+        mIcon.setAnimation(R.raw.ambient_music_note);
+        mIcon.playAnimation();
     }
 
     private boolean isAod() {
