@@ -21,4 +21,8 @@
 
     <color name="qs_icon_active_color">#ff000000</color>
 
+    <!-- Gradient Shit -->
+    <color name="gradient_start">#fff3d324</color>
+    <color name="gradient_end">#fff3d324</color>
+
 </resources>

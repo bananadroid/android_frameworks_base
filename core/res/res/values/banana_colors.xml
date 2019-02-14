@@ -20,8 +20,12 @@
     <color name="toast_text">@color/black</color>
 
     <!-- Bootleg unneccesary gradient declaration | Just for our shishu bars -->
-    <color name="bootleg_accent_gradient_end_color">#00000000</color>
+    <color name="bootleg_accent_gradient_end_color">@color/gradient_end</color>
 
     <color name="qs_icon_active_color">#ffffffff</color>
+
+    <!-- Gradient Shit -->
+    <color name="gradient_start">#fff3d324</color>
+    <color name="gradient_end">#fff3d324</color>
 
 </resources>

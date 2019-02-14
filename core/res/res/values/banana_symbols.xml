@@ -205,4 +205,8 @@
     <!-- DC Dimming -->
     <java-symbol type="string" name="config_deviceDcDimmingSysfsNode" />
 
+    <!-- Gradients Shit -->
+    <java-symbol type="color" name="gradient_start" />
+    <java-symbol type="color" name="gradient_end" />
+
 </resources>
