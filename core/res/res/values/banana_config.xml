@@ -30,5 +30,8 @@
         <item>com.qualcomm.qti.cne</item>
         <item>com.shannon.imsservice</item>
         <item>org.pixelexperience.faceunlock</item>
-  </string-array>
+    </string-array>
+
+    <!-- Whether or not we should show vendor mismatch message -->
+    <bool name="config_show_vendor_mismatch_message">true</bool>
 </resources>
