@@ -35,4 +35,6 @@
     <color name="on_the_spot_shadow">#33000000</color>
     <!-- OnTheSpot: OTS snackbar action denial button text color. -->
     <color name="on_the_spot_deny_text">#FF9B9B9B</color>
+
+    <color name="accent_device_default_light">@*android:color/accent_device_default_light</color>
 </resources>
