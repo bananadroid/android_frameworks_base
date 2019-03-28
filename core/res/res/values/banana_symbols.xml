@@ -100,4 +100,7 @@
     <java-symbol type="string" name="app_clipboard_access_denied" />
     <java-symbol type="string" name="app_clipboard_access_granted" />
 
+    <!-- Smart charging battery percentage -->
+    <java-symbol type="integer" name="config_smartChargingBatteryLevel" />
+
 </resources>
