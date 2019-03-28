@@ -172,4 +172,7 @@
     <java-symbol type="bool" name="config_dozePulseTilt" />
     <java-symbol type="bool" name="config_dozePulseProximity" />
     <java-symbol type="bool" name="config_deviceHaveWakeUpProximity" />
+
+    <!-- Smart charging battery percentage -->
+    <java-symbol type="integer" name="config_smartChargingBatteryLevel" />
 </resources>

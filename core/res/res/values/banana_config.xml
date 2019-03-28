@@ -226,4 +226,7 @@
      <bool name="config_dozePulseTilt">false</bool>
      <bool name="config_dozePulseProximity">false</bool>
      <bool name="config_deviceHaveWakeUpProximity">false</bool>
+
+    <!-- Smart charging battery percentage -->
+    <integer name="config_smartChargingBatteryLevel">80</integer>
 </resources>
