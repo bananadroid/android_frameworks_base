@@ -153,4 +153,10 @@ interface IStatusBarService
      *  Banana additions
      */
     void toggleCameraFlash();
+
+    /**
+     * Used to show or hide in display fingerprint view.
+     */
+    void showInDisplayFingerprintView();
+    void hideInDisplayFingerprintView();
 }
