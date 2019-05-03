@@ -32,6 +32,25 @@ public final class LineageContextConstants {
     }
 
     /**
+     * Use with {@link android.content.Context#getSystemService} to retrieve a
+     * {@link com.android.internal.custom.LineageHardwareManager} to manage the extended
+     * hardware features of the device.
+     *
+     * @see android.content.Context#getSystemService
+     * @see com.android.internal.custom.LineageHardwareManager
+     *
+     * @hide
+     */
+    public static final String LINEAGE_HARDWARE_SERVICE = "lineagehardware";
+
+    /**
+     * Manages display color adjustments
+     *
+     * @hide
+     */
+    public static final String LINEAGE_LIVEDISPLAY_SERVICE = "lineagelivedisplay";
+
+    /**
      * @hide
      */
     public static class Features {
