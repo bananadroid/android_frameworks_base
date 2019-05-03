@@ -232,6 +232,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Future;
 
 // LineageHardware
+import com.android.server.lineage.display.LiveDisplayService;
 import com.android.server.lineage.LineageHardwareService;
 
 /**
@@ -2521,6 +2522,13 @@ public final class SystemServer implements Dumpable {
             if (!mOnlyCore){
                 t.traceBegin("StartLineageHardwareService");
                 mSystemServiceManager.startService(LineageHardwareService.class);
+                t.traceEnd();
+            }
+
+            // LiveDisplay
+            if (!mOnlyCore){
+                t.traceBegin("StartLiveDisplayService");
+                mSystemServiceManager.startService(LiveDisplayService.class);
                 t.traceEnd();
             }
         }
