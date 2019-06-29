@@ -453,6 +453,7 @@ public class StatusBar extends SystemUI implements DemoMode,
 
     private boolean mAppFullscreen;
     private boolean mAppImmersive;
+    private boolean mHeadsUpDisabled, mGamingModeActivated;
 
     private final DisplayMetrics mDisplayMetrics;
 
@@ -2082,6 +2083,12 @@ public class StatusBar extends SystemUI implements DemoMode,
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.PULSE_ON_NEW_TRACKS),
                     false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.GAMING_MODE_ACTIVE),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.GAMING_MODE_HEADSUP_TOGGLE),
+                    false, this, UserHandle.USER_ALL);
         }
 
         @Override
@@ -2106,6 +2113,9 @@ public class StatusBar extends SystemUI implements DemoMode,
             } else if (uri.equals(Settings.System.getUriFor(
                     Settings.System.PULSE_ON_NEW_TRACKS))) {
                 setPulseOnNewTracks();
+            } else if (uri.equals(Settings.System.getUriFor(Settings.System.GAMING_MODE_ACTIVE)) ||
+                    uri.equals(Settings.System.getUriFor(Settings.System.GAMING_MODE_HEADSUP_TOGGLE))) {
+                setGamingMode();
             }
         }
 
@@ -2116,6 +2126,7 @@ public class StatusBar extends SystemUI implements DemoMode,
             setQsBatteryPercentMode();
             setLockScreenMediaBlurLevel();
             setPulseOnNewTracks();
+            setGamingMode();
         }
     }
 
@@ -2174,6 +2185,17 @@ public class StatusBar extends SystemUI implements DemoMode,
         if (getNavigationBarView() != null) {
             getNavigationBarView().setBlockedGesturalNavigation(blocked);
         }
+    }
+
+    private void setGamingMode() {
+        mGamingModeActivated = Settings.System.getIntForUser(mContext.getContentResolver(),
+                Settings.System.GAMING_MODE_ACTIVE, 0,
+                UserHandle.USER_CURRENT) == 1;
+        mHeadsUpDisabled = Settings.System.getIntForUser(mContext.getContentResolver(),
+                Settings.System.GAMING_MODE_HEADSUP_TOGGLE, 1,
+                UserHandle.USER_CURRENT) == 1;
+        if (mNotificationInterruptStateProvider != null)
+            mNotificationInterruptStateProvider.setGamingPeekMode(mGamingModeActivated && mHeadsUpDisabled);
     }
 
     /**
