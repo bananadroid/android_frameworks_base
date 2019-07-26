@@ -268,7 +268,8 @@ import dagger.Lazy;
 /** */
 public class StatusBar extends SystemUI implements
         ActivityStarter,
-        LifecycleOwner {
+        LifecycleOwner,
+        TunerService.Tunable {
     public static final boolean MULTIUSER_DEBUG = false;
 
     protected static final int MSG_DISMISS_KEYBOARD_SHORTCUTS_MENU = 1027;
@@ -276,6 +277,9 @@ public class StatusBar extends SystemUI implements
     // Should match the values in PhoneWindowManager
     public static final String SYSTEM_DIALOG_REASON_RECENT_APPS = "recentapps";
     static public final String SYSTEM_DIALOG_REASON_SCREENSHOT = "screenshot";
+
+    private static final String LESS_BORING_HEADS_UP =
+            "system:" + Settings.System.LESS_BORING_HEADS_UP;
 
     private static final String BANNER_ACTION_CANCEL =
             "com.android.systemui.statusbar.banner_action_cancel";
@@ -952,6 +956,8 @@ public class StatusBar extends SystemUI implements
         mColorExtractor.addOnColorsChangedListener(mOnColorsChangedListener);
         mStatusBarStateController.addCallback(mStateListener,
                 SysuiStatusBarStateController.RANK_STATUS_BAR);
+
+        mTunerService.addTunable(this, LESS_BORING_HEADS_UP);
 
         mWindowManager = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
         mDreamManager = IDreamManager.Stub.asInterface(
@@ -4249,6 +4255,20 @@ public class StatusBar extends SystemUI implements
     public NotificationPanelViewController getPanelController() {
         return mNotificationPanelViewController;
     }
+
+    @Override
+    public void onTuningChanged(String key, String newValue) {
+        switch (key) {
+            case LESS_BORING_HEADS_UP:
+                boolean lessBoringHeadsUp = 
+                        TunerService.parseIntegerSwitch(newValue, false);
+                mNotificationInterruptStateProvider.setUseLessBoringHeadsUp(lessBoringHeadsUp);
+                break;
+            default:
+                break;
+         }
+    }
+
     // End Extra BaseStatusBarMethods.
 
     public NotificationGutsManager getGutsManager() {
