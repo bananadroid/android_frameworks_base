@@ -216,5 +216,16 @@ public class SystemSettingsValidators {
         VALIDATORS.put(System.INCALL_FEEDBACK_VIBRATE, BOOLEAN_VALIDATOR);
         VALIDATORS.put(System.NOTIFICATION_HEADERS, BOOLEAN_VALIDATOR);
         VALIDATORS.put(System.APP_LOCK_LOCK_AFTER,  new InclusiveIntegerRangeValidator(-1, 15));
+        VALIDATORS.put(
+                System.COLOR_BUCKET_OVERLAY,
+                new Validator() {
+                    @Override
+                    public boolean validate(String value) {
+                        if (value == null && value.isEmpty()) {
+                            return false;
+                        }
+                        return true;
+                    }
+                });
     }
 }

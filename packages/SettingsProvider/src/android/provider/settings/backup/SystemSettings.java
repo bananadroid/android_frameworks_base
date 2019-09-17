@@ -90,5 +90,6 @@ public class SystemSettings {
         Settings.System.QS_SHOW_BATTERY_PERCENT,
         Settings.System.INCALL_FEEDBACK_VIBRATE,
         Settings.System.NOTIFICATION_HEADERS,
+        Settings.System.COLOR_BUCKET_OVERLAY,
     };
 }
