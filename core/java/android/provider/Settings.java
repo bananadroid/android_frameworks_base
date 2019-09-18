@@ -5732,6 +5732,25 @@ public final class Settings {
         public static final String QS_TILE_VERTICAL_LAYOUT = "qs_tile_vertical_layout";
 
         /**
+         * Whether the phone ringtone should be played in an increasing manner
+         * 0 = 0ff, 1 = on
+         * @hide
+         */
+        public static final String INCREASING_RING = "increasing_ring";
+
+        /**
+         * Start volume fraction for increasing ring volume
+         * @hide
+         */
+        public static final String INCREASING_RING_START_VOLUME = "increasing_ring_start_vol";
+
+        /**
+         * Ramp up time (seconds) for increasing ring
+         * @hide
+         */
+        public static final String INCREASING_RING_RAMP_UP_TIME = "increasing_ring_ramp_up_time";
+
+        /**
          * IMPORTANT: If you add a new public settings you also have to add it to
          * PUBLIC_SETTINGS below. If the new setting is hidden you have to add
          * it to PRIVATE_SETTINGS below. Also add a validator that can validate
@@ -6132,6 +6151,9 @@ public final class Settings {
             PRIVATE_SETTINGS.add(DISPLAY_COLOR_MODE_VENDOR_HINT);
             PRIVATE_SETTINGS.add(DESKTOP_MODE);
 	    PRIVATE_SETTINGS.add(OMNIJAWS_WEATHER_ICON_PACK);
+            PRIVATE_SETTINGS.add(INCREASING_RING);
+            PRIVATE_SETTINGS.add(INCREASING_RING_START_VOLUME);
+            PRIVATE_SETTINGS.add(INCREASING_RING_RAMP_UP_TIME);
         }
 
         /**
