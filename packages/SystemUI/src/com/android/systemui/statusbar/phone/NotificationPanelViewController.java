@@ -420,6 +420,8 @@ public class NotificationPanelViewController extends PanelViewController {
 
     private int mStatusBarHeaderHeight;
     private GestureDetector mDoubleTapGesture;
+    private GestureDetector mLockscreenDoubleTapToSleep;
+    private boolean mIsLockscreenDoubleTapEnabled;
 
     /**
      * Cache the resource id of the theme to avoid unnecessary work in onThemeChanged.
@@ -560,6 +562,14 @@ public class NotificationPanelViewController extends PanelViewController {
         mBottomAreaShadeAlphaAnimator.setDuration(160);
         mBottomAreaShadeAlphaAnimator.setInterpolator(Interpolators.ALPHA_OUT);
         mDoubleTapGesture = new GestureDetector(mView.getContext(), new GestureDetector.SimpleOnGestureListener() {
+            @Override
+            public boolean onDoubleTap(MotionEvent e) {
+                bananaUtils.switchScreenOff(mView.getContext());
+                return true;
+            }
+        });
+        mLockscreenDoubleTapToSleep = new GestureDetector(mView.getContext(),
+                new GestureDetector.SimpleOnGestureListener() {
             @Override
             public boolean onDoubleTap(MotionEvent e) {
                 bananaUtils.switchScreenOff(mView.getContext());
@@ -1279,6 +1289,9 @@ public class NotificationPanelViewController extends PanelViewController {
         return mNotificationStackScroller.getOpeningHeight();
     }
 
+    public void setLockscreenDoubleTapToSleep(boolean isDoubleTapEnabled) {
+        mIsLockscreenDoubleTapEnabled = isDoubleTapEnabled;
+    }
 
     private boolean handleQsTouch(MotionEvent event) {
         final int action = event.getActionMasked();
@@ -3190,6 +3203,11 @@ public class NotificationPanelViewController extends PanelViewController {
                         && mDoubleTapToSleepEnabled
                         && event.getY() < mStatusBarHeaderHeight) {
                     mDoubleTapGesture.onTouchEvent(event);
+                }
+
+                if (mIsLockscreenDoubleTapEnabled
+                        && mBarState == StatusBarState.KEYGUARD) {
+                    mLockscreenDoubleTapToSleep.onTouchEvent(event);
                 }
 
                 // Make sure the next touch won't the blocked after the current ends.
