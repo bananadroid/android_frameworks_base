@@ -91,4 +91,13 @@
     <!--The number of columns in the QSPanel -->
     <integer name="qs_panel_num_columns_landscape">6</integer>
     <integer name="qs_panel_num_columns_media">4</integer>
+
+    <!-- The CPU temperature sensor path, defaults to empty -->
+    <string name="config_cpuTempSensor" translatable="false">/sys/class/thermal/thermal_zone0/temp</string>
+
+    <!-- The CPU temperature divider, if needed -->
+    <integer name="config_cpuTempDivider" translatable="false">1</integer>
+
+    <!-- The CPUs to display in CPUInfoService view -->
+    <string name="config_displayCpus" translatable="false"></string>
 </resources>
