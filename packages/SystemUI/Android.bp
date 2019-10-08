@@ -204,6 +204,7 @@ android_library {
         "motion_tool_lib",
         "vendor.lineage.powershare-V1.0-java",
         "guava",
+        "FadingEdgeLayoutLib",
     ],
     manifest: "AndroidManifest.xml",
 
