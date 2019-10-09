@@ -1032,7 +1032,7 @@ public class NotificationPanelViewController extends PanelViewController {
     }
 
     public void setQsExpansionEnabled(boolean qsExpansionEnabled) {
-        mQsExpansionEnabled = qsExpansionEnabled&& !isQSEventBlocked();
+        mQsExpansionEnabled = qsExpansionEnabled;
         if (mQs == null) return;
         mQs.setHeaderClickable(mQsExpansionEnabled);
     }
@@ -1099,7 +1099,7 @@ public class NotificationPanelViewController extends PanelViewController {
     }
 
     public void expandWithQs() {
-        if (mQsExpansionEnabled) {
+        if (mQsExpansionEnabled && !isQSEventBlocked()) {
             mQsExpandImmediate = true;
             mNotificationStackScroller.setShouldShowShelfOnly(true);
         }
@@ -1338,7 +1338,8 @@ public class NotificationPanelViewController extends PanelViewController {
     private boolean handleQsTouch(MotionEvent event) {
         final int action = event.getActionMasked();
         if (action == MotionEvent.ACTION_DOWN && getExpandedFraction() == 1f
-                && mBarState != StatusBarState.KEYGUARD && !mQsExpanded && mQsExpansionEnabled) {
+                && mBarState != StatusBarState.KEYGUARD && !mQsExpanded
+                && mQsExpansionEnabled && !isQSEventBlocked()) {
 
             // Down in the empty area while fully expanded - go to QS.
             mQsTracking = true;
@@ -2008,7 +2009,7 @@ public class NotificationPanelViewController extends PanelViewController {
      * @return Whether we should intercept a gesture to open Quick Settings.
      */
     private boolean shouldQuickSettingsIntercept(float x, float y, float yDiff) {
-        if (!mQsExpansionEnabled || mCollapsedOnDown || (mKeyguardShowing
+        if (!mQsExpansionEnabled || mCollapsedOnDown || isQSEventBlocked() || (mKeyguardShowing
                 && mKeyguardBypassController.getBypassEnabled())) {
             return false;
         }
@@ -3398,7 +3399,7 @@ public class NotificationPanelViewController extends PanelViewController {
         @Override
         public void onOverscrollTopChanged(float amount, boolean isRubberbanded) {
             cancelQsAnimation();
-            if (!mQsExpansionEnabled) {
+            if (!mQsExpansionEnabled || isQSEventBlocked()) {
                 amount = 0f;
             }
             float rounded = amount >= 1f ? amount : 0f;
