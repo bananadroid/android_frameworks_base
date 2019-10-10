@@ -6623,6 +6623,13 @@ public final class Settings {
         public static final String HEADS_UP_BLACKLIST_VALUES = "heads_up_blacklist_values";
 
         /**
+         * Toast icon
+         * @hide
+         */
+        @Readable
+        public static final String TOAST_ICON = "toast_icon";
+
+        /**
          * Whether to blink flashlight for incoming calls
          * 0 = Disabled (Default)
          * 1 = Blink flashlight only in Ringer mode
@@ -6732,8 +6739,7 @@ public final class Settings {
          * @hide
          */
         public static final String POWERMENU_TORCH = "powermenu_torch";
-
-        /**
+=======
          * Whether to enable PULSE Edge lights
          * @hide
          */
@@ -6756,6 +6762,7 @@ public final class Settings {
          * @hide
          */
         public static final String AMBIENT_NOTIFICATION_LIGHT_ACTIVATED = "ambient_notification_light_activated";
+>>>>>>> cb43a641d2f1 ([1/2] SystemUI: add Pulse and Ambient notification bars)
 
         /**
          * Keys we no longer back up under the current schema, but want to continue to
