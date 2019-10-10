@@ -269,6 +269,10 @@ public class AmbientDisplayConfiguration {
         return !TextUtils.isEmpty(longPressSensorType());
     }
 
+    private boolean boolSettingSystem(String name, int user, int def) {
+        return Settings.System.getIntForUser(mContext.getContentResolver(), name, def, user) != 0;
+    }
+
     /**
      * Returns if Always-on-Display functionality is enabled on the display for a specified user.
      *
@@ -415,5 +419,15 @@ public class AmbientDisplayConfiguration {
 
     private void putDozeSetting(String name, String value, int userId) {
         Settings.Secure.putStringForUser(mContext.getContentResolver(), name, value, userId);
+    }
+
+    /** {@hide} */
+    public boolean alwaysOnAmbientLightEnabled(int user) {
+        final boolean ambientLightsEnabled = boolSettingSystem(Settings.System.AMBIENT_NOTIFICATION_LIGHT_ENABLED, user, 0);
+        if (ambientLightsEnabled) {
+            boolean ambientLightsActivated = boolSettingSystem(Settings.System.AMBIENT_NOTIFICATION_LIGHT_ACTIVATED, user, 0);
+            return ambientLightsActivated && !accessibilityInversionEnabled(user) && alwaysOnAvailable();
+        }
+        return false;
     }
 }
