@@ -21,6 +21,7 @@ import static com.android.internal.config.sysui.SystemUiDeviceConfigFlags.BRIGHT
 import android.content.Context;
 import android.content.res.Resources;
 import android.hardware.SensorManager;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.provider.DeviceConfig;
 import android.view.MotionEvent;
