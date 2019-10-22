@@ -230,5 +230,6 @@ public class SystemSettingsValidators {
                 });
         VALIDATORS.put(System.ACCENT_COLOR, ANY_INTEGER_VALIDATOR);
         VALIDATORS.put(System.ACCELEROMETER_ROTATION_ANGLES, NON_NEGATIVE_INTEGER_VALIDATOR);
+        VALIDATORS.put(System.DONT_TOUCH_HEADSUP, BOOLEAN_VALIDATOR);
     }
 }
