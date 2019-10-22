@@ -92,5 +92,6 @@ public class SystemSettings {
         Settings.System.NOTIFICATION_HEADERS,
         Settings.System.COLOR_BUCKET_OVERLAY,
         Settings.System.ACCENT_COLOR,
+        Settings.System.DONT_TOUCH_HEADSUP,
     };
 }
