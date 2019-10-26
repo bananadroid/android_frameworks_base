@@ -119,7 +119,8 @@
     <string name="accessibility_quick_settings_sync_changed_on">Sync turned on</string>
 
     <!-- Screenshot QS tile -->
+    <string name="quick_settings_full_screenshot_label">Full</string>
     <string name="quick_settings_screenshot_label">Screenshot</string>
-    <string name="quick_settings_region_screenshot_label">Partial screenshot</string>
+    <string name="quick_settings_region_screenshot_label">Partial</string>
 
 </resources>
