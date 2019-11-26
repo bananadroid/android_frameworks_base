@@ -301,6 +301,9 @@
     <!-- Custom permissions -->
     <uses-permission android:name="android.permission.ACCESS_SURFACE_FLINGER" />
 
+    <!-- DataSwitch tile -->
+    <uses-permission android:name="android.permission.WRITE_APN_SETTINGS" />
+
     <!-- Sync tile -->
     <uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
     <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
