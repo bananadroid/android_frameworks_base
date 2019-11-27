@@ -23,8 +23,10 @@ import static com.android.systemui.statusbar.phone.StatusBarIconHolder.TYPE_NETW
 import static com.android.systemui.statusbar.phone.StatusBarIconHolder.TYPE_WIFI;
 import static com.android.systemui.statusbar.phone.StatusBarIconHolder.TYPE_IMS;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.ArraySet;
 import android.view.Gravity;
@@ -40,6 +42,7 @@ import com.android.internal.statusbar.StatusBarIcon;
 import com.android.systemui.DemoMode;
 import com.android.systemui.Dependency;
 import com.android.systemui.R;
+import com.android.systemui.custom.CustomSettingsService;
 import com.android.systemui.plugins.DarkIconDispatcher;
 import com.android.systemui.plugins.DarkIconDispatcher.DarkReceiver;
 import com.android.systemui.statusbar.CommandQueue;
@@ -141,6 +144,7 @@ public interface StatusBarIconController {
                 mDarkIconDispatcher.removeDarkReceiver((DarkReceiver) mGroup.getChildAt(i));
             }
             mGroup.removeAllViews();
+            Dependency.get(CustomSettingsService.class).removeObserver(this);
         }
 
         @Override
@@ -210,7 +214,7 @@ public interface StatusBarIconController {
     /**
      * Turns info from StatusBarIconController into ImageViews in a ViewGroup.
      */
-    public static class IconManager implements DemoMode {
+    public static class IconManager implements DemoMode, CustomSettingsService.CustomSettingsObserver {
         protected final ViewGroup mGroup;
         protected final Context mContext;
         protected final int mIconSize;
@@ -312,6 +316,7 @@ public interface StatusBarIconController {
             StatusBarMobileView view = onCreateStatusBarMobileView(slot);
             view.applyMobileState(state);
             mGroup.addView(view, index, onCreateLayoutParams());
+            Dependency.get(CustomSettingsService.class).addIntObserver(this, Settings.System.USE_OLD_MOBILETYPE);
 
             if (mIsInDemoMode) {
                 mDemoStatusIcons.addMobileView(state);
@@ -356,6 +361,7 @@ public interface StatusBarIconController {
 
         protected void destroy() {
             mGroup.removeAllViews();
+            Dependency.get(CustomSettingsService.class).removeObserver(this);
         }
 
         protected void onIconExternal(int viewIndex, int height) {
@@ -482,6 +488,16 @@ public interface StatusBarIconController {
             for (int i = 0; i < mGroup.getChildCount(); i++) {
                 if (mGroup.getChildAt(i) instanceof NetworkTrafficSB) {
                     ((NetworkTrafficSB)mGroup.getChildAt(i)).setKeyguardShowing(showing);
+                }
+            }
+        }
+
+        @Override
+        public void onIntSettingChanged(String key, Integer newValue) {
+            for (int i = 0; i < mGroup.getChildCount(); i++) {
+                View child = mGroup.getChildAt(i);
+                if (child instanceof StatusBarMobileView) {
+                    ((StatusBarMobileView) child).updateDisplayType(newValue == 1);
                 }
             }
         }
