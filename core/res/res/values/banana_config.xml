@@ -88,4 +88,7 @@
 
     <!-- Whether doze feature is enabled by default in settings -->
     <bool name="config_doze_enabled_by_default">false</bool>
+
+    <!-- Whether to use old mobile type icons as default -->
+    <bool name="config_useOldMobileIcons">false</bool>
 </resources>
