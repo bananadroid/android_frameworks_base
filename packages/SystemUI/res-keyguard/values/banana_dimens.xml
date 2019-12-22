@@ -26,4 +26,7 @@
     <!-- Custom clock -->
     <dimen name="custom_clock_left_padding">50dp</dimen>
 
+    <!-- Padding added to keyguard status area when Type clock is in use -->
+    <dimen name="keyguard_status_area_typeclock_padding">32dp</dimen>
+
 </resources>
