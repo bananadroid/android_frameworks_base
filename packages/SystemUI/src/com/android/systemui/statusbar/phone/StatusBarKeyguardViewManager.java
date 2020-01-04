@@ -47,6 +47,7 @@ import com.android.keyguard.KeyguardViewController;
 import com.android.keyguard.ViewMediatorCallback;
 import com.android.settingslib.animation.AppearAnimationUtils;
 import com.android.systemui.DejankUtils;
+import com.android.systemui.Dependency;
 import com.android.systemui.SystemUIFactory;
 import com.android.systemui.dock.DockManager;
 import com.android.systemui.keyguard.DismissCallbackRegistry;
@@ -102,8 +103,11 @@ public class StatusBarKeyguardViewManager implements RemoteInputController.Callb
 
     private static final String LOCKSCREEN_BLUR =
             "system:" + Settings.System.LOCKSCREEN_BLUR;
+    private static final String LOCKSCREEN_LOCK_ICON =
+            "system:" + Settings.System.LOCKSCREEN_LOCK_ICON;
 
     private float mLockScreenBlur;
+    private boolean mLockIcon;
 
     protected final Context mContext;
     private final ConfigurationController mConfigurationController;
@@ -279,6 +283,7 @@ public class StatusBarKeyguardViewManager implements RemoteInputController.Callb
             mIsDocked = mDockManager.isDocked();
         }
         mTunerService.addTunable(this, LOCKSCREEN_BLUR);
+        Dependency.get(TunerService.class).addTunable(this, LOCKSCREEN_LOCK_ICON);
     }
 
     @Override
@@ -287,6 +292,10 @@ public class StatusBarKeyguardViewManager implements RemoteInputController.Callb
             case LOCKSCREEN_BLUR:
                 mLockScreenBlur =
                     (float) TunerService.parseInteger(newValue, 0) / 100f;
+                break;
+            case LOCKSCREEN_LOCK_ICON:
+                mLockIcon =
+                    TunerService.parseIntegerSwitch(newValue, true);
                 break;
             default:
                 break;
@@ -873,7 +882,7 @@ public class StatusBarKeyguardViewManager implements RemoteInputController.Callb
             updateNavigationBarVisibility(navBarVisible);
         }
 
-        mLockIconContainer.setVisibility((mLastLockVisible && mDozing)
+        mLockIconContainer.setVisibility(!mLockIcon || (mLastLockVisible && mDozing)
                  ? View.GONE : View.VISIBLE);
 
         if (bouncerShowing != mLastBouncerShowing || mFirstUpdate) {
