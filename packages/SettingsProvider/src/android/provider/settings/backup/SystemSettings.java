@@ -93,5 +93,6 @@ public class SystemSettings {
         Settings.System.COLOR_BUCKET_OVERLAY,
         Settings.System.DONT_TOUCH_HEADSUP,
         Settings.System.ACCENT_COLOR,
+        Settings.System.GRADIENT_COLOR,
     };
 }
