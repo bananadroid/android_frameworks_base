@@ -139,4 +139,8 @@
     <java-symbol type="array" name="config_fontPackages" />
     <java-symbol type="string" name="fontservice_incompatible_font" />
 
+    <!-- Light / Regular style fonts -->
+    <java-symbol type="string" name="config_lightFontFamily" />
+    <java-symbol type="string" name="config_regularFontFamily" />
+
 </resources>
