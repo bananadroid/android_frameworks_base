@@ -271,4 +271,10 @@
          recharge when the battery level is lower than a threshold. Set this so that the device
          will be charged between (limit - val) and limit. -->
     <integer name="config_chargingControlBatteryRechargeMargin">10</integer>
+
+    <!-- Name of a font family to use as light font. For theming purpose. -->
+    <string name="config_lightFontFamily" translatable="false">sans-serif-light</string>
+
+    <!-- Name of a font family to use as regular font. For theming purpose. -->
+    <string name="config_regularFontFamily" translatable="false">sans-serif-regular</string>
 </resources>
