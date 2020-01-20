@@ -113,7 +113,8 @@
     <!-- Name of the volte/vowifi status bar icon. -->
     <string name="status_bar_ims">VoLTE/VoWiFi</string>
 
-    <!-- Spidey Analog clock -->
+    <!-- Analog clock -->
     <string name="clock_title_spidey" translatable="false">Spidey</string>
+    <string name="clock_title_spectrum" translatable="false">Spectrum</string>
 
 </resources>
