@@ -819,6 +819,10 @@ public class NetworkControllerImpl extends BroadcastReceiver
                 case 5:
                     resId = R.drawable.ic_hd_volte;
                     break;
+                // MemeUi VoLTE
+                case 6:
+                    resId = R.drawable.ic_volte_miui;
+                    break;
                 // Dynamic
                 case 1:
                 default:
@@ -902,7 +906,11 @@ public class NetworkControllerImpl extends BroadcastReceiver
                 case 5:
                     resId = R.drawable.ic_hd_volte;
                     break;
-                // Dynamic
+                // MemeUi VoLTE
+                case 6:
+                    resId = R.drawable.ic_volte_miui;
+                    break;
+                 // Dynamic
                 case 1:
                 default:
                     resId = R.drawable.stat_sys_volte;
@@ -967,6 +975,10 @@ public class NetworkControllerImpl extends BroadcastReceiver
                 case 5:
                     resId = R.drawable.ic_hd_volte;
                     break;
+                // MemeUi VoLTE
+                case 6:
+                    resId = R.drawable.ic_volte_miui;
+                    break;
                 // Dynamic
                 case 1:
                 default:
@@ -990,6 +1002,10 @@ public class NetworkControllerImpl extends BroadcastReceiver
                 // HD Icon
                 case 5:
                     resId = R.drawable.ic_hd_volte;
+                    break;
+                // MemeUi VoLTE
+                case 6:
+                    resId = R.drawable.ic_volte_miui;
                     break;
                 // Dynamic
                 case 1:
@@ -1018,6 +1034,10 @@ public class NetworkControllerImpl extends BroadcastReceiver
                 // HD Icon
                 case 5:
                     resId = R.drawable.ic_hd_volte;
+                    break;
+                // MemeUi VoLTE
+                case 6:
+                    resId = R.drawable.ic_volte_miui;
                     break;
                 // Dynamic
                 case 1:
