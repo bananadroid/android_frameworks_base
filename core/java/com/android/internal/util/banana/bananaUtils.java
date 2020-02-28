@@ -16,6 +16,7 @@
 
 package com.android.internal.util.banana;
 
+import android.app.ActivityManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -182,6 +183,11 @@ public class bananaUtils {
         FireActions.toggleQsPanel();
     }
 
+    // Clear-all notifications
+    public static void clearAllNotifications() {
+        FireActions.clearAllNotifications();
+    }
+
     /**
      * Keep FireAction methods below this point.
      * Place calls to methods above this point.
@@ -234,6 +240,15 @@ public class bananaUtils {
             if (service != null) {
                 try {
                     service.toggleSettingsPanel();
+                } catch (RemoteException e) {}
+            }
+        }
+
+        public static void clearAllNotifications() {
+            IStatusBarService service = getStatusBarService();
+            if (service != null) {
+                try {
+                    service.onClearAllNotifications(ActivityManager.getCurrentUser());
                 } catch (RemoteException e) {}
             }
         }
