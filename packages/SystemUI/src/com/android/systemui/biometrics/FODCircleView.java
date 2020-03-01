@@ -116,6 +116,7 @@ public class FODCircleView extends ImageView implements ConfigurationListener {
     private boolean mIsKeyguard;
     private boolean mTouchedOutside;
     private boolean mIsAnimating = false;
+    private boolean mShouldRemoveIconOnAOD;
 
     private Handler mHandler;
 
@@ -174,10 +175,17 @@ public class FODCircleView extends ImageView implements ConfigurationListener {
             if (dreaming) {
                 mBurnInProtectionTimer = new Timer();
                 mBurnInProtectionTimer.schedule(new BurnInProtectionTask(), 0, 60 * 1000);
+                if (mShouldRemoveIconOnAOD) {
+                    resetFODIcon(false);
+                }
             } else if (mBurnInProtectionTimer != null) {
                 mBurnInProtectionTimer.cancel();
                 mBurnInProtectionTimer = null;
                 updatePosition();
+            }
+
+            if (mShouldRemoveIconOnAOD && !dreaming) {
+                resetFODIcon(true);
             }
         }
 
@@ -257,6 +265,9 @@ public class FODCircleView extends ImageView implements ConfigurationListener {
                 mCurrentBrightness = brightness;
                 updateIconDim(false);
             }
+
+            mShouldRemoveIconOnAOD = Settings.System.getInt(mContext.getContentResolver(),
+                    Settings.System.SCREEN_OFF_FOD, 0) != 0;
         }
     }
 
@@ -516,13 +527,29 @@ public class FODCircleView extends ImageView implements ConfigurationListener {
     public void hideCircle() {
         mIsCircleShowing = false;
 
-        setImageResource(R.drawable.fod_icon_default);
+        setFODIcon();
         invalidate();
 
         dispatchRelease();
         setDim(false);
 
         setKeepScreenOn(false);
+    }
+
+    private void resetFODIcon(boolean show) {
+        if (show) {
+            setFODIcon();
+        } else {
+            this.setImageResource(0);
+        }
+    }
+
+    private void setFODIcon() {
+        if (mIsDreaming && mShouldRemoveIconOnAOD) {
+            return;
+        }
+
+        this.setImageResource(R.drawable.fod_icon_default);
     }
 
     public void show() {
