@@ -166,6 +166,7 @@ public class CommandQueue extends IStatusBar.Stub implements
     private static final int MSG_SCREEN_PINNING_STATE_CHANGED = 70 << MSG_SHIFT;
     private static final int MSG_LEFT_IN_LANDSCAPE_STATE_CHANGED = 71 << MSG_SHIFT;
     private static final int MSG_TOGGLE_SETTINGS_PANEL = 72 << MSG_SHIFT;
+    private static final int MSG_KILL_FOREGROUND_APP = 73 << MSG_SHIFT;
     private static final int MSG_SET_BLOCKED_GESTURAL_NAVIGATION = 101 << MSG_SHIFT;
 
     public static final int FLAG_EXCLUDE_NONE = 0;
@@ -483,6 +484,8 @@ public class CommandQueue extends IStatusBar.Stub implements
         default void screenPinningStateChanged(boolean enabled) {}
 
         default void leftInLandscapeChanged(boolean isLeft) {}
+
+        default void killForegroundApp() { }
     }
 
     public CommandQueue(Context context) {
@@ -1306,6 +1309,13 @@ public class CommandQueue extends IStatusBar.Stub implements
         }
     }
 
+    public void killForegroundApp() {
+        synchronized (mLock) {
+            mHandler.removeMessages(MSG_KILL_FOREGROUND_APP);
+            mHandler.sendEmptyMessage(MSG_KILL_FOREGROUND_APP);
+        }
+    }
+
     private final class H extends Handler {
         private H(Looper l) {
             super(l);
@@ -1762,6 +1772,11 @@ public class CommandQueue extends IStatusBar.Stub implements
                 case MSG_LEFT_IN_LANDSCAPE_STATE_CHANGED:
                     for (int i = 0; i < mCallbacks.size(); i++) {
                         mCallbacks.get(i).leftInLandscapeChanged(msg.arg1 != 0);
+                    }
+                    break;
+                case MSG_KILL_FOREGROUND_APP:
+                    for (int i = 0; i < mCallbacks.size(); i++) {
+                        mCallbacks.get(i).killForegroundApp();
                     }
                     break;
             }
