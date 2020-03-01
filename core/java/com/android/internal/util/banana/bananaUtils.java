@@ -197,6 +197,17 @@ public class bananaUtils {
                 }
             }
         }
+
+        public static void killForegroundApp() {
+            IStatusBarService service = getStatusBarService();
+            if (service != null) {
+                try {
+                    service.killForegroundApp();
+                } catch (RemoteException e) {
+                    // do nothing.
+                }
+            }
+        }
     }
 
     // Method to hide/show navbar
@@ -300,4 +311,10 @@ public class bananaUtils {
             context.startActivity(intent);
         } catch (Exception e) {}
     }
+
+    // Force stop packages
+    public static void killForegroundApp() {
+        FireActions.killForegroundApp();
+    }
+
 }

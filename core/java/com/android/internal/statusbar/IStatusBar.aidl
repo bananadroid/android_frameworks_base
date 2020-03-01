@@ -238,4 +238,6 @@ oneway interface IStatusBar
      */
     void showInDisplayFingerprintView();
     void hideInDisplayFingerprintView();
+
+    void killForegroundApp();
 }
