@@ -1310,6 +1310,15 @@ public class CarrierConfigManager {
     public static final String KEY_HIDE_ENHANCED_4G_LTE_BOOL = "hide_enhanced_4g_lte_bool";
 
     /**
+     * Determines whether the Enabled 5G toggle will be shown in the settings. When this
+     * option is {@code true}, the toggle will be hidden regardless of whether the device and
+     * carrier supports 5G or not.
+     *
+     * @hide
+     */
+    public static final String KEY_HIDE_ENABLED_5G_BOOL = "hide_enabled_5g_bool";
+
+    /**
      * Sets the default state for the "Enhanced 4G LTE" or "Advanced Calling" mode toggle set by the
      * user. When this is {@code true}, this mode by default is on, otherwise if {@code false},
      * this mode by default is off.
@@ -4218,6 +4227,7 @@ public class CarrierConfigManager {
         sDefaults.putBoolean(KEY_DISPLAY_HD_AUDIO_PROPERTY_BOOL, true);
         sDefaults.putBoolean(KEY_EDITABLE_ENHANCED_4G_LTE_BOOL, true);
         sDefaults.putBoolean(KEY_HIDE_ENHANCED_4G_LTE_BOOL, false);
+        sDefaults.putBoolean(KEY_HIDE_ENABLED_5G_BOOL, true);
         sDefaults.putBoolean(KEY_ENHANCED_4G_LTE_ON_BY_DEFAULT_BOOL, true);
         sDefaults.putBoolean(KEY_HIDE_IMS_APN_BOOL, false);
         sDefaults.putBoolean(KEY_HIDE_PREFERRED_NETWORK_TYPE_BOOL, false);
