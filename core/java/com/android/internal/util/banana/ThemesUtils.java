@@ -42,6 +42,13 @@ public class ThemesUtils {
         "com.android.system.switch.stockish", // 6
     };
 
+    public static final String[] NAVBAR_STYLES = {
+            "com.android.theme.navbar.asus",
+            "com.android.theme.navbar.oneplus",
+            "com.android.theme.navbar.oneui",
+            "com.android.theme.navbar.tecno",
+    };
+
     public static void updateSwitchStyle(IOverlayManager om, int userId, int switchStyle) {
         if (switchStyle == 0) {
             stockSwitchStyle(om, userId);
