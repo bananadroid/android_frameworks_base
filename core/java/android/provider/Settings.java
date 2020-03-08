@@ -6437,6 +6437,13 @@ public final class Settings {
         public static final String CAMERA_LAUNCH = "camera_launch";
 
         /**
+         * Action to perform when the screen edge is long-swiped. (Default is 0)
+         * (See KEY_HOME_LONG_PRESS_ACTION for valid values)
+         * @hide
+         */
+        public static final String KEY_EDGE_LONG_SWIPE_ACTION = "key_edge_long_swipe_action";
+
+        /**
          * Statusbar logo custom style
          * @hide
          */
