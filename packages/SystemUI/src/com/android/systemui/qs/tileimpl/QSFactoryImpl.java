@@ -39,6 +39,7 @@ import com.android.systemui.qs.tiles.CPUInfoTile;
 import com.android.systemui.qs.tiles.DataSaverTile;
 import com.android.systemui.qs.tiles.DndTile;
 import com.android.systemui.qs.tiles.FlashlightTile;
+import com.android.systemui.qs.tiles.FPSInfoTile;
 import com.android.systemui.qs.tiles.GamingModeTile;
 import com.android.systemui.qs.tiles.HeadsUpTile;
 import com.android.systemui.qs.tiles.HotspotTile;
@@ -111,6 +112,7 @@ public class QSFactoryImpl implements QSFactory {
     private final Provider<PowerMenuTile> mPowerMenuTileProvider;
     private final Provider<VolumeTile> mVolumeTileProvider;
     private final Provider<CPUInfoTile> mCPUInfoTileProvider;
+    private final Provider<FPSInfoTile> mFPSInfoTileProvider;
 
     private final Lazy<QSHost> mQsHostLazy;
 
@@ -152,7 +154,8 @@ public class QSFactoryImpl implements QSFactory {
             Provider<VpnTile> vpnTileProvider,
             Provider<PowerMenuTile> powerMenuTileProvider,
             Provider<VolumeTile> volumeTileProvider,
-            Provider<CPUInfoTile> cpuInfoTileProvider) {
+            Provider<CPUInfoTile> cpuInfoTileProvider,
+            Provider<FPSInfoTile> fpsInfoTileProvider) {
 
         mQsHostLazy = qsHostLazy;
         mWifiTileProvider = wifiTileProvider;
@@ -192,6 +195,7 @@ public class QSFactoryImpl implements QSFactory {
         mPowerMenuTileProvider = powerMenuTileProvider;
         mVolumeTileProvider = volumeTileProvider;
         mCPUInfoTileProvider = cpuInfoTileProvider;
+        mFPSInfoTileProvider = fpsInfoTileProvider;
     }
 
     public QSTile createTile(String tileSpec) {
@@ -277,6 +281,8 @@ public class QSFactoryImpl implements QSFactory {
                 return mVolumeTileProvider.get();
             case "cpuinfo":
                 return mCPUInfoTileProvider.get();
+            case "fpsinfo":
+                return mFPSInfoTileProvider.get();
         }
 
         // Custom tiles
