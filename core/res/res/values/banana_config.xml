@@ -539,4 +539,7 @@
     </string>
     <string name="config_batterymeterLandPowersavePathOrigami" translatable="false">@string/config_batterymeterLandPerimeterPathOrigami</string>
     <string name="config_batterymeterLandErrorPerimeterPathOrigami" translatable="false">@string/config_batterymeterLandPerimeterPathOrigami</string>
+
+    <!-- Enable face auth only when swiping security view -->
+    <bool name="config_faceAuthOnlyOnSecurityView">false</bool>
 </resources>

@@ -310,4 +310,7 @@
     <!-- Settings Restart -->
     <java-symbol type="string" name="settings_restart_title" />
     <java-symbol type="string" name="settings_restart_message" />
+
+    <!-- Enable face auth only when swiping security view -->
+    <java-symbol type="bool" name="config_faceAuthOnlyOnSecurityView" />
 </resources>
