@@ -109,4 +109,7 @@
     <java-symbol type="string" name="config_adaptiveChargingSuspendValue" />
     <java-symbol type="string" name="config_adaptiveChargingResumeValue" />
 
+    <!-- Enable face auth only when swiping security view -->
+    <java-symbol type="bool" name="config_faceAuthOnlyOnSecurityView" />
+
 </resources>

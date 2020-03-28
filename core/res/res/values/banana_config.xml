@@ -127,4 +127,7 @@
     <string name="config_adaptiveChargingSuspendValue" translatable="false">0</string>
     <string name="config_adaptiveChargingResumeValue" translatable="false">1</string>
 
+    <!-- Enable face auth only when swiping security view -->
+    <bool name="config_faceAuthOnlyOnSecurityView">false</bool>
+
 </resources>
