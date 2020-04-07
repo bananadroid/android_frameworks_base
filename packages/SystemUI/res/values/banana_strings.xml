@@ -119,4 +119,7 @@
     <string name="clock_title_dot" translatable="false">Dot</string>
     <string name="clock_title_sneeky" translatable="false">Sneeky</string>
 
+    <!-- Oroño clock -->
+    <string name="date_long_title_today">Today is %s</string>
+
 </resources>

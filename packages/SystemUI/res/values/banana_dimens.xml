@@ -47,4 +47,7 @@
     <dimen name="opa_return_translation">-1.0dip</dimen>
     <dimen name="opa_rest_to_collapse">7.0dip</dimen>
 
+    <!-- Oroño clock -->
+    <dimen name="clock_oronos_outline_size">4dp</dimen>
+
 </resources>
