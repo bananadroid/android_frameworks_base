@@ -1,0 +1,25 @@
+<!--
+    Copyright (C) 2022 PixysOS Project
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+
+    <path
+        android:fillColor="#f0f2f2"
+        android:pathData="M11,20V17.0024C11.1787,16.9009 11.3618,16.8075 11.5497,16.7218C11.9876,16.5221 12.4679,16.3565 13,16.2284V21C13,21.55 12.55,22 12,22H4C3.45,22 3,21.55 3,21V5C3,4.45 3.45,4 4,4H6V2H10V4H12C12.55,4 13,4.45 13,5V7.8488C12.2813,8.097 11.6154,8.3981 11,8.7459V6H5V20H11ZM13,14.1814C12.2839,14.323 11.6194,14.5218 11,14.7799V14.7792C9.4028,15.4448 8.1061,16.5053 7,18C7.8438,13.9875 10.1688,9.9937 16,9.1875V6L22,11.5875L16,17.1938V13.9125C14.9075,13.9125 13.9119,14.0003 13,14.1807V14.1814Z" />
+</vector>
