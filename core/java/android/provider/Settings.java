@@ -5280,6 +5280,12 @@ public final class Settings {
         public static final String SYSTEMUI_PLUGIN_VOLUME = "systemui_plugin_volume";
 
         /**
+         * Enable\Disable visibility of smart replies in notifications
+         * @hide
+         */
+        public static final String HIDE_SMART_REPLIES = "hide_smart_replies";
+
+        /**
          * IMPORTANT: If you add a new public settings you also have to add it to
          * PUBLIC_SETTINGS below. If the new setting is hidden you have to add
          * it to PRIVATE_SETTINGS below. Also add a validator that can validate
@@ -6121,6 +6127,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(FORCE_FULLSCREEN_CUTOUT_APPS);
             PRIVATE_SETTINGS.add(BACK_GESTURE_HAPTIC);
             PRIVATE_SETTINGS.add(DONT_TOUCH_HEADSUP);
+            PRIVATE_SETTINGS.add(HIDE_SMART_REPLIES);
         }
 
         /**
