@@ -101,4 +101,7 @@
     <!-- Screen recorder stop dot -->
     <dimen name="screenrecord_dot_size">48dp</dimen>
 
+    <!-- App Lock -->
+    <dimen name="applock_icon_dimension">54dp</dimen>
+
 </resources>
