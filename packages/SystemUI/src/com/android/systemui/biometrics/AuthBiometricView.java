@@ -17,6 +17,8 @@
 package com.android.systemui.biometrics;
 
 import static android.view.Gravity.CENTER;
+import static com.android.systemui.util.Utils.getFODHeight;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
@@ -33,8 +35,10 @@ import android.hardware.biometrics.BiometricPrompt;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.RemoteException;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,12 +49,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.internal.annotations.VisibleForTesting;
+import com.android.internal.custom.app.LineageContextConstants;
 import com.android.systemui.R;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 /**
  * Contains the Biometric views (title, subtitle, icon, buttons, etc) and its controllers.
@@ -198,6 +204,9 @@ public abstract class AuthBiometricView extends LinearLayout {
     protected boolean mDialogSizeAnimating;
     protected Bundle mSavedState;
 
+    protected final PackageManager mPackageManager;
+    protected boolean mHasFod;
+
     /**
      * Delay after authentication is confirmed, before the dialog should be animated away.
      */
@@ -257,6 +266,9 @@ public abstract class AuthBiometricView extends LinearLayout {
 
         mInjector = injector;
         mInjector.mBiometricView = this;
+
+        mPackageManager = context.getPackageManager();
+        mHasFod = mPackageManager.hasSystemFeature(LineageContextConstants.Features.FOD);
 
         mAccessibilityManager = context.getSystemService(AccessibilityManager.class);
 
@@ -641,11 +653,6 @@ public abstract class AuthBiometricView extends LinearLayout {
         mUseFaceButton.setOnClickListener((view) -> {
             mCallback.onAction(Callback.ACTION_USE_FACE);
         });
-
-        if (this instanceof AuthBiometricFaceView) {
-            mIconView.setVisibility(View.VISIBLE);
-            mUseFaceButton.setVisibility(View.GONE);
-        }
     }
 
     /**
@@ -759,9 +766,22 @@ public abstract class AuthBiometricView extends LinearLayout {
             final View child = getChildAt(i);
 
             if (child.getId() == R.id.biometric_icon) {
-                child.measure(
-                        MeasureSpec.makeMeasureSpec(newWidth, MeasureSpec.AT_MOST),
-                        MeasureSpec.makeMeasureSpec(height, MeasureSpec.AT_MOST));
+                if (this instanceof AuthBiometricFingerprintView && mHasFod) {
+                    final int buttonBarHeight = findViewById(R.id.button_bar).getLayoutParams().height;
+                    // The view is invisible, so it still takes space and
+                    // we use that to adjust for the FOD
+                    int fodHeight = getFODHeight(mContext, true);
+                    fodHeight = fodHeight - buttonBarHeight
+                            - findViewById(R.id.button_bar).getPaddingTop();
+                    
+                    child.measure(
+                            MeasureSpec.makeMeasureSpec(newWidth, MeasureSpec.AT_MOST),
+                            MeasureSpec.makeMeasureSpec(fodHeight, MeasureSpec.EXACTLY));
+                } else {
+                    child.measure(
+                            MeasureSpec.makeMeasureSpec(newWidth, MeasureSpec.AT_MOST),
+                            MeasureSpec.makeMeasureSpec(height, MeasureSpec.AT_MOST));
+                }
             } else if (child.getId() == R.id.button_bar) {
                 child.measure(
                         MeasureSpec.makeMeasureSpec(newWidth, MeasureSpec.EXACTLY),
