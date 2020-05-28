@@ -13,6 +13,14 @@ public class AccentUtils {
 
     private static ArrayList<String> accentResources = new ArrayList<>(
             Arrays.asList("accent_device_default_light",
+                          "material_pixel_blue_dark",
+                          "material_pixel_blue_bright",
+                          "omni_color5",
+                          "omni_color4",
+                          "dialer_theme_color",
+                          "dialer_theme_color_dark",
+                          "dialer_theme_color_20pct",
+                          "colorAccent",
                           "accent_device_default_dark"));
 
     private static final String ACCENT_COLOR_PROP = "persist.sys.theme.accentcolor";
