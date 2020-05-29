@@ -5731,6 +5731,11 @@ public final class Settings {
         public static final String AMBIENT_LIGHT_LAYOUT = "ambient_light_layout";
 
         /**
+         * @hide
+         */
+        public static final String AMBIENT_LIGHT_BLEND_COLOR = "ambient_light_blend_color";
+
+        /**
          * Use doubletap as doze pulse triggers
          * @hide
          */

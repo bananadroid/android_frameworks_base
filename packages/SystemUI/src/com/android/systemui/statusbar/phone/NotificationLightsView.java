@@ -89,6 +89,9 @@ public class NotificationLightsView extends RelativeLayout {
         int customColor = Settings.System.getIntForUser(mContext.getContentResolver(),
                 Settings.System.NOTIFICATION_PULSE_COLOR, 0xFFFFFFFF,
                 UserHandle.USER_CURRENT);
+        int blend = Settings.System.getIntForUser(mContext.getContentResolver(),
+                Settings.System.AMBIENT_LIGHT_BLEND_COLOR, 0xFFFFFFFF,
+                UserHandle.USER_CURRENT);
         switch (colorMode) {
             case 1: // Wallpaper
                 try {
@@ -112,10 +115,38 @@ public class NotificationLightsView extends RelativeLayout {
             case 3: // Custom
                 color = customColor;
                 break;
+            case 4: // Blend
+                color = mixColors(customColor, blend);
+                break;
             default: // White
                 color = 0xFFFFFFFF;
         }
         return color;
+    }
+
+    private int mixColors(int color1, int color2) {
+        int[] rgb1 = colorToRgb(color1);
+        int[] rgb2 = colorToRgb(color2);
+
+        rgb1[0] = mixedValue(rgb1[0], rgb2[0]);
+        rgb1[1] = mixedValue(rgb1[1], rgb2[1]);
+        rgb1[2] = mixedValue(rgb1[2], rgb2[2]);
+        rgb1[3] = mixedValue(rgb1[3], rgb2[3]);
+
+        return rgbToColor(rgb1);
+    }
+
+    private int[] colorToRgb(int color) {
+        int[] rgb = {(color & 0xFF000000) >> 24, (color & 0xFF0000) >> 16, (color & 0xFF00) >> 8, (color & 0xFF)};
+        return rgb;
+    }
+
+    private int rgbToColor(int[] rgb) {
+        return (rgb[0] << 24) + (rgb[1] << 16) + (rgb[2] << 8) + rgb[3];
+    }
+
+    private int mixedValue(int val1, int val2) {
+        return (int)Math.min((val1 + val2), 255f);
     }
 
     public void animateNotificationWithColor(int color) {
