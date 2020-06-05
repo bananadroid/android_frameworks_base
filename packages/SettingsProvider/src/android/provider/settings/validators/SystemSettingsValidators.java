@@ -240,6 +240,7 @@ public class SystemSettingsValidators {
         VALIDATORS.put(System.KEY_EDGE_LONG_SWIPE_ACTION, NON_NEGATIVE_INTEGER_VALIDATOR);
         VALIDATORS.put(System.DOUBLE_TAP_SLEEP_GESTURE, BOOLEAN_VALIDATOR);
         VALIDATORS.put(System.SENSOR_BLOCK, BOOLEAN_VALIDATOR);
-        VALIDATORS.put(System.RINGTONE_VIBRATION_PATTERN, new InclusiveIntegerRangeValidator(0, 4));
+        VALIDATORS.put(System.RINGTONE_VIBRATION_PATTERN, new InclusiveIntegerRangeValidator(0, 5));
+        VALIDATORS.put(System.CUSTOM_RINGTONE_VIBRATION_PATTERN, ANY_STRING_VALIDATOR);
     }
 }
