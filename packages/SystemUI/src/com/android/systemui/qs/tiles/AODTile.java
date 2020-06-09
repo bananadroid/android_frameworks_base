@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2018 The OmniROM Project
+ *               2020 The LineageOS Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,20 +17,17 @@
 
 package com.android.systemui.qs.tiles;
 
-import android.app.ActivityManager;
-import android.content.ComponentName;
 import android.content.Intent;
 import android.provider.Settings;
 import android.service.quicksettings.Tile;
 
+import com.android.internal.logging.nano.MetricsProto.MetricsEvent;
 import com.android.systemui.R;
+import com.android.systemui.plugins.qs.QSTile.BooleanState;
 import com.android.systemui.qs.QSHost;
 import com.android.systemui.qs.SecureSetting;
 import com.android.systemui.qs.tileimpl.QSTileImpl;
-import com.android.systemui.plugins.qs.QSTile.BooleanState;
 import com.android.systemui.statusbar.policy.BatteryController;
-
-import com.android.internal.logging.nano.MetricsProto.MetricsEvent;
 
 import javax.inject.Inject;
 
@@ -45,8 +43,7 @@ public class AODTile extends QSTileImpl<BooleanState> implements
     public AODTile(QSHost host, BatteryController batteryController) {
         super(host);
 
-        mSetting = new SecureSetting(mContext, mHandler, Settings.Secure.DOZE_ALWAYS_ON,
-                ActivityManager.getCurrentUser(), 1) {
+        mSetting = new SecureSetting(mContext, mHandler, Settings.Secure.DOZE_ALWAYS_ON) {
             @Override
             protected void handleValueChanged(int value, boolean observedChange) {
                 handleRefreshState(value);
@@ -63,12 +60,6 @@ public class AODTile extends QSTileImpl<BooleanState> implements
     }
 
     @Override
-    protected void handleDestroy() {
-        super.handleDestroy();
-        mSetting.setListening(false);
-    }
-
-    @Override
     public boolean isAvailable() {
         return mContext.getResources().getBoolean(
                 com.android.internal.R.bool.config_dozeAlwaysOnDisplayAvailable);
@@ -76,19 +67,9 @@ public class AODTile extends QSTileImpl<BooleanState> implements
 
     @Override
     public BooleanState newTileState() {
-        return new BooleanState();
-    }
-
-    @Override
-    public void handleSetListening(boolean listening) {
-        super.handleSetListening(listening);
-        mSetting.setListening(listening);
-    }
-
-    @Override
-    protected void handleUserSwitch(int newUserId) {
-        mSetting.setUserId(newUserId);
-        handleRefreshState(mSetting.getValue());
+        BooleanState state = new BooleanState();
+        state.handlesLongClick = false;
+        return state;
     }
 
     @Override
@@ -110,6 +91,9 @@ public class AODTile extends QSTileImpl<BooleanState> implements
 
     @Override
     public CharSequence getTileLabel() {
+        if (mBatteryController.isAodPowerSave()) {
+            return mContext.getString(R.string.quick_settings_aod_off_powersave_label);
+        }
         return mContext.getString(R.string.quick_settings_aod_label);
     }
 
@@ -126,15 +110,17 @@ public class AODTile extends QSTileImpl<BooleanState> implements
         state.label = mContext.getString(R.string.quick_settings_aod_label);
         if (mBatteryController.isAodPowerSave()) {
             state.state = Tile.STATE_UNAVAILABLE;
-            state.secondaryLabel = mContext.getString(R.string.quick_settings_aod_off_powersave_label);
         } else {
             state.state = enable ? Tile.STATE_ACTIVE : Tile.STATE_INACTIVE;
-            state.secondaryLabel = "";
         }
     }
 
     @Override
     public int getMetricsCategory() {
         return MetricsEvent.BANANADROID;
+    }
+
+    @Override
+    public void handleSetListening(boolean listening) {
     }
 }
