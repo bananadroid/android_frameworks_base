@@ -135,6 +135,7 @@ import com.android.server.inputmethod.InputMethodSystemProperty;
 import com.android.server.inputmethod.MultiClientInputMethodManagerService;
 import com.android.server.integrity.AppIntegrityManagerService;
 import com.android.server.lights.LightsService;
+import com.android.server.lineage.LineageHardwareService;
 import com.android.server.location.LocationManagerService;
 import com.android.server.media.MediaRouterService;
 import com.android.server.media.metrics.MediaMetricsManagerService;
@@ -2447,6 +2448,12 @@ public final class SystemServer implements Dumpable {
                 t.traceEnd();
             }
 
+            // LineageHardware
+            if (!mOnlyCore){
+                t.traceBegin("StartLineageHardwareService");
+                mSystemServiceManager.startService(LineageHardwareService.class);
+                t.traceEnd();
+            }
         }
 
         if (!isWatch) {
