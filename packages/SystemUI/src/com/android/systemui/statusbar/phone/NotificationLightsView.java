@@ -83,16 +83,14 @@ public class NotificationLightsView extends RelativeLayout {
 
     public int getNotificationLightsColor() {
         int color = 0xFFFFFFFF;
-        int colorMode = Settings.System.getIntForUser(mContext.getContentResolver(),
-                Settings.System.NOTIFICATION_PULSE_COLOR_MODE,
-                0, UserHandle.USER_CURRENT);
+        int lightColor = getlightColor();
         int customColor = Settings.System.getIntForUser(mContext.getContentResolver(),
                 Settings.System.NOTIFICATION_PULSE_COLOR, 0xFFFFFFFF,
                 UserHandle.USER_CURRENT);
         int blend = Settings.System.getIntForUser(mContext.getContentResolver(),
                 Settings.System.AMBIENT_LIGHT_BLEND_COLOR, 0xFFFFFFFF,
                 UserHandle.USER_CURRENT);
-        switch (colorMode) {
+        switch (lightColor) {
             case 1: // Wallpaper
                 try {
                     WallpaperManager wallpaperManager = WallpaperManager.getInstance(mContext);
@@ -118,10 +116,20 @@ public class NotificationLightsView extends RelativeLayout {
             case 4: // Blend
                 color = mixColors(customColor, blend);
                 break;
+            case 5: // Blend
+                color = randomColor();
+                break;
             default: // White
                 color = 0xFFFFFFFF;
         }
         return color;
+    }
+
+    public int randomColor() {
+        int red = (int) (0xff * Math.random());
+        int green = (int) (0xff * Math.random());
+        int blue = (int) (0xff * Math.random());
+        return Color.argb(255, red, green, blue);
     }
 
     private int mixColors(int color1, int color2) {
@@ -149,6 +157,12 @@ public class NotificationLightsView extends RelativeLayout {
         return (int)Math.min((val1 + val2), 255f);
     }
 
+    public int getlightColor() {
+        return Settings.System.getIntForUser(mContext.getContentResolver(),
+               Settings.System.NOTIFICATION_PULSE_COLOR_MODE, 0,
+               UserHandle.USER_CURRENT);
+    }
+
     public void animateNotificationWithColor(int color) {
         ContentResolver resolver = mContext.getContentResolver();
         int duration = Settings.System.getIntForUser(resolver,
@@ -163,17 +177,28 @@ public class NotificationLightsView extends RelativeLayout {
         int style = Settings.System.getIntForUser(mContext.getContentResolver(),
                 Settings.System.AMBIENT_LIGHT_LAYOUT, 0,
                 UserHandle.USER_CURRENT);
+        int lightcolor = getlightColor();
 
         ImageView leftViewFaded = (ImageView) findViewById(R.id.notification_animation_left_faded);
         ImageView rightViewFaded = (ImageView) findViewById(R.id.notification_animation_right_faded);
         ImageView leftViewSolid = (ImageView) findViewById(R.id.notification_animation_left_solid);
         ImageView rightViewSolid = (ImageView) findViewById(R.id.notification_animation_right_solid);
-        leftViewFaded.setColorFilter(color);
-        rightViewFaded.setColorFilter(color);
+        if (lightcolor == 6) {
+            leftViewFaded.setColorFilter(randomColor());
+            rightViewFaded.setColorFilter(randomColor());
+        } else {
+            leftViewFaded.setColorFilter(color);
+            rightViewFaded.setColorFilter(color);
+        }
         leftViewFaded.setVisibility(style == 0 ? View.VISIBLE : View.GONE);
         rightViewFaded.setVisibility(style == 0 ? View.VISIBLE : View.GONE);
-        leftViewSolid.setColorFilter(color);
-        rightViewSolid.setColorFilter(color);
+        if (lightcolor == 6) {
+            leftViewSolid.setColorFilter(randomColor());
+            rightViewSolid.setColorFilter(randomColor());
+        } else {
+            leftViewSolid.setColorFilter(color);
+            rightViewSolid.setColorFilter(color);
+        }
         leftViewSolid.setVisibility(style == 1 ? View.VISIBLE : View.GONE);
         rightViewSolid.setVisibility(style == 1 ? View.VISIBLE : View.GONE);
         mLightAnimator = ValueAnimator.ofFloat(new float[]{0.0f, 2.0f});
