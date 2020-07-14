@@ -33,4 +33,8 @@
     <color name="qs_tiles_secondary_label_color">@*android:color/text_color_secondary</color>
     <color name="qs_tiles_underline_color">@*android:color/foreground_material_light</color>
 
+    <!-- Colors for gradient colors on QS -->
+    <color name="qs_tile_gradient_start">@*android:color/accent_device_default</color>
+    <color name="qs_tile_gradient_end">@*android:color/bootleg_accent_gradient_end_color</color>
+
 </resources>
