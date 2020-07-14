@@ -20,4 +20,10 @@
     <!-- Config to enable/diaable qs tile tinting -->
     <bool name="config_enable_qs_tile_tinting">false</bool>
 
+    <!-- Whether to use a gradient tint for the quicksettings icons -->
+    <bool name="config_useGradientForQs">false</bool>
+
+    <!-- Whether to use a image mask (background and foreground) for the quicksettings icons -->
+    <bool name="config_useImageMasksForQs">false</bool>
+
 </resources>
