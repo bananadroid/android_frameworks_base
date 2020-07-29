@@ -890,7 +890,6 @@ public class QuickStatusBarHeader extends RelativeLayout implements
     private void updateStatusbarProperties() {
         boolean shouldUseWallpaperTextColor = (mLandscape);
         mBatteryMeterView.useWallpaperTextColor(shouldUseWallpaperTextColor);
-        mClockView.useWallpaperTextColor(shouldUseWallpaperTextColor);
         updateBatteryInQs();
     }
 }
