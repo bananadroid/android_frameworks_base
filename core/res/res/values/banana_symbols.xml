@@ -96,4 +96,8 @@
     <java-symbol type="bool" name="config_pocketModeSupported" />
     <java-symbol type="string" name="config_pocketJudgeVendorSensorName" />
 
+    <!-- Clipboard access toast -->
+    <java-symbol type="string" name="app_clipboard_access_denied" />
+    <java-symbol type="string" name="app_clipboard_access_granted" />
+
 </resources>
