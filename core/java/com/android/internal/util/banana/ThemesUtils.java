@@ -83,9 +83,9 @@ public class ThemesUtils {
     // QS Tile Styles
     public static final String[] QS_TILE_THEMES = {
         "com.android.systemui.qstile.default", // 0
-        "com.android.systemui.qstile.circletrim", // 1
-        "com.android.systemui.qstile.dualtonecircletrim", // 2
-        "com.android.systemui.qstile.squircletrim", // 3
+        "com.bootleggers.qstile.trim", // 1
+        "com.bootleggers.qstile.dualtone", // 2
+        "com.bootleggers.qstile.dualtonetrim", // 3
         "com.android.systemui.qstile.wavey", // 4
         "com.android.systemui.qstile.ninja", // 5
         "com.android.systemui.qstile.dottedcircle", // 6
