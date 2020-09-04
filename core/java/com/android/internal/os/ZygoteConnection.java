@@ -196,6 +196,10 @@ class ZygoteConnection {
                             parsedArgs.mHiddenApiAccessStatslogSampleRate);
                 }
 
+                if (parsedArgs.refreshTypeface) {
+                    return handleRefreshTypeface(zygoteServer);
+                }
+
                 if (parsedArgs.mPermittedCapabilities != 0
                         || parsedArgs.mEffectiveCapabilities != 0) {
                     throw new ZygoteSecurityException("Client may not specify capabilities: "
@@ -229,10 +233,6 @@ class ZygoteConnection {
                         throw new IllegalStateException("Unable to set up pipe for invoke-with",
                                 errnoEx);
                     }
-                }
-
-                if (parsedArgs.refreshTheme) {
-                    Typeface.recreateDefaults();
                 }
 
                 /*
@@ -421,6 +421,11 @@ class ZygoteConnection {
     private Runnable handleApiBlacklistExemptions(ZygoteServer zygoteServer, String[] exemptions) {
         return stateChangeWithUsapPoolReset(zygoteServer,
                 () -> ZygoteInit.setApiBlacklistExemptions(exemptions));
+    }
+
+    private Runnable handleRefreshTypeface(ZygoteServer zygoteServer) {
+        return stateChangeWithUsapPoolReset(zygoteServer,
+                () -> Typeface.recreateDefaults());
     }
 
     private Runnable handleUsapPoolStatusChange(ZygoteServer zygoteServer, boolean newStatus) {
