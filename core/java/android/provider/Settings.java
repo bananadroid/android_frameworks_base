@@ -5181,6 +5181,14 @@ public final class Settings {
         public static final String POWER_MENU_BG_ALPHA = "power_menu_bg_alpha";
 
         /**
+         * battery location style
+         * 0: QS Panel
+         * 1: Quick Statusbar
+         * @hide
+         */
+        public static final String QS_BATTERY_LOCATION_BAR = "qs_battery_location_bar";
+
+        /**
          * IMPORTANT: If you add a new public settings you also have to add it to
          * PUBLIC_SETTINGS below. If the new setting is hidden you have to add
          * it to PRIVATE_SETTINGS below. Also add a validator that can validate

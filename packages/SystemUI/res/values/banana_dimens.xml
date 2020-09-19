@@ -53,4 +53,7 @@
     <!-- Margin on the left side of the heads up notification -->
     <dimen name="heads_up_status_bar_padding_start">0dp</dimen>
 
+    <!-- Starting padding for custom status bar elements -->
+    <dimen name="status_bar_start_padding">2dp</dimen>
+
 </resources>

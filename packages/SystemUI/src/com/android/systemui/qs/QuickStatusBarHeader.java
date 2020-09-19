@@ -23,11 +23,13 @@ import static com.android.systemui.util.InjectionInflationController.VIEW_CONTEX
 import android.annotation.ColorInt;
 import android.app.ActivityManager;
 import android.app.AlarmManager;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.database.ContentObserver;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.media.AudioManager;
@@ -124,6 +126,7 @@ public class QuickStatusBarHeader extends RelativeLayout implements
     private final ActivityStarter mActivityStarter;
     private final Vibrator mVibrator;
     private final BlurUtils mBlurUtils;
+    private final Handler mHandler = new Handler();
 
     private QSPanel mQsPanel;
 
@@ -161,6 +164,7 @@ public class QuickStatusBarHeader extends RelativeLayout implements
     private OngoingPrivacyChip mPrivacyChip;
     private Space mSpace;
     private BatteryMeterView mBatteryRemainingIcon;
+    private BatteryMeterView mBatteryMeterView;
     private RingerModeTracker mRingerModeTracker;
     private boolean mPermissionsHubEnabled;
     private boolean mAllIndicatorsEnabled;
@@ -168,6 +172,9 @@ public class QuickStatusBarHeader extends RelativeLayout implements
 
     private PrivacyItemController mPrivacyItemController;
     private final UiEventLogger mUiEventLogger;
+
+    private boolean mLandscape;
+
     // Used for RingerModeTracker
     private final LifecycleRegistry mLifecycle = new LifecycleRegistry(this);
 
@@ -182,6 +189,8 @@ public class QuickStatusBarHeader extends RelativeLayout implements
     private float mExpandedHeaderAlpha = 1.0f;
     private float mKeyguardExpansionFraction;
     private boolean mPrivacyChipLogged = false;
+
+    private SettingsObserver mSettingsObserver = new SettingsObserver(mHandler);
 
     private PrivacyItemController.Callback mPICCallback = new PrivacyItemController.Callback() {
         @Override
@@ -233,6 +242,7 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         mUiEventLogger = uiEventLogger;
         mVibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
         mBlurUtils = new BlurUtils(mContext.getResources(), new DumpManager());
+        mSettingsObserver.observe();
     }
 
     @Override
@@ -301,10 +311,16 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         mBatteryRemainingIcon.setPercentShowMode(getBatteryPercentMode());
 
         mRingerModeTextView.setSelected(true);
+
+        mBatteryMeterView = findViewById(R.id.battery);
+        mBatteryMeterView.setForceShowPercent(true);
+        mBatteryMeterView.setPercentShowMode(getBatteryPercentMode());
+
         mNextAlarmTextView.setSelected(true);
 
         mAllIndicatorsEnabled = mPrivacyItemController.getAllIndicatorsAvailable();
         mMicCameraIndicatorsEnabled = mPrivacyItemController.getMicCameraAvailable();
+        updateSettings();
     }
 
     public QuickQSPanel getHeaderQsPanel() {
@@ -404,12 +420,13 @@ public class QuickStatusBarHeader extends RelativeLayout implements
     @Override
     protected void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
+        mLandscape = newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE;
         updateResources();
+        updateStatusbarProperties();
 
-        // Update color schemes in landscape to use wallpaperTextColor
-        boolean mIsLandscape =
-                newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE;
-        mClockView.useWallpaperTextColor(mIsLandscape);
+        int topPadding = mContext.getResources().getDimensionPixelSize(R.dimen.qs_header_top_padding);
+        int bottomPadding = mContext.getResources().getDimensionPixelSize(R.dimen.qs_header_bottom_padding);
+        mQuickQsStatusIcons.setPadding(0,topPadding,0,bottomPadding);
     }
 
     @Override
@@ -468,6 +485,11 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         updatePrivacyChipAlphaAnimator();
     }
 
+    private void updateSettings() {
+        updateBatteryInQs();
+        updateStatusbarProperties();
+    }
+
     private void updateStatusIconAlphaAnimator() {
         mStatusIconsAlphaAnimator = new TouchAnimator.Builder()
                 .addFloat(mQuickQsStatusIcons, "alpha", 1, 0, 0)
@@ -494,7 +516,16 @@ public class QuickStatusBarHeader extends RelativeLayout implements
                BatteryMeterView.MODE_ON : BatteryMeterView.MODE_ESTIMATE;
     }
 
+    private void updateBatteryInQs() {
+        boolean showBatteryInQs = Settings.System.getIntForUser(mContext.getContentResolver(),
+                Settings.System.QS_BATTERY_LOCATION_BAR, 1,
+                UserHandle.USER_CURRENT) == 1;
+        mBatteryMeterView.setVisibility(showBatteryInQs ? View.VISIBLE : View.GONE);
+        mBatteryRemainingIcon.setVisibility(showBatteryInQs ? View.GONE : View.VISIBLE);
+    }
+
     public void setBatteryPercentMode() {
+        mBatteryMeterView.setPercentShowMode(getBatteryPercentMode());
         mBatteryRemainingIcon.setPercentShowMode(getBatteryPercentMode());
     }
 
@@ -767,6 +798,9 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         float intensity = getColorIntensity(colorForeground);
         int fillColor = mDualToneHandler.getSingleColor(intensity);
         mBatteryRemainingIcon.onDarkChanged(tintArea, intensity, fillColor);
+        // Use SystemUI context to get battery meter colors, and let it use the default tint (white)
+        mBatteryMeterView.setColorsFromContext(mHost.getContext());
+        mBatteryMeterView.onDarkChanged(new Rect(), 0, DarkIconDispatcher.DEFAULT_ICON_TINT);
     }
 
     public void setCallback(Callback qsPanelCallback) {
@@ -832,5 +866,31 @@ public class QuickStatusBarHeader extends RelativeLayout implements
 
     private boolean getChipEnabled() {
         return mPermissionsHubEnabled && (mMicCameraIndicatorsEnabled || mAllIndicatorsEnabled);
+    }
+
+    private class SettingsObserver extends ContentObserver {
+        SettingsObserver(Handler handler) {
+            super(handler);
+        }
+
+        void observe() {
+            ContentResolver resolver = getContext().getContentResolver();
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.QS_BATTERY_LOCATION_BAR), false,
+                    this, UserHandle.USER_ALL);
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+            updateSettings();
+        }
+    }
+
+    // Update color schemes in landscape to use wallpaperTextColor
+    private void updateStatusbarProperties() {
+        boolean shouldUseWallpaperTextColor = (mLandscape);
+        mBatteryMeterView.useWallpaperTextColor(shouldUseWallpaperTextColor);
+        mClockView.useWallpaperTextColor(shouldUseWallpaperTextColor);
+        updateBatteryInQs();
     }
 }

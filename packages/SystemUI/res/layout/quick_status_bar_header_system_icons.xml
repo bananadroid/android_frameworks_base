@@ -72,4 +72,14 @@
         systemui:showDark="false" />
 
     </LinearLayout>
+
+    <com.android.systemui.BatteryMeterView
+        android:id="@+id/battery"
+        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:gravity="center_vertical|end"
+        android:textAppearance="@style/TextAppearance.StatusBar.Clock"
+        android:paddingStart="@dimen/status_bar_start_padding"
+        systemui:showDark="false" />
+
 </LinearLayout>
