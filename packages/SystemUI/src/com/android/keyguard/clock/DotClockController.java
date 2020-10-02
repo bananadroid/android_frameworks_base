@@ -185,7 +185,7 @@ public class DotClockController implements ClockPlugin {
     public void onTimeTick() {
         mDotClock.onTimeChanged();
         mBigClockView.onTimeChanged();
-        mLockClock.refresh();
+        mLockClock.refreshTime();
     }
 
     @Override

@@ -185,7 +185,7 @@ public class SpideyClockController implements ClockPlugin {
     public void onTimeTick() {
         mSpideyClock.onTimeChanged();
         mBigClockView.onTimeChanged();
-        mLockClock.refresh();
+        mLockClock.refreshTime();
     }
 
     @Override
