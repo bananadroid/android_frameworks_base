@@ -429,9 +429,10 @@
         </activity-alias>
 
         <activity android:name=".tuner.StatusbarItemsActivity"
+                  android:theme="@style/ExTunerSettings"
                   android:label="@string/statusbar_items_title"
-                  android:theme="@style/Theme.SubSettingsBase"
                   android:process=":tuner"
+                  android:parentActivityName="com.banana.settings.fragments.StatusBar"
                   android:exported="true">
         </activity>
 
