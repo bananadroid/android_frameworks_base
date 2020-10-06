@@ -137,4 +137,8 @@ interface IPowerManager
 
     // Lineage custom API
     void wakeUpWithProximityCheck(long time, int reason, String details, String opPackageName);
+
+    // Custom API
+    void setKeyboardVisibility(boolean visible);
+
 }
