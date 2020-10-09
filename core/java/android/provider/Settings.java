@@ -6448,12 +6448,6 @@ public final class Settings {
         public static final String QS_FOOTER_DATA_USAGE = "qs_footer_data_usage";
 
         /**
-         * Whether to show material Dismiss All Button for notifications
-         * @hide
-         */
-        public static final String NOTIFICATION_MATERIAL_DISMISS = "notification_material_dismiss";
-
-        /**
          * Show Settings icon in QS Footer
          * @hide
          */
@@ -6701,6 +6695,17 @@ public final class Settings {
          * @hide
          */
         public static final String HIDE_IME_SPACE_ENABLE = "hide_ime_space_enable";
+
+        /**
+         * Whether to show material Dismiss All Button for notifications
+         * @hide
+         */
+        public static final String NOTIFICATION_MATERIAL_DISMISS = "notification_material_dismiss";
+
+        /**
+         * @hide
+         */
+        public static final String NOTIFICATION_MATERIAL_DISMISS_STYLE = "notification_material_dismiss_style";
 
         /**
          * Keys we no longer back up under the current schema, but want to continue to
