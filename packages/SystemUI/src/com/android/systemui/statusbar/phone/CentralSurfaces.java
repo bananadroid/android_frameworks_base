@@ -404,4 +404,10 @@ public interface CentralSurfaces extends Dumpable, LifecycleOwner {
     void onBrightnessChanged(boolean upOrCancel);
 
     GameSpaceManager getGameSpaceManager();
+
+    View getDismissAllButton();
+
+    void updateDismissAllVisibility(boolean visible);
+
+    void updateDismissAllButton();
 }
