@@ -88,6 +88,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.hardware.display.DisplayManager;
 import android.hardware.fingerprint.IFingerprintService;
+import android.graphics.drawable.GradientDrawable;
 import android.media.AudioAttributes;
 import android.media.MediaMetadata;
 import android.metrics.LogMaker;
@@ -137,7 +138,10 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
 import android.widget.DateTimeView;
+import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageSwitcher;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import androidx.lifecycle.Lifecycle;
@@ -543,6 +547,9 @@ public class StatusBar extends SystemUI implements DemoMode,
     private final MetricsLogger mMetricsLogger;
 
     private boolean mSysuiRoundedFwvals;
+
+    private ImageButton mDismissAllButton;
+    public boolean mClearableNotifications = true;
 
     Runnable mLongPressBrightnessChange = new Runnable() {
         @Override
@@ -1197,6 +1204,7 @@ public class StatusBar extends SystemUI implements DemoMode,
         inflateStatusBarWindow();
         mNotificationShadeWindowViewController.setService(this, mNotificationShadeWindowController);
         mNotificationShadeWindowView.setOnTouchListener(getStatusBarWindowTouchListener());
+        mDismissAllButton = mNotificationShadeWindowView.findViewById(R.id.clear_notifications);
 
         PowerManager pm = context.getSystemService(PowerManager.class);;
         mMinimumBacklight = pm.getBrightnessConstraint(
@@ -1560,6 +1568,49 @@ public class StatusBar extends SystemUI implements DemoMode,
                 || action == MotionEvent.ACTION_CANCEL) {
             mHandler.removeCallbacks(mLongPressBrightnessChange);
         }
+    }
+
+    public void updateDismissAllVisibility(boolean visible) {
+        if (mClearableNotifications && mState != StatusBarState.KEYGUARD && visible) {
+            mDismissAllButton.setVisibility(View.VISIBLE);
+            int DismissAllAlpha = Math.round(255.0f * mNotificationPanelViewController.getExpandedFraction());
+            mDismissAllButton.setAlpha(DismissAllAlpha);
+            mDismissAllButton.getBackground().setAlpha(DismissAllAlpha);
+        } else {
+            mDismissAllButton.setAlpha(0);
+            mDismissAllButton.getBackground().setAlpha(0);
+            mDismissAllButton.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    public void updateDismissAllButton(int iconcolor) {
+        if (mDismissAllButton != null) {
+            FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) mDismissAllButton.getLayoutParams();
+            layoutParams.width = mContext.getResources().getDimensionPixelSize(R.dimen.dismiss_all_button_width);
+            layoutParams.height = mContext.getResources().getDimensionPixelSize(R.dimen.dismiss_all_button_height);
+            layoutParams.bottomMargin = mContext.getResources().getDimensionPixelSize(R.dimen.dismiss_all_button_margin_bottom);
+            mDismissAllButton.setElevation(mContext.getResources().getDimension(R.dimen.dismiss_all_button_elevation));
+            mDismissAllButton.setColorFilter(iconcolor);
+            mDismissAllButton.setBackground(mContext.getResources().getDrawable(R.drawable.dismiss_all_background));
+        }
+    }
+
+    public void updateDismissAllButtonOnlyDimens() {
+        if (mDismissAllButton != null) {
+            FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) mDismissAllButton.getLayoutParams();
+            layoutParams.width = mContext.getResources().getDimensionPixelSize(R.dimen.dismiss_all_button_width);
+            layoutParams.height = mContext.getResources().getDimensionPixelSize(R.dimen.dismiss_all_button_height);
+            layoutParams.bottomMargin = mContext.getResources().getDimensionPixelSize(R.dimen.dismiss_all_button_margin_bottom);
+            mDismissAllButton.setElevation(mContext.getResources().getDimension(R.dimen.dismiss_all_button_elevation));
+        }
+    }
+
+    public void setHasClearableNotifs(boolean notifs) {
+        mClearableNotifications = notifs;
+    }
+
+    public View getDismissAllButton() {
+        return mDismissAllButton;
     }
 
     protected QS createDefaultQSFragment() {
@@ -4426,6 +4477,9 @@ public class StatusBar extends SystemUI implements DemoMode,
 
     @Override
     public void onStateChanged(int newState) {
+        if (mState != newState) {
+            updateDismissAllVisibility(true);
+        }
         mState = newState;
         updateReportRejectedTouchVisibility();
         mDozeServiceHost.updateDozing();
