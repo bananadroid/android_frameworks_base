@@ -118,6 +118,7 @@ import android.widget.DateTimeView;
 import android.widget.ImageButton;
 import android.window.OnBackInvokedCallback;
 import android.window.OnBackInvokedDispatcher;
+import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.Lifecycle;
@@ -302,8 +303,6 @@ public class CentralSurfacesImpl extends CoreStartable implements
             "system:" + Settings.System.STATUS_BAR_BRIGHTNESS_CONTROL;
     private static final String QS_TRANSPARENCY =
             "system:" + Settings.System.QS_TRANSPARENCY;
-    private static final String NOTIFICATION_MATERIAL_DISMISS =
-            "system:" + Settings.System.NOTIFICATION_MATERIAL_DISMISS;
     private static final String PULSE_ON_NEW_TRACKS =
             Settings.Secure.PULSE_ON_NEW_TRACKS;
     private static final String LESS_BORING_HEADS_UP =
@@ -312,6 +311,10 @@ public class CentralSurfacesImpl extends CoreStartable implements
             "system:" + Settings.System.RETICKER_STATUS;
     private static final String FORCE_SHOW_NAVBAR =
             "customsystem:" + Settings.System.FORCE_SHOW_NAVBAR;
+    private static final String NOTIFICATION_MATERIAL_DISMISS =
+            "system:" + Settings.System.NOTIFICATION_MATERIAL_DISMISS;
+    private static final String NOTIFICATION_MATERIAL_DISMISS_STYLE =
+            "system:" + Settings.System.NOTIFICATION_MATERIAL_DISMISS_STYLE;
 
     private static final int MSG_OPEN_SETTINGS_PANEL = 1002;
     private static final int MSG_LAUNCH_TRANSITION_TIMEOUT = 1003;
@@ -620,6 +623,7 @@ public class CentralSurfacesImpl extends CoreStartable implements
     private final MetricsLogger mMetricsLogger;
 
     private ImageButton mDismissAllButton;
+    private int mClearAllButtonStyle;
     private boolean mShowDimissButton;
 
     // ensure quick settings is disabled until the current user makes it through the setup wizard
@@ -978,11 +982,12 @@ public class CentralSurfacesImpl extends CoreStartable implements
 
         mTunerService.addTunable(this, STATUS_BAR_BRIGHTNESS_CONTROL);
         mTunerService.addTunable(this, QS_TRANSPARENCY);
-        mTunerService.addTunable(this, NOTIFICATION_MATERIAL_DISMISS);
         mTunerService.addTunable(this, PULSE_ON_NEW_TRACKS);
         mTunerService.addTunable(this, LESS_BORING_HEADS_UP);
         mTunerService.addTunable(this, RETICKER_STATUS);
         mTunerService.addTunable(this, FORCE_SHOW_NAVBAR);
+        mTunerService.addTunable(this, NOTIFICATION_MATERIAL_DISMISS);
+        mTunerService.addTunable(this, NOTIFICATION_MATERIAL_DISMISS_STYLE);
 
         mWindowManager = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
 
@@ -1527,14 +1532,44 @@ public class CentralSurfacesImpl extends CoreStartable implements
             int alpha = Math.round(mNotificationPanelViewController.getExpandedFraction() * 255.0f);
             mDismissAllButton.setAlpha(alpha);
             mDismissAllButton.getBackground().setAlpha(alpha);
-            updateDismissAllButton();
         }
     }
 
     @Override
     public void updateDismissAllButton() {
         if (mDismissAllButton == null) return;
-        mDismissAllButton.setImageResource(R.drawable.dismiss_all_icon);
+        switch (mClearAllButtonStyle) {
+            case 1:
+                mDismissAllButton.setImageResource(R.drawable.dismiss_all_icon1);
+                break;
+            case 2:
+                mDismissAllButton.setImageResource(R.drawable.dismiss_all_icon2);
+                break;
+            case 3:
+                mDismissAllButton.setImageResource(R.drawable.dismiss_all_icon3);
+                break;
+            case 4:
+                mDismissAllButton.setImageResource(R.drawable.dismiss_all_icon4);
+                break;
+            case 5:
+                mDismissAllButton.setImageResource(R.drawable.dismiss_all_icon5);
+                break;
+            case 6:
+                mDismissAllButton.setImageResource(R.drawable.dismiss_all_icon6);
+                break;
+            case 7:
+                mDismissAllButton.setImageResource(R.drawable.dismiss_all_icon7);
+                break;
+            case 8:
+                mDismissAllButton.setImageResource(R.drawable.dismiss_all_icon8);
+                break;
+            case 9:
+                mDismissAllButton.setImageResource(R.drawable.dismiss_all_icon9);
+                break;
+            default:
+                mDismissAllButton.setImageResource(R.drawable.dismiss_all_icon);
+                break;
+        }
         mDismissAllButton.setElevation(mContext.getResources().getDimension(R.dimen.dismiss_all_button_elevation));
         mDismissAllButton.setColorFilter(mContext.getColor(R.color.notif_pill_text));
         mDismissAllButton.setBackground(mContext.getTheme().getDrawable(R.drawable.dismiss_all_background));
@@ -4532,11 +4567,6 @@ public class CentralSurfacesImpl extends CoreStartable implements
                 mScrimController.setCustomScrimAlpha(
                         TunerService.parseInteger(newValue, 100));
                 break;
-            case NOTIFICATION_MATERIAL_DISMISS:
-                mShowDimissButton =
-                        TunerService.parseIntegerSwitch(newValue, false);
-                updateDismissAllVisibility(true);
-                break;
             case PULSE_ON_NEW_TRACKS:
                 boolean showPulseOnNewTracks =
                         TunerService.parseIntegerSwitch(newValue, false);
@@ -4569,6 +4599,17 @@ public class CentralSurfacesImpl extends CoreStartable implements
                         mNavigationBarController.onDisplayRemoved(mDisplayId);
                     }
                 }
+                break;
+            case NOTIFICATION_MATERIAL_DISMISS:
+                mShowDimissButton =
+                        TunerService.parseIntegerSwitch(newValue, false);
+                updateDismissAllVisibility(true);
+                updateDismissAllButton();
+                break;
+            case NOTIFICATION_MATERIAL_DISMISS_STYLE:
+                mClearAllButtonStyle =
+                        TunerService.parseInteger(newValue, 0);
+                updateDismissAllButton();
                 break;
             default:
                 break;
