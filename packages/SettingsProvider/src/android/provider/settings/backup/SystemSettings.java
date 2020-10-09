@@ -89,5 +89,6 @@ public class SystemSettings {
         Settings.System.LOCKSCREEN_BATTERY_INFO,
         Settings.System.QS_SHOW_BATTERY_PERCENT,
         Settings.System.INCALL_FEEDBACK_VIBRATE,
+        Settings.System.NOTIFICATION_HEADERS,
     };
 }
