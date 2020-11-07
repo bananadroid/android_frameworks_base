@@ -4905,6 +4905,12 @@ public final class Settings {
          */
         public static final String QS_ROWS_PORTRAIT = "qs_rows_portrait";
 
+        /** Whether to skip music track with volume rocker 
+        /**
+         * @hide
+         */
+        public static final String VOLUME_BUTTON_MUSIC_CONTROL = "volume_button_music_control";
+
         /**
          * How many rows to show in the qs panel when in landscape
          * @hide
