@@ -90,4 +90,7 @@
          vendor fingerprint HAL implementations. -->
     <bool name="config_fingerprintPostResetRunnableForAllClients">false</bool>
 
+    <!-- Device Has Soli -->
+    <bool name="config_has_Soli">false</bool>
+
 </resources>
