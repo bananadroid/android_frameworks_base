@@ -36,7 +36,9 @@ import android.os.Looper;
 import android.os.RemoteException;
 import android.os.SystemClock;
 import android.os.SystemProperties;
+import android.os.UserHandle;
 import android.provider.DeviceConfig;
+import android.provider.Settings;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
@@ -57,6 +59,7 @@ import android.view.WindowMetrics;
 
 import com.android.internal.config.sysui.SystemUiDeviceConfigFlags;
 import com.android.internal.policy.GestureNavigationSettingsObserver;
+import com.android.systemui.Dependency;
 import com.android.systemui.R;
 import com.android.systemui.SystemUIFactory;
 import com.android.systemui.broadcast.BroadcastDispatcher;
@@ -80,6 +83,7 @@ import com.android.systemui.shared.tracing.ProtoTraceable;
 import com.android.systemui.tracing.ProtoTracer;
 import com.android.systemui.tracing.nano.EdgeBackGestureHandlerProto;
 import com.android.systemui.tracing.nano.SystemUiTraceProto;
+import com.android.systemui.tuner.TunerService;
 
 import java.io.PrintWriter;
 import java.util.ArrayDeque;
@@ -94,11 +98,15 @@ import javax.inject.Inject;
  * Utility class to handle edge swipes for back gesture
  */
 public class EdgeBackGestureHandler extends CurrentUserTracker
-        implements PluginListener<NavigationEdgeBackPlugin>, ProtoTraceable<SystemUiTraceProto> {
+        implements PluginListener<NavigationEdgeBackPlugin>, ProtoTraceable<SystemUiTraceProto>,
+        TunerService.Tunable {
 
     private static final String TAG = "EdgeBackGestureHandler";
     private static final int MAX_LONG_PRESS_TIMEOUT = SystemProperties.getInt(
             "gestures.back_timeout", 250);
+
+    private static final String BACK_GESTURE_HEIGHT =
+            "system:" + Settings.System.BACK_GESTURE_HEIGHT;
 
     private static final int MAX_NUM_LOGGED_PREDICTIONS = 10;
     private static final int MAX_NUM_LOGGED_GESTURES = 10;
@@ -239,6 +247,9 @@ public class EdgeBackGestureHandler extends CurrentUserTracker
     private int mRightInset;
     private int mSysUiFlags;
 
+    private int mEdgeHeight;
+    private int mEdgeHeightSetting = 0;
+
     // For Tf-Lite model.
     private BackGestureTfClassifierProvider mBackGestureTfClassifierProvider;
     private Map<String, Integer> mVocab;
@@ -346,6 +357,26 @@ public class EdgeBackGestureHandler extends CurrentUserTracker
         updateCurrentUserResources();
     }
 
+    private void updateEdgeHeightValue() {
+        if (mDisplaySize == null) {
+            return;
+        }
+        // mEdgeHeightSetting cant be range 0 - 3
+        // 0 means full height
+        // 1 measns half of the screen
+        // 2 means lower third of the screen
+        // 3 means lower sicth of the screen
+        if (mEdgeHeightSetting == 0) {
+            mEdgeHeight = mDisplaySize.y;
+        } else if (mEdgeHeightSetting == 1) {
+            mEdgeHeight = mDisplaySize.y / 2;
+        } else if (mEdgeHeightSetting == 2) {
+            mEdgeHeight = mDisplaySize.y / 3;
+        } else {
+            mEdgeHeight = mDisplaySize.y / 6;
+        }
+    }
+
     public void setStateChangeCallback(Runnable callback) {
         mStateChangeCallback = callback;
     }
@@ -370,6 +401,9 @@ public class EdgeBackGestureHandler extends CurrentUserTracker
         mMLEnableWidth = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 12.0f, dm);
         if (mMLEnableWidth > mEdgeWidthRight) mMLEnableWidth = mEdgeWidthRight;
         if (mMLEnableWidth > mEdgeWidthLeft) mMLEnableWidth = mEdgeWidthLeft;
+
+        final TunerService tunerService = Dependency.get(TunerService.class);
+        tunerService.addTunable(this, BACK_GESTURE_HEIGHT);
 
         // Reduce the default touch slop to ensure that we can intercept the gesture
         // before the app starts to react to it.
@@ -646,6 +680,11 @@ public class EdgeBackGestureHandler extends CurrentUserTracker
         if (y >= (mDisplaySize.y - mBottomGestureHeight)) {
             return false;
         }
+        if (mEdgeHeight != 0) {
+            if (y < (mDisplaySize.y - mBottomGestureHeight - mEdgeHeight)) {
+                return false;
+            }
+        }
         // If the point is way too far (twice the margin), it is
         // not interesting to us for logging purposes, nor we
         // should process it.  Simply return false and keep
@@ -875,6 +914,15 @@ public class EdgeBackGestureHandler extends CurrentUserTracker
         }
         if (mEdgeBackPlugin != null) {
             mEdgeBackPlugin.setDisplaySize(mDisplaySize);
+        }
+        updateEdgeHeightValue();
+    }
+
+    @Override
+    public void onTuningChanged(String key, String newValue) {
+        if (BACK_GESTURE_HEIGHT.equals(key)) {
+            mEdgeHeightSetting = TunerService.parseInteger(newValue, 0);
+            updateEdgeHeightValue();
         }
     }
 
