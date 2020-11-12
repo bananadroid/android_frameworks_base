@@ -52,6 +52,9 @@
     <java-symbol type="integer" name="config_maxVisibleNotificationIcons" />
     <java-symbol type="integer" name="config_maxVisibleNotificationIconsWhenDark" />
 
+    <!-- Aerr -->
+    <java-symbol type="id" name="aerr_disable" />
+
     <!-- App error dialog -->
     <java-symbol type="id" name="aerr_copy" />
     <java-symbol type="string" name="url_copy_success" />
