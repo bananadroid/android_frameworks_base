@@ -23,4 +23,7 @@
     <dimen name="status_bar_battery_icon_width_landscape_line">22.0dip</dimen>
     <dimen name="status_bar_battery_icon_width_landscape_pill_musku">13dp</dimen>
     <dimen name="status_bar_battery_icon_width_landscape_buddy">22.0dip</dimen>
+
+    <!-- Screen Record -->
+    <dimen name="screenrecord_dot_size">48dp</dimen>
 </resources>
