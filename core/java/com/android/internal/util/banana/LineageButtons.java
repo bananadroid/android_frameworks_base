@@ -208,4 +208,67 @@ public final class LineageButtons {
                     UserHandle.USER_CURRENT) == 1;
         }
     }
+
+    public void triggerAction(int action, boolean leftEdge, boolean isVerticalSwipe, Context context) {
+        switch (action) {
+            case 0: // No action
+            default:
+                break;
+            case 1: // Assistant
+                bananaUtils.startAssist();
+                break;
+            case 2: // Voice search
+                bananaUtils.launchVoiceSearch(context);
+                break;
+            case 3: // Camera
+                bananaUtils.launchCamera(context);
+                break;
+            case 4: // Flashlight
+                bananaUtils.toggleCameraFlash(false/*no proximity check*/);
+                break;
+            case 5: // Application
+                bananaUtils.launchApp(context, leftEdge, isVerticalSwipe);
+                break;
+            case 6: // Volume panel
+                bananaUtils.toggleVolumePanel(context);
+                break;
+            case 7: // Screen off
+                bananaUtils.switchScreenOff(context);
+                break;
+            case 8: // Screenshot
+                bananaUtils.takeScreenshot(true);
+                break;
+            case 9: // Notification panel
+                bananaUtils.toggleNotifications();
+                break;
+            case 10: // QS panel
+                bananaUtils.toggleQsPanel();
+                break;
+            case 11: // Clear notifications
+                bananaUtils.clearAllNotifications();
+                break;
+            case 12: // Ringer modes
+                bananaUtils.toggleRingerModes(context);
+                break;
+            case 13: // Kill app
+                bananaUtils.killForegroundApp();
+                break;
+            case 14: // Skip song
+                skipTrack();
+                break;
+            case 15: // Previous song
+                previousTrack();
+                break;
+            case 16: // Power menu
+                bananaUtils.showPowerMenu();
+                break;
+            case 17: // Partial screenshot
+                bananaUtils.takeScreenshot(false);
+                break;
+            case 18: // Hush mute
+                bananaUtils.triggerHushMute(context);
+                break;
+        }
+    }
 }
+

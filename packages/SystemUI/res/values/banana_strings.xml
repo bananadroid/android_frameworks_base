@@ -35,6 +35,10 @@
     <string name="qs_data_switch_changed_1">Switch data card to SIM 1.</string>
     <string name="qs_data_switch_changed_2">Switch data card to SIM 2.</string>
 
+    <!-- App picker manifest entry -->
+    <string name="app_picker_dialog_title">Select an app</string>
+    <string name="app_picker_activity_select_title">Select activity</string>
+
     <!-- Samsung clock -->
     <string name="clock_title_default_bold" translatable="false">Default (bold)</string>
     <string name="clock_title_samsung" translatable="false">Samsung</string>
