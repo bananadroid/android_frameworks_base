@@ -102,6 +102,19 @@ public class ThemesUtils {
         "com.bootleggers.qstile.monogradient", // 17
     };
 
+    public static final String[] BRIGHTNESS_SLIDER_THEMES = {
+            "com.jrinfected.brightness.a",
+            "com.jrinfected.brightness.b",
+            "com.jrinfected.brightness.c",
+            "com.jrinfected.brightness.d",
+    };
+
+    public static final String[] PANEL_BG_STYLE = {
+            "com.jrinfected.panel.batik", // 1
+            "com.jrinfected.panel.kece", // 2
+            "com.jrinfected.panel.outline", // 3
+    };
+
     public static void updateSwitchStyle(IOverlayManager om, int userId, int switchStyle) {
         if (switchStyle == 0) {
             stockSwitchStyle(om, userId);
