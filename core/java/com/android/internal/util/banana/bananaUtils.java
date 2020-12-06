@@ -171,6 +171,11 @@ public class bananaUtils {
         FireActions.toggleCameraFlash();
     }
 
+    // Toggle notifications panel
+    public static void toggleNotifications() {
+        FireActions.toggleNotifications();
+    }
+
     /**
      * Keep FireAction methods below this point.
      * Place calls to methods above this point.
@@ -206,6 +211,15 @@ public class bananaUtils {
                 } catch (RemoteException e) {
                     // do nothing.
                 }
+            }
+        }
+
+        public static void toggleNotifications() {
+            IStatusBarService service = getStatusBarService();
+            if (service != null) {
+                try {
+                    service.togglePanel();
+                } catch (RemoteException e) {}
             }
         }
     }
