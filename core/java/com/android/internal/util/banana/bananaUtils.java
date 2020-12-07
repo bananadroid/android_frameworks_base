@@ -49,6 +49,7 @@ import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.IWindowManager;
 import android.view.WindowManagerGlobal;
+import android.widget.Toast;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
 import static android.content.Context.VIBRATOR_SERVICE;
@@ -428,6 +429,29 @@ public class bananaUtils {
                 am.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
                 break;
         }
+    }
+
+    // Trigger Hush Mute mode
+    public static void triggerHushMute(Context context) {
+        // We can't call AudioService#silenceRingerModeInternal from here, so this is a partial copy of it
+        int silenceRingerSetting = Settings.Secure.getIntForUser(context.getContentResolver(),
+                Settings.Secure.VOLUME_HUSH_GESTURE, Settings.Secure.VOLUME_HUSH_OFF,
+                UserHandle.USER_CURRENT);
+
+        int ringerMode;
+        int toastText;
+        if (silenceRingerSetting == Settings.Secure.VOLUME_HUSH_VIBRATE) {
+            ringerMode = AudioManager.RINGER_MODE_VIBRATE;
+            toastText = com.android.internal.R.string.volume_dialog_ringer_guidance_vibrate;
+        } else {
+            // VOLUME_HUSH_MUTE and VOLUME_HUSH_OFF
+            ringerMode = AudioManager.RINGER_MODE_SILENT;
+            toastText = com.android.internal.R.string.volume_dialog_ringer_guidance_silent;
+        }
+        AudioManager audioMan = (AudioManager)
+                context.getSystemService(Context.AUDIO_SERVICE);
+        audioMan.setRingerModeInternal(ringerMode);
+        Toast.makeText(context, toastText, Toast.LENGTH_SHORT).show();
     }
 
 }
