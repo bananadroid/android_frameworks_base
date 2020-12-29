@@ -5375,6 +5375,10 @@ public class StatusBar extends SystemUI implements DemoMode,
                 }
                 break;
             case QS_PANEL_BG_USE_NEW_TINT:
+                if (mQSPanel != null) {
+                    mQSPanel.getHost().reloadAllTiles();
+                }
+                break;
             default:
                 break;
         }
