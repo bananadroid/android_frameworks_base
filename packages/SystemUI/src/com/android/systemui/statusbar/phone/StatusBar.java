@@ -2149,6 +2149,9 @@ public class StatusBar extends SystemUI implements DemoMode,
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.SWITCH_STYLE),
                     false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.QS_TILE_STYLE),
+                    false, this, UserHandle.USER_ALL);
         }
 
         @Override
@@ -2191,6 +2194,10 @@ public class StatusBar extends SystemUI implements DemoMode,
             } else if (uri.equals(Settings.System.getUriFor(Settings.System.SWITCH_STYLE))) {
                 stockSwitchStyle();
                 updateSwitchStyle();
+            } else if (uri.equals(Settings.System.getUriFor(Settings.System.QS_TILE_STYLE))) {
+                stockTileStyle();
+                updateTileStyle();
+                mQSPanel.getHost().reloadAllTiles();
             }
         }
 
@@ -3812,6 +3819,20 @@ public class StatusBar extends SystemUI implements DemoMode,
     public void finishKeyguardFadingAway() {
         mKeyguardStateController.notifyKeyguardDoneFading();
         mScrimController.setExpansionAffectsAlpha(true);
+    }
+
+    /**
+     * Switches qs tile style.
+     */
+    public void updateTileStyle() {
+        int qsTileStyle = Settings.System.getIntForUser(mContext.getContentResolver(),
+                Settings.System.QS_TILE_STYLE, 0, mLockscreenUserManager.getCurrentUserId());
+        ThemesUtils.updateNewTileStyle(mOverlayManager, mLockscreenUserManager.getCurrentUserId(), qsTileStyle);
+    }
+
+    // Unload all qs tile styles back to stock
+    public void stockTileStyle() {
+        ThemesUtils.stockNewTileStyle(mOverlayManager, mLockscreenUserManager.getCurrentUserId());
     }
 
     /**
