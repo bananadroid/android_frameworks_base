@@ -12244,6 +12244,12 @@ public final class Settings {
                 RING_HOME_BUTTON_BEHAVIOR_DO_NOTHING;
 
         /**
+         * Whether to show or hide the arrow for back gesture
+         * @hide
+         */
+        public static final String BACK_GESTURE_ARROW = "back_gesture_arrow";
+
+        /**
          * Keys we no longer back up under the current schema, but want to continue to
          * process when restoring historical backup datasets.
          *
