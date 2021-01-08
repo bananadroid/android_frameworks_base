@@ -192,4 +192,7 @@
     <!-- FPS Info tile -->
     <string name="quick_settings_fpsinfo_label">FPS Info</string>
 
+    <!-- Battery saver extreme [CHAR LIMIT=NONE]-->
+    <string name="extreme_battery_saver_text">Extreme</string>
+
 </resources>
