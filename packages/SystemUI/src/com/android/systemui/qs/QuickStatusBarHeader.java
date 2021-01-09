@@ -58,6 +58,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Space;
+import android.widget.TextClock;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -94,6 +95,7 @@ import com.android.systemui.statusbar.policy.DateView;
 import com.android.systemui.statusbar.policy.NextAlarmController;
 import com.android.systemui.statusbar.policy.ZenModeController;
 import com.android.systemui.util.RingerModeTracker;
+import com.android.systemui.qs.QSHeaderInfoLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -172,6 +174,11 @@ public class QuickStatusBarHeader extends RelativeLayout implements
 
     private PrivacyItemController mPrivacyItemController;
     private final UiEventLogger mUiEventLogger;
+
+    private TextClock mTextClock;
+    private LinearLayout mQsClockOos;
+    private LinearLayout mQsClockNormal;
+    private QSHeaderInfoLayout mQSHeaderInfoLayout;
 
     private boolean mLandscape;
 
@@ -273,6 +280,10 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         mPrivacyChip.setOnClickListener(this::onClick);
         mCarrierGroup = findViewById(R.id.carrier_group);
 
+        mQsClockOos = findViewById(R.id.oos_qsclock);
+        mQsClockNormal = findViewById(R.id.normal_qsclock);
+        mTextClock = findViewById(R.id.textClock);
+        mQSHeaderInfoLayout = findViewById(R.id.status_container);
 
         updateResources();
 
@@ -449,6 +460,9 @@ public class QuickStatusBarHeader extends RelativeLayout implements
     }
 
     private void updateResources() {
+        boolean oos_qsclock = Settings.System.getIntForUser(getContext().getContentResolver(),
+                Settings.System.OOS_QSCLOCK, 1, UserHandle.USER_CURRENT) == 1;
+
         Resources resources = mContext.getResources();
         updateMinimumHeight();
 
@@ -457,8 +471,12 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         mStatusBarPaddingTop = resources.getDimensionPixelSize(R.dimen.status_bar_padding_top);
 
         // Update height for a few views, especially due to landscape mode restricting space.
+        if (oos_qsclock) {
         mHeaderTextContainerView.getLayoutParams().height =
                 resources.getDimensionPixelSize(R.dimen.qs_header_tooltip_height);
+        } else {
+        mHeaderTextContainerView.getLayoutParams().height = resources.getDimensionPixelSize(R.dimen.qs_header_tooltip_height_normal);
+        }
         mHeaderTextContainerView.setLayoutParams(mHeaderTextContainerView.getLayoutParams());
 
         mSystemIconsView.getLayoutParams().height = resources.getDimensionPixelSize(
@@ -488,6 +506,32 @@ public class QuickStatusBarHeader extends RelativeLayout implements
     private void updateSettings() {
         updateBatteryInQs();
         updateStatusbarProperties();
+        updateQsClock();
+        updateResources();
+        if (mQsPanel != null) {
+        mQsPanel.updatePadding();
+        }
+    }
+
+    private void updateQsClock() {
+        boolean oos_qsclock = Settings.System.getIntForUser(getContext().getContentResolver(),
+                Settings.System.OOS_QSCLOCK, 1, UserHandle.USER_CURRENT) == 1;
+        Resources resources = mContext.getResources();
+        if (oos_qsclock) {
+        mHeaderTextContainerView.getLayoutParams().height =
+                resources.getDimensionPixelSize(R.dimen.qs_header_tooltip_height);
+        mHeaderTextContainerView.setLayoutParams(mHeaderTextContainerView.getLayoutParams());
+        mQsClockNormal.setVisibility(View.INVISIBLE);
+        mQsClockOos.setVisibility(View.VISIBLE);
+        mQSHeaderInfoLayout.setVisibility(View.INVISIBLE);
+        } else {
+        mHeaderTextContainerView.getLayoutParams().height =
+                resources.getDimensionPixelSize(R.dimen.qs_header_tooltip_height_normal);
+        mHeaderTextContainerView.setLayoutParams(mHeaderTextContainerView.getLayoutParams());
+        mQsClockNormal.setVisibility(View.VISIBLE);
+        mQsClockOos.setVisibility(View.GONE);
+        mQSHeaderInfoLayout.setVisibility(View.VISIBLE);
+       }
     }
 
     private void updateStatusIconAlphaAnimator() {
@@ -714,7 +758,7 @@ public class QuickStatusBarHeader extends RelativeLayout implements
 
     @Override
     public void onClick(View v) {
-        if (v == mClockView || v == mNextAlarmTextView) {
+        if (v == mClockView || v == mNextAlarmTextView || v == mTextClock) {
             mActivityStarter.postStartActivityDismissingKeyguard(new Intent(
                     AlarmClock.ACTION_SHOW_ALARMS), 0);
         } else if (v == mNextAlarmContainer && mNextAlarmContainer.isVisibleToUser()) {
@@ -877,6 +921,9 @@ public class QuickStatusBarHeader extends RelativeLayout implements
             ContentResolver resolver = getContext().getContentResolver();
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.QS_BATTERY_LOCATION_BAR), false,
+                    this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System
+                    .getUriFor(Settings.System.OOS_QSCLOCK), false,
                     this, UserHandle.USER_ALL);
         }
 

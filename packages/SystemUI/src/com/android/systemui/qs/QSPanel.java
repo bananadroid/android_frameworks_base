@@ -30,8 +30,10 @@ import android.metrics.LogMaker;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.UserHandle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.provider.Settings;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -552,7 +554,12 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
 
     protected void updatePadding() {
         final Resources res = mContext.getResources();
+        boolean oos_qsclock = Settings.System.getIntForUser(getContext().getContentResolver(),
+                Settings.System.OOS_QSCLOCK, 1, UserHandle.USER_CURRENT) == 1;
         int padding = res.getDimensionPixelSize(R.dimen.qs_panel_padding_top);
+        if (!oos_qsclock) {
+        padding = res.getDimensionPixelSize(R.dimen.qs_header_tooltip_height_normal);
+        }
         if (mUsingHorizontalLayout) {
             // When using the horizontal layout, our space is quite constrained. We therefore
             // reduce some of the padding on the top, which makes the brightness bar overlapp,
