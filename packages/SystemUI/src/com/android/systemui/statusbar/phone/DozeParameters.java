@@ -50,6 +50,9 @@ public class DozeParameters implements TunerService.Tunable,
             SystemProperties.getBoolean("debug.force_blanking", false);
 
     private final Context mContext;
+
+    private static DozeParameters sInstance;
+
     private final AmbientDisplayConfiguration mAmbientDisplayConfiguration;
     private final PowerManager mPowerManager;
 
@@ -74,11 +77,7 @@ public class DozeParameters implements TunerService.Tunable,
         mControlScreenOffAnimation = !getDisplayNeedsBlanking();
         mPowerManager = powerManager;
         mPowerManager.setDozeAfterScreenOff(!mControlScreenOffAnimation);
-
-        tunerService.addTunable(
-                this,
-                Settings.Secure.ACCESSIBILITY_DISPLAY_INVERSION_ENABLED,
-                Settings.Secure.DOZE_ON_CHARGE_NOW);
+        sInstance = this;
     }
 
     public void dump(PrintWriter pw) {
@@ -93,6 +92,10 @@ public class DozeParameters implements TunerService.Tunable,
         pw.print("    getVibrateOnPickup(): "); pw.println(getVibrateOnPickup());
         pw.print("    getProxCheckBeforePulse(): "); pw.println(getProxCheckBeforePulse());
         pw.print("    getPickupVibrationThreshold(): "); pw.println(getPickupVibrationThreshold());
+    }
+
+    public static DozeParameters getInstance(Context context) {
+        return sInstance;
     }
 
     public boolean getDisplayStateSupported() {
