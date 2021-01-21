@@ -5201,4 +5201,6 @@
 
   <!-- Whether we order unlocking and waking -->
   <java-symbol type="bool" name="config_orderUnlockAndWake" />
+
+  <java-symbol type="dimen" name="config_bottom_stack_min_visible_height" />
 </resources>

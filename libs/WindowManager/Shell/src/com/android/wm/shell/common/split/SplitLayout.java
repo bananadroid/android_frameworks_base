@@ -127,6 +127,8 @@ public final class SplitLayout implements DisplayInsetsController.OnInsetsChange
     private final boolean mDimNonImeSide;
     private ValueAnimator mDividerFlingAnimator;
 
+    private final int mBottomStackMinVisibleHeight;
+
     public SplitLayout(String windowName, Context context, Configuration configuration,
             SplitLayoutHandler splitLayoutHandler,
             SplitWindowManager.ParentContainerCallbacks parentContainerCallbacks,
@@ -154,6 +156,9 @@ public final class SplitLayout implements DisplayInsetsController.OnInsetsChange
         mDimNonImeSide = mContext.getResources().getBoolean(R.bool.config_dimNonImeAttachedSide);
 
         updateInvisibleRect();
+
+        mBottomStackMinVisibleHeight = mContext.getResources().getDimensionPixelSize(
+                com.android.internal.R.dimen.config_bottom_stack_min_visible_height);
     }
 
     private void updateDividerConfig(Context context) {
@@ -1118,7 +1123,9 @@ public final class SplitLayout implements DisplayInsetsController.OnInsetsChange
             // Calculate target bounds offset for IME
             mLastYOffset = mYOffsetForIme;
             final boolean needOffset = imeTargetPosition == SPLIT_POSITION_BOTTOM_OR_RIGHT
-                    && !isFloating && !isLandscape(mRootBounds) && mImeShown;
+                    && !isFloating && !isLandscape(mRootBounds) && mImeShown
+                    && (mBottomStackMinVisibleHeight == 0
+                            || (mEndImeTop - mBounds2.top) < mBottomStackMinVisibleHeight);
             mTargetYOffset = needOffset ? getTargetYOffset() : 0;
 
             if (mTargetYOffset != mLastYOffset) {

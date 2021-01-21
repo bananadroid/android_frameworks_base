@@ -6612,4 +6612,7 @@
     <!-- Enables or disables the "Share" action item shown in the context menu that appears upon
         long-pressing on selected text. Enabled by default. -->
     <bool name="config_textShareSupported">true</bool>
+
+    <!-- Minimum visible height of bottom stack when ime is showing in split screen. -->
+    <dimen name="config_bottom_stack_min_visible_height">0dp</dimen>
 </resources>
