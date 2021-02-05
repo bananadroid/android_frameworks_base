@@ -136,4 +136,7 @@
     <string name="gaming_mode_not_enabled">Gaming mode is disabled in settings</string>
     <string name="quick_settings_gaming_mode_label">Gaming mode</string>
 
+    <!-- Data usage info -->
+    <string name="usage_data">used</string>
+
 </resources>
