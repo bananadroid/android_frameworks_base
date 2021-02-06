@@ -43,4 +43,7 @@
 
     <!-- The number of rows in the QuickSettings -->
     <integer name="quick_settings_max_rows_custom">4</integer>
+
+    <!-- If not zero, limits the internal screen recorder's framerate to the set value. -->
+    <integer name="config_screenRecorderMaxFramerate">0</integer>
 </resources>
