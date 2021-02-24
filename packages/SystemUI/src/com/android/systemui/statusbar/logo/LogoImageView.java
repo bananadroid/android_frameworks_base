@@ -44,6 +44,9 @@ public class LogoImageView extends ImageView {
     private int mCustomLogoPosition;
     private int mCustomLogoStyle;
     private int mTintColor = Color.WHITE;
+    private int mLogoColor;
+    private int mLogoColorCustom;
+    private int mAccentColor;
     private final Handler mHandler = new Handler();
     private ContentResolver mContentResolver;
 
@@ -60,6 +63,10 @@ public class LogoImageView extends ImageView {
                     Settings.System.STATUS_BAR_LOGO_POSITION), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_LOGO_STYLE), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_LOGO_COLOR), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_LOGO_COLOR_PICKER), false, this);
         }
 
         @Override
@@ -171,7 +178,15 @@ public class LogoImageView extends ImageView {
 
         clearColorFilter();
 
-        drawable.setTint(mTintColor);
+        if (mLogoColor == 0) {
+            drawable.setTint(mTintColor);
+        } else if (mLogoColor == 1) {
+            mAccentColor =  mContext.getColor(com.android.internal.R.color.gradient_start);
+            setColorFilter(mAccentColor, PorterDuff.Mode.SRC_IN);
+        } else if (mLogoColor == 2) {
+            setColorFilter(mLogoColorCustom, PorterDuff.Mode.SRC_IN);
+        }
+
         setImageDrawable(drawable);
     }
 
@@ -183,6 +198,10 @@ public class LogoImageView extends ImageView {
                 Settings.System.STATUS_BAR_LOGO_POSITION, 0);
         mCustomLogoStyle = Settings.System.getInt(resolver,
                 Settings.System.STATUS_BAR_LOGO_STYLE, 0);
+        mLogoColor = Settings.System.getInt(resolver,
+                Settings.System.STATUS_BAR_LOGO_COLOR, 0);
+        mLogoColorCustom = Settings.System.getInt(resolver,
+                Settings.System.STATUS_BAR_LOGO_COLOR_PICKER, 0xfff3d324);
         updateCustomLogo();
     }
 }
