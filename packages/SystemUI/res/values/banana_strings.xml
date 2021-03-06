@@ -122,4 +122,7 @@
     <!-- Oroño clock -->
     <string name="date_long_title_today">Today is %s</string>
 
+     <!-- Biometric Dialog - Use Face -->
+    <string name="biometric_dialog_button_use_face">Use Face</string>
+
 </resources>
