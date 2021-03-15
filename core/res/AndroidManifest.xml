@@ -679,6 +679,8 @@
     <!-- Font service -->
     <protected-broadcast android:name="com.android.server.ACTION_FONT_CHANGED" />
 
+    <!-- For Bluetooth automatic turn off functionality-->
+    <protected-broadcast android:name="android.bluetooth.intent.TIMEOUT" />
     <!-- ====================================================================== -->
     <!--                          RUNTIME PERMISSIONS                           -->
     <!-- ====================================================================== -->
