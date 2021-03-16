@@ -47,7 +47,7 @@
         <item>lockdown</item>
         <item>power</item>
         <item>restart</item>
-        <item>screenshot</item> <!--2 buttons nav-->
+        <item>users_choice</item> <!--2 buttons nav-->
     </string-array>
 
 </resources>
