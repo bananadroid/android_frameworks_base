@@ -16,6 +16,7 @@
 
 package com.android.systemui.qs.tiles;
 
+import android.app.ActivityManager;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.provider.Settings;
@@ -44,7 +45,8 @@ public class AODTile extends QSTileImpl<BooleanState> implements
     public AODTile(QSHost host, BatteryController batteryController) {
         super(host);
 
-        mSetting = new SecureSetting(mContext, mHandler, Settings.Secure.DOZE_ALWAYS_ON) {
+        mSetting = new SecureSetting(mContext, mHandler, Settings.Secure.DOZE_ALWAYS_ON,
+                ActivityManager.getCurrentUser(), 1) {
             @Override
             protected void handleValueChanged(int value, boolean observedChange) {
                 handleRefreshState(value);
