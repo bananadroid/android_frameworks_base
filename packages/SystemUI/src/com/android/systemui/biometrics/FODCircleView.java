@@ -231,7 +231,7 @@ public class FODCircleView extends ImageView implements ConfigurationListener {
         public void onScreenTurnedOn() {
             if (mUpdateMonitor.isFingerprintDetectionRunning()) {
                 show();
-                triggerFodIconAnimation();
+                if (!mShouldRemoveIconOnAOD) triggerFodIconAnimation();
             }
         }
     };
