@@ -6281,6 +6281,12 @@ public final class Settings {
         public static final String STATUS_BAR_LOGO_COLOR_PICKER = "status_bar_logo_color_picker";
 
         /**
+         * OOS DismissAll Button
+         * @hide
+         */
+        public static final String OOS_DISMISS_ALL_BUTTON = "oos_dismiss_all_button";
+
+        /**
          * Keys we no longer back up under the current schema, but want to continue to
          * process when restoring historical backup datasets.
          *
