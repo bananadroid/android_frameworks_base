@@ -682,6 +682,11 @@
 
     <!-- For Bluetooth automatic turn off functionality-->
     <protected-broadcast android:name="android.bluetooth.intent.TIMEOUT" />
+
+    <!-- Gaming Mode -->
+    <protected-broadcast android:name="exthmui.intent.action.GAMING_MODE_ON" />
+    <protected-broadcast android:name="exthmui.intent.action.GAMING_MODE_OFF" />
+
     <!-- ====================================================================== -->
     <!--                          RUNTIME PERMISSIONS                           -->
     <!-- ====================================================================== -->
