@@ -5225,11 +5225,10 @@ public final class Settings {
         public static final String VOLUME_PANEL_ON_LEFT = "volume_panel_on_left";
 
         /**
-         * Indicates whether we should only show the app lock view when the device is woken up
-         * Or always.
+         * APP_LOCK_LOCK_AFTER key for user selected app lock timeout
          * @hide
          */
-        public static final String APP_LOCK_SHOW_ONLY_ON_WAKE = "app_lock_show_only_on_wake";
+        public static final String APP_LOCK_LOCK_AFTER = "applock_lock_after";
 
         /**
          * IMPORTANT: If you add a new public settings you also have to add it to
@@ -5850,7 +5849,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(SCREEN_OFF_ANIMATION);
             PRIVATE_SETTINGS.add(VOLUME_PANEL_ON_LEFT);
             PRIVATE_SETTINGS.add(SETTINGS_DASHBOARD_ICONS);
-            PRIVATE_SETTINGS.add(APP_LOCK_SHOW_ONLY_ON_WAKE);
+            PRIVATE_SETTINGS.add(APP_LOCK_LOCK_AFTER);
         }
 
         /**
