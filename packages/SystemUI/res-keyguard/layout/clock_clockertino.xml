@@ -40,7 +40,7 @@
                         android:layout_marginTop="2dp"
                         android:layout_weight="1"
                         android:format12Hour="hh"
-                        android:format24Hour="KK"
+                        android:format24Hour="kk"
                         android:fontFamily="sans-serif-medium"
                         android:gravity="center"
                         android:letterSpacing="0.08"
