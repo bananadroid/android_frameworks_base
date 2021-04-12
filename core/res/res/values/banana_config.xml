@@ -158,4 +158,7 @@
          OnePlus 7 Pro. -->
     <bool name="config_hasOnePlusHapticMotor">false</bool>
 
+    <!-- Switch USB controller on Asus ROG devices-->
+    <bool name="config_switchUsbController">false</bool>
+
 </resources>
