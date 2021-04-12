@@ -145,4 +145,7 @@
 
     <java-symbol type="bool" name="config_hasOnePlusHapticMotor" />
 
+    <!-- Switch USB controller on Asus ROG devices-->
+    <java-symbol type="bool" name="config_switchUsbController" />
+
 </resources>
