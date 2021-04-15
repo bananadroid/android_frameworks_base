@@ -29,4 +29,7 @@
     <dimen name="qs_media_action_button_margin_top">18dp</dimen>
     <dimen name="qs_media_action_button_size">40dp</dimen>
 
+    <!-- Starting padding for a left-aligned quick status bar clock -->
+    <dimen name="quick_status_bar_left_clock_starting_padding">0dp</dimen>
+
 </resources>
