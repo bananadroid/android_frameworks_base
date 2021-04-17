@@ -31,10 +31,13 @@ import android.metrics.LogMaker;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
@@ -79,7 +82,7 @@ import javax.inject.Named;
 
 /** View that represents the quick settings tile panel (when expanded/pulled down). **/
 public class QSPanel extends LinearLayout implements Tunable, Callback, BrightnessMirrorListener,
-        Dumpable {
+        OnLongClickListener, Dumpable {
 
     public static final String QS_SHOW_BRIGHTNESS = "qs_show_brightness";
     public static final String QS_SHOW_HEADER = "qs_show_header";
@@ -154,6 +157,8 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
 
     private boolean mIsLandscape;
 
+    protected Vibrator mVibrator;
+
     @Inject
     public QSPanel(
             @Named(VIEW_CONTEXT) Context context,
@@ -219,6 +224,8 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
         }
         mQSLogger.logAllTilesChangeListening(mListening, getDumpableTag(), mCachedSpecs);
         updateResources();
+
+        mVibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
     }
 
     protected void onMediaVisibilityChanged(Boolean visible) {
@@ -253,6 +260,7 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
                    startSettingsActivity();
                 }
             });
+            mOPFooterView.getSettingsButton().setOnLongClickListener(this);
         }
         if (mOPFooterView.getEditButton() != null) {
             mOPFooterView.getEditButton().setOnClickListener(view ->
@@ -965,6 +973,19 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
         return r;
     }
 
+    @Override
+    public boolean onLongClick(View v) {
+        if (v == mOPFooterView.getSettingsButton()) {
+            startBananaGearActivity();
+            if (mVibrator != null) {
+                if (mVibrator.hasVibrator()) {
+                    mVibrator.vibrate(VibrationEffect.get(VibrationEffect.EFFECT_HEAVY_CLICK));
+                }
+            }
+        }
+        return false;
+    }
+
     private void startRunningServicesActivity() {
         Intent intent = new Intent();
         intent.setClassName("com.android.settings",
@@ -981,6 +1002,13 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
         Intent intent = new Intent();
         intent.setClassName("com.android.settings",
                 "com.android.settings.Settings$DataUsageSummaryActivity");
+        Dependency.get(ActivityStarter.class).startActivity(intent, true /* dismissShade */);
+    }
+
+    private void startBananaGearActivity() {
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.setClassName("com.android.settings",
+                "com.android.settings.Settings$BananaGearActivity");
         Dependency.get(ActivityStarter.class).startActivity(intent, true /* dismissShade */);
     }
 
