@@ -5709,6 +5709,12 @@ public final class Settings {
         public static final String SCREEN_OFF_FOD_ICON = "screen_off_fod_icon";
 
         /**
+         * Whether StatusBar icons should use app icon
+         * @hide
+         */
+        public static final String STATUSBAR_ICONS_STYLE = "statusbar_icons_style";
+
+        /**
          * Keys we no longer back up under the current schema, but want to continue to
          * process when restoring historical backup datasets.
          *
@@ -5850,6 +5856,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(VOLUME_PANEL_ON_LEFT);
             PRIVATE_SETTINGS.add(SETTINGS_DASHBOARD_ICONS);
             PRIVATE_SETTINGS.add(APP_LOCK_LOCK_AFTER);
+            PRIVATE_SETTINGS.add(STATUSBAR_ICONS_STYLE);
         }
 
         /**
