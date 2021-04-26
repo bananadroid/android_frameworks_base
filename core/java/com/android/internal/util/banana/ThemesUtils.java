@@ -54,6 +54,20 @@ public class ThemesUtils {
             "com.android.theme.navbar.tecno",
     };
 
+    // Statusbar Signal icons
+    private static final String[] SIGNAL_BAR = {
+            "com.custom.systemui.signalbar_a",
+            "com.custom.systemui.signalbar_b",
+            "com.custom.systemui.signalbar_c",
+    };
+
+    // Statusbar Wifi icons
+    private static final String[] WIFI_BAR = {
+            "com.custom.systemui.wifibar_a",
+            "com.custom.systemui.wifibar_b",
+            "com.custom.systemui.wifibar_c",
+    };
+
     public static void updateSwitchStyle(IOverlayManager om, int userId, int switchStyle) {
         if (switchStyle == 0) {
             stockSwitchStyle(om, userId);
