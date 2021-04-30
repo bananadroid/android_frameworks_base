@@ -56,6 +56,10 @@ public class DeleteScreenshotReceiver extends BroadcastReceiver {
             return;
         }
 
+        // Clear the notification when the image is deleted
+        ScreenshotNotificationsController.cancelScreenshotNotification(context);
+        Toast.makeText(context, R.string.delete_screenshot_toast, Toast.LENGTH_SHORT).show();
+
         // And delete the image from the media store
         final Uri uri = Uri.parse(intent.getStringExtra(SCREENSHOT_URI_ID));
         mBackgroundExecutor.execute(() -> {
