@@ -146,6 +146,7 @@
     <string name="salute_evening">Good evening</string>
     <string name="salute_night">Good night</string>
     <string name="salute_sleep">Go to Sleep</string>
+    <string name="clock_title_android_s" translatable="false">Android S</string>
 
      <!-- Biometric Dialog - Use Face -->
     <string name="biometric_dialog_button_use_face">Use Face</string>
