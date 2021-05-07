@@ -5825,6 +5825,12 @@ public final class Settings {
         public static final String STATUS_BAR_LOGO_STYLE = "status_bar_logo_style";
 
         /**
+         * Whether to use UI blur if supported by device
+         * @hide
+         */
+        public static final String UI_BACKGROUND_BLUR = "ui_background_blur";
+
+        /**
          * Keys we no longer back up under the current schema, but want to continue to
          * process when restoring historical backup datasets.
          *
