@@ -1696,6 +1696,8 @@ public class ActivityManagerService extends IActivityManager.Stub
 
     private CutoutFullscreenController mCutoutFullscreenController;
 
+    private boolean mIsUiBackgroundBlurEnabled;
+
     /**
      * Used to notify activity lifecycle events.
      */
@@ -20506,12 +20508,18 @@ public class ActivityManagerService extends IActivityManager.Stub
             mContext.getContentResolver().registerContentObserver(
                     Settings.System.getUriFor(Settings.System.THREE_FINGER_GESTURE),
                     false, this, UserHandle.USER_ALL);
+
+            mContext.getContentResolver().registerContentObserver(
+                    Settings.System.getUriFor(Settings.System.UI_BACKGROUND_BLUR),
+                    false, this, UserHandle.USER_ALL);
             update();
         }
 
         private void update() {
             mIsSwipeToScreenshotEnabled = Settings.System.getIntForUser(mContext.getContentResolver(),
                     Settings.System.THREE_FINGER_GESTURE, 0, UserHandle.USER_CURRENT) == 1;
+            mIsUiBackgroundBlurEnabled = Settings.System.getIntForUser(mContext.getContentResolver(),
+                    Settings.System.UI_BACKGROUND_BLUR, 0, UserHandle.USER_CURRENT) == 1;
         }
 
         public void onChange(boolean selfChange) {
@@ -20523,6 +20531,13 @@ public class ActivityManagerService extends IActivityManager.Stub
     public boolean isSwipeToScreenshotGestureActive() {
         synchronized (this) {
             return mIsSwipeToScreenshotEnabled && SystemProperties.getBoolean("sys.android.screenshot", false);
+        }
+    }
+
+    public boolean isUiBackgroundBlurAvailable() {
+        synchronized (this) {
+            return mIsUiBackgroundBlurEnabled &&
+                     SystemProperties.getBoolean("ro.surface_flinger.supports_background_blur", false);
         }
     }
 
