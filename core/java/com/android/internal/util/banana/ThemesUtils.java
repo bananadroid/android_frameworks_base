@@ -40,6 +40,7 @@ public class ThemesUtils {
         "com.android.system.switch.contained", // 4
         "com.android.system.switch.retro", // 5
         "com.android.system.switch.stockish", // 6
+        "com.android.system.switch.fluid", // 7
     };
 
     public static final String[] NAVBAR_STYLES = {
