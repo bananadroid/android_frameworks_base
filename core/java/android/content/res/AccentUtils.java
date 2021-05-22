@@ -13,6 +13,7 @@ public class AccentUtils {
 
     private static ArrayList<String> accentResources = new ArrayList<>(
             Arrays.asList("accent_device_default_light",
+                          "accent_device_default",
                           "material_pixel_blue_dark",
                           "material_pixel_blue_bright",
                           "omni_color5",
