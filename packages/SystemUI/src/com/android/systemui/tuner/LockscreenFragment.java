@@ -21,19 +21,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.LauncherActivityInfo;
-import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.PaintFlagsDrawFilter;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -333,15 +325,17 @@ public class LockscreenFragment extends PreferenceFragment {
         @Override
         public IntentButton create(Map<String, String> settings) {
             String buttonStr = settings.get(mKey);
-            // if buttonStr is not empty it means it's not the Default button,
-            // so we'll create a custom one
             if (!TextUtils.isEmpty(buttonStr)) {
                 if (buttonStr.contains("::")) {
-                    return new ShortcutButton(mContext, buttonStr);
+                    Shortcut shortcut = getShortcutInfo(mContext, buttonStr);
+                    if (shortcut != null) {
+                        return new ShortcutButton(mContext, shortcut);
+                    }
                 } else if (buttonStr.contains("/")) {
-                    return new ActivityButton(mContext, buttonStr);
-                } else if (buttonStr.equals("none")) {
-                    return new HiddenButton();
+                    ActivityInfo info = getActivityinfo(mContext, buttonStr);
+                    if (info != null) {
+                        return new ActivityButton(mContext, info);
+                    }
                 }
             }
             return null;
@@ -349,146 +343,58 @@ public class LockscreenFragment extends PreferenceFragment {
     }
 
     private static class ShortcutButton implements IntentButton {
-        private Shortcut mShortcut;
+        private final Shortcut mShortcut;
         private final IconState mIconState;
-        private Context mContext;
-        private boolean mInitDone;
-        private String mShortcutString;
-        private int mSize;
 
-        public ShortcutButton(Context context, String shortcutString) {
-            mContext = context;
-            mShortcutString = shortcutString;
+        public ShortcutButton(Context context, Shortcut shortcut) {
+            mShortcut = shortcut;
             mIconState = new IconState();
             mIconState.isVisible = true;
-            mIconState.drawable = mContext.getResources().getDrawable(android.R.drawable.sym_def_app_icon);
-            mSize = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 32,
-                    mContext.getResources().getDisplayMetrics());
+            mIconState.drawable = shortcut.icon.loadDrawable(context).mutate();
+            mIconState.contentDescription = mShortcut.label;
+            int size = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 32,
+                    context.getResources().getDisplayMetrics());
             mIconState.drawable = new ScalingDrawableWrapper(mIconState.drawable,
-                    mSize / (float) mIconState.drawable.getIntrinsicWidth());
+                    size / (float) mIconState.drawable.getIntrinsicWidth());
             mIconState.tint = false;
-            mIconState.isDefaultButton = false;
-            init();
-        }
-
-        private void init() {
-            mShortcut = getShortcutInfo(mContext, mShortcutString);
-            if (mShortcut != null) {
-                // we need to flatten AdaptiveIconDrawable layers to a single drawable
-                mIconState.drawable = getBitmapDrawable(
-                        mContext.getResources(), mShortcut.icon.loadDrawable(mContext));
-                mIconState.contentDescription = mShortcut.label;
-                mIconState.drawable = new ScalingDrawableWrapper(mIconState.drawable,
-                        mSize / (float) mIconState.drawable.getIntrinsicWidth());
-                mInitDone = true;
-            }
         }
 
         @Override
         public IconState getIcon() {
-            if (!mInitDone) {
-                init();
-            }
             return mIconState;
         }
 
         @Override
         public Intent getIntent() {
-            if (!mInitDone) {
-                init();
-            }
-            if (mShortcut != null) {
-                return mShortcut.intent;
-            }
-            return null;
+            return mShortcut.intent;
         }
     }
 
     private static class ActivityButton implements IntentButton {
-        private Intent mIntent;
+        private final Intent mIntent;
         private final IconState mIconState;
-        private ComponentName mComponentName;
-        private Context mContext;
-        private boolean mInitDone;
-        private int mSize;
 
-        public ActivityButton(Context context, String componentName) {
-            mContext = context;
-            mComponentName = ComponentName.unflattenFromString(componentName);
+        public ActivityButton(Context context, ActivityInfo info) {
+            mIntent = new Intent().setComponent(new ComponentName(info.packageName, info.name));
             mIconState = new IconState();
             mIconState.isVisible = true;
-            mIconState.drawable = mContext.getResources().getDrawable(android.R.drawable.sym_def_app_icon);
-            mSize = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 32,
-                    mContext.getResources().getDisplayMetrics());
+            mIconState.drawable = info.loadIcon(context.getPackageManager()).mutate();
+            mIconState.contentDescription = info.loadLabel(context.getPackageManager());
+            int size = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 32,
+                    context.getResources().getDisplayMetrics());
             mIconState.drawable = new ScalingDrawableWrapper(mIconState.drawable,
-                    mSize / (float) mIconState.drawable.getIntrinsicWidth());
+                    size / (float) mIconState.drawable.getIntrinsicWidth());
             mIconState.tint = false;
-            mIconState.isDefaultButton = false;
-            init();
-        }
-
-        private void init() {
-            try {
-                ActivityInfo info = mContext.getPackageManager().getActivityInfo(mComponentName, 0);
-                // we need to flatten AdaptiveIconDrawable layers to a single drawable
-                mIconState.drawable = getBitmapDrawable(
-                        mContext.getResources(), info.loadIcon(mContext.getPackageManager()));
-                mIconState.contentDescription = info.loadLabel(mContext.getPackageManager());
-                mIconState.drawable = new ScalingDrawableWrapper(mIconState.drawable,
-                        mSize / (float) mIconState.drawable.getIntrinsicWidth());
-                mIntent = new Intent().setComponent(mComponentName);
-                mInitDone = true;
-            } catch (NameNotFoundException e) {
-            }
         }
 
         @Override
         public IconState getIcon() {
-            if (!mInitDone) {
-                init();
-            }
             return mIconState;
         }
 
         @Override
         public Intent getIntent() {
-            if (!mInitDone) {
-                init();
-            }
             return mIntent;
-        }
-    }
-
-    private static BitmapDrawable getBitmapDrawable(Resources resources, Drawable image) {
-        final Canvas canvas = new Canvas();
-        canvas.setDrawFilter(new PaintFlagsDrawFilter(Paint.ANTI_ALIAS_FLAG,
-                Paint.FILTER_BITMAP_FLAG));
-
-        Bitmap bmResult = Bitmap.createBitmap(image.getIntrinsicWidth(), image.getIntrinsicHeight(),
-                Bitmap.Config.ARGB_8888);
-        canvas.setBitmap(bmResult);
-        image.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-        image.draw(canvas);
-        return new BitmapDrawable(resources, bmResult);
-    }
-
-    private static class HiddenButton implements IntentButton {
-        private final IconState mIconState;
-
-        public HiddenButton() {
-            mIconState = new IconState();
-            mIconState.isVisible = false;
-            mIconState.isDefaultButton = false;
-        }
-
-        @Override
-        public IconState getIcon() {
-            return mIconState;
-        }
-
-        @Override
-        public Intent getIntent() {
-            return null;
         }
     }
 }
