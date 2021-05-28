@@ -5175,6 +5175,12 @@ public final class Settings {
         public static final String GAMING_MODE_DYNAMIC_STATE = "gaming_mode_dynamic_state";
 
         /**
+         * Whether to change the transparency of the power menu
+         * @hide
+         */
+        public static final String POWER_MENU_BG_ALPHA = "power_menu_bg_alpha";
+
+        /**
          * IMPORTANT: If you add a new public settings you also have to add it to
          * PUBLIC_SETTINGS below. If the new setting is hidden you have to add
          * it to PRIVATE_SETTINGS below. Also add a validator that can validate
