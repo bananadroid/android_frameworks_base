@@ -681,6 +681,9 @@
     <!-- Font service -->
     <protected-broadcast android:name="com.android.server.ACTION_FONT_CHANGED" />
 
+    <!-- Sleep Mode -->
+    <protected-broadcast android:name="android.intent.action.SLEEP_MODE_TURN_OFF" />
+
     <!-- For Bluetooth automatic turn off functionality-->
     <protected-broadcast android:name="android.bluetooth.intent.TIMEOUT" />
     <!-- ====================================================================== -->
