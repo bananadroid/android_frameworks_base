@@ -5481,6 +5481,13 @@ public final class Settings {
         public static final String QS_FOOTER_SHOW_USER = "qs_footer_show_user";
 
         /**
+         * Show Data Usage view in QS Footer.
+         *
+         * @hide
+         */
+        public static final String QS_FOOTER_SHOW_DATAUSAGE = "qs_footer_show_datausage";
+
+        /**
          * Wether auto brightness is applied one shot when screen is turned on
          * @hide
          */
