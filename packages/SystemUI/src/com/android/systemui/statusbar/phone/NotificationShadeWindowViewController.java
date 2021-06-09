@@ -507,7 +507,7 @@ public class NotificationShadeWindowViewController {
 
     public void updateSettings() {
         boolean doubleTapToSleepEnabled = Settings.System.getIntForUser(
-                mView.getContext().getContentResolver(), Settings.System.DOUBLE_TAP_SLEEP_GESTURE, 0,
+                mView.getContext().getContentResolver(), Settings.System.DOUBLE_TAP_SLEEP_GESTURE, 1,
                 UserHandle.USER_CURRENT) == 1;
         boolean isDoubleTapEnabled = Settings.System.getIntForUser(
                 mView.getContext().getContentResolver(), Settings.System.DOUBLE_TAP_SLEEP_LOCKSCREEN, 1,
