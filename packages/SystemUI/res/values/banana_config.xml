@@ -58,4 +58,8 @@
 
     <!-- Whether to use the mask for the quicksettings icons-->
     <bool name="config_useMaskForQs">true</bool>
+
+    <!-- Whether to invert the sim slots for VoLTE/VoWiFi icon -->
+    <bool name="config_invertImsSlots">false</bool>
+
 </resources>
