@@ -53,7 +53,6 @@ import android.os.Handler;
 import android.os.RemoteException;
 import android.os.UserHandle;
 import android.os.UserManager;
-import android.provider.Settings;
 import android.service.notification.StatusBarNotification;
 import android.text.TextUtils;
 import android.transition.ChangeBounds;
@@ -312,11 +311,7 @@ public class NotificationConversationInfo extends LinearLayout implements
 
         // Force stop button
         final View killButton = findViewById(R.id.force_stop);
-        boolean killButtonEnabled = Settings.System.getIntForUser(
-                mContext.getContentResolver(),
-                Settings.System.NOTIFICATION_GUTS_KILL_APP_BUTTON, 0,
-                UserHandle.USER_CURRENT) != 0;
-        if (killButtonEnabled && !isSystemPackage(mPackageName)) {
+        if (!isSystemPackage(mPackageName)) {
             killButton.setVisibility(View.VISIBLE);
             killButton.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
