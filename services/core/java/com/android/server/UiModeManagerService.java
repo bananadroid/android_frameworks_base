@@ -20,6 +20,14 @@ import android.annotation.IntRange;
 import android.annotation.Nullable;
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.WallpaperColors;
+import android.app.WallpaperManager;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import androidx.palette.graphics.Palette;
+import androidx.core.graphics.ColorUtils;
 import android.app.ActivityTaskManager;
 import android.app.AlarmManager;
 import android.app.IUiModeManager;
@@ -59,6 +67,8 @@ import android.service.vr.IVrManager;
 import android.service.vr.IVrStateCallbacks;
 import android.util.ArraySet;
 import android.util.Slog;
+import android.provider.Settings;
+import android.util.Log;
 
 import com.android.internal.R;
 import com.android.internal.annotations.VisibleForTesting;
@@ -140,6 +150,8 @@ final class UiModeManagerService extends SystemService {
     private int mSetUiMode = 0;
     private boolean mHoldingConfiguration = false;
     private int mCurrentUser;
+    private WallpaperManager mWallManager;
+    private int fallbackColor = 0xFFF3D324;
 
     private Configuration mConfiguration = new Configuration();
     boolean mSystemReady;
@@ -326,12 +338,23 @@ final class UiModeManagerService extends SystemService {
         SystemProperties.set(SYSTEM_PROPERTY_DEVICE_THEME, Integer.toString(mode));
     }
 
+    private boolean useWallpaperColor() {
+        final Context context = getContext();
+        return Settings.System.getInt(context.getContentResolver(),
+                Settings.System.USE_WALL_ACCENT, 0) != 0;
+    }
+
     private final ContentObserver mAccentObserver = new ContentObserver(mHandler) {
         @Override
         public void onChange(boolean selfChange, Uri uri) {
-            if (uri.equals(System.getUriFor(System.ACCENT_COLOR))) {
-                applyAccentColor();
-           }
+            applyAccentColor();
+        }
+    };
+
+    private final ContentObserver mWallAccentObserver = new ContentObserver(mHandler) {
+        @Override
+        public void onChange(boolean selfChange, Uri uri) {
+            applyWallAccentColor();
         }
     };
 
@@ -413,6 +436,7 @@ final class UiModeManagerService extends SystemService {
 
         mOverlayManager = IOverlayManager.Stub
                 .asInterface(ServiceManager.getService(Context.OVERLAY_SERVICE));
+
         applyAccentColor();
 
         // Update the initial, static configurations.
@@ -430,6 +454,10 @@ final class UiModeManagerService extends SystemService {
 
         context.getContentResolver().registerContentObserver(System.getUriFor(System.ACCENT_COLOR),
                 false, mAccentObserver, UserHandle.USER_ALL);
+        context.getContentResolver().registerContentObserver(Settings.System.getUriFor(Settings.System.USE_WALL_ACCENT),
+                false, mWallAccentObserver, UserHandle.USER_ALL);
+        context.getContentResolver().registerContentObserver(Settings.System.getUriFor(Settings.System.AUTO_ACCENT_TYPE),
+                false, mWallAccentObserver, UserHandle.USER_ALL);
     }
 
     private final BroadcastReceiver mOnShutdown = new BroadcastReceiver() {
@@ -606,15 +634,103 @@ final class UiModeManagerService extends SystemService {
         int intColor = System.getIntForUser(context.getContentResolver(),
                 System.ACCENT_COLOR, 0xFF1A73E8, UserHandle.USER_CURRENT);
         String colorHex = String.format("%08x", (0xFFFFFFFF & intColor));
+        setAccentColor(colorHex);
+    }
+
+    private void applyWallAccentColor() {
+        try {
+            final Context context = getContext();
+            int defaultColor = 0x000000;
+            WallpaperManager wallpaperManager = WallpaperManager.getInstance(context);
+            Drawable wallpaperDrawable = wallpaperManager.getDrawable();
+            Bitmap bitmap = ((BitmapDrawable)wallpaperDrawable).getBitmap();
+            
+            if (bitmap != null) {
+                Palette p = Palette.from(bitmap).generate();
+                int wallColor = fallbackColor;
+                int aa_type = Settings.System.getInt(context.getContentResolver(),Settings.System.AUTO_ACCENT_TYPE, 3);
+                if(aa_type == 0){
+                    wallColor = p.getVibrantColor(defaultColor);
+                } else if (aa_type == 1){
+                    wallColor = p.getLightVibrantColor(defaultColor);
+                } else if(aa_type == 2){
+                    wallColor = p.getDominantColor(defaultColor);
+                } else if(aa_type == 3){
+                    wallColor = p.getDominantColor(defaultColor);
+                    wallColor = ColorUtils.blendARGB(wallColor, Color.WHITE, 0.5f);
+                } else if(aa_type == 4){
+                    wallColor = getAvgColor(bitmap);
+                } else {
+                    Slog.d(TAG, "Accent type not found");
+                }
+
+                // Safety Colors
+                if(wallColor == 0){
+                    if(p.getDominantColor(defaultColor) != 0){
+                        Slog.d(TAG, "Set fallback accent to Dominant");
+                        wallColor = p.getDominantColor(defaultColor);
+                    } else {
+                        Slog.d(TAG, "Set fallback accent to Banana Yellow");
+                        wallColor = fallbackColor;
+                    }
+                }
+                String colorHex = String.format("%08x", (0xFFFFFFFF & wallColor));
+                System.putIntForUser(context.getContentResolver(),System.ACCENT_COLOR, wallColor, UserHandle.USER_CURRENT);
+                setAccentColor(colorHex);
+            }
+        } catch (Exception e) {
+            Slog.d(TAG, "accent EXEP1" + e);
+            // CORVUS ISN'T A GAMING ROM STFU
+        }
+    }
+
+    private void setAccentColor(String colorHex) {
         String accentVal = SystemProperties.get(ACCENT_COLOR_PROP);
         if (!accentVal.equals(colorHex)) {
             SystemProperties.set(ACCENT_COLOR_PROP, colorHex);
+            Slog.d(TAG, "Set accent to" + colorHex);
             try {
                 mOverlayManager.reloadAndroidAssets(UserHandle.USER_CURRENT);
                 mOverlayManager.reloadAssets("com.android.settings", UserHandle.USER_CURRENT);
                 mOverlayManager.reloadAssets("com.android.systemui", UserHandle.USER_CURRENT);
-            } catch (Exception e) { }
+            } catch (Exception e) { Slog.d(TAG, "accent EXEP2" + e); }
         }
+    }
+
+    private static int getAvgColor(Bitmap bitmap) {
+        if (bitmap == null) {
+            return Color.TRANSPARENT;
+        }
+        int width = bitmap.getWidth();
+        int height = bitmap.getHeight();
+        int size = width * height;
+        int pixels[] = new int[size];
+        //Bitmap bitmap2 = bitmap.copy(Bitmap.Config.ARGB_4444, false);
+        bitmap.getPixels(pixels, 0, width, 0, 0, width, height);
+        int color;
+        int r = 0;
+        int g = 0;
+        int b = 0;
+        int a;
+        int count = 0;
+        for (int i = 0; i < pixels.length; i++) {
+            color = pixels[i];
+            a = Color.alpha(color);
+            if (a > 0) {
+                r += Color.red(color);
+                g += Color.green(color);
+                b += Color.blue(color);
+                count++;
+            }
+        }
+        r /= count;
+        g /= count;
+        b /= count;
+        r = (r << 16) & 0x00FF0000;
+        g = (g << 8) & 0x0000FF00;
+        b = b & 0x000000FF;
+        color = 0xFF000000 | r | g | b;
+        return color;
     }
 
     private final IUiModeManager.Stub mService = new IUiModeManager.Stub() {
