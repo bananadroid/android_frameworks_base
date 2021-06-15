@@ -4424,7 +4424,7 @@ final class ActivityRecord extends WindowToken implements WindowManagerService.A
      */
     boolean shouldUseAppThemeSnapshot() {
         return mDisablePreviewScreenshots || forAllWindows(WindowState::isSecureLocked,
-                true /* topToBottom */) || getIsAppLocked();
+                true /* topToBottom */);
     }
 
     /**
