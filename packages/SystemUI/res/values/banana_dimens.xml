@@ -57,7 +57,7 @@
     <dimen name="status_bar_start_padding">2dp</dimen>
 
     <!-- Ending padding for custom status bar elements -->
-    <dimen name="status_bar_end_padding">1dp</dimen>
+    <dimen name="status_bar_end_padding">2dp</dimen>
 
     <!-- Tri-state UI -->
     <dimen name="tri_state_down_dialog_position">850.0px</dimen>
