@@ -78,8 +78,8 @@
                     android:textAppearance="@style/TextAppearance.StatusBar.Clock"
                     android:singleLine="true"
                     android:visibility="gone"
-                    android:paddingStart="@dimen/status_bar_start_padding"
-                    android:paddingEnd="@dimen/status_bar_end_padding"
+                    android:paddingStart="@dimen/status_bar_left_clock_starting_padding"
+                    android:paddingEnd="@dimen/status_bar_left_clock_end_padding"
                     android:gravity="center_vertical|start"
                 />
 
@@ -130,8 +130,8 @@
             android:layout_height="match_parent"
             android:singleLine="true"
             android:visibility="gone"
-            android:paddingStart="@dimen/status_bar_start_padding"
-            android:paddingEnd="@dimen/status_bar_end_padding"
+            android:paddingStart="@dimen/status_bar_clock_starting_padding"
+            android:paddingEnd="@dimen/status_bar_clock_end_padding"
             android:gravity="center_vertical|start"
             />
     </LinearLayout>
