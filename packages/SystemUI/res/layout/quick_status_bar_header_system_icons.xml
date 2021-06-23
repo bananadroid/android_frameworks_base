@@ -40,8 +40,8 @@
         android:layout_height="match_parent"
         android:minWidth="48dp"
         android:gravity="center_vertical|start"
-        android:paddingStart="@dimen/status_bar_start_padding"
-        android:paddingEnd="@dimen/status_bar_end_padding"
+        android:paddingStart="@dimen/quick_status_bar_left_clock_starting_padding"
+        android:paddingEnd="@dimen/status_bar_left_clock_end_padding"
         android:singleLine="true"
         android:textAppearance="@style/TextAppearance.StatusBar.Clock"
         systemui:showDark="false" />
@@ -67,9 +67,7 @@
         android:id="@+id/networkTraffic"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_marginStart="2dp"
-        android:layout_marginEnd="2dp"
-        android:paddingEnd="@dimen/status_bar_end_padding"
+        android:layout_marginStart="6dp"
         android:singleLine="false"
         systemui:showDark="false" />
 
