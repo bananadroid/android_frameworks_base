@@ -250,8 +250,8 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
         mBrightnessView = LayoutInflater.from(mContext).inflate(
                 R.layout.op_qs_footer_layout, this, false);
         addView(mBrightnessView);
-        mBrightnessController = new BrightnessController(getContext(),
-                findViewById(R.id.brightness_slider), mBroadcastDispatcher);
+        mBrightnessController = new BrightnessController(getContext(), findViewById(R.id.brightness_level), findViewById(R.id.brightness_icon),
+            findViewById(R.id.brightness_slider), mBroadcastDispatcher);
 
         mOPFooterView = findViewById(R.id.op_qs_footer);
         if (mOPFooterView.getSettingsButton() != null) {
