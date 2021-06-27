@@ -55,7 +55,7 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:fontFamily="roboto-regular"
+                android:fontFamily="sans-serif"
                 android:textSize="14sp"/>
 
         </LinearLayout>
