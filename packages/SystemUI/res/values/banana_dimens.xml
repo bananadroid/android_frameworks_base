@@ -25,7 +25,8 @@
     <!-- OnePlus QS -->
     <dimen name="quick_settings_top_margin_media_extra">33dp</dimen>
     <dimen name="quick_settings_top_margin_media">8dp</dimen>
-    <dimen name="op_brightness_margin">37dp</dimen>
+    <dimen name="brightness_slider_height">48dp</dimen>
+    <dimen name="op_qs_footer_action_button_size">48dp</dimen>
 
     <!-- Starting padding for a left-aligned quick status bar clock -->
     <dimen name="quick_status_bar_left_clock_starting_padding">0dp</dimen>
