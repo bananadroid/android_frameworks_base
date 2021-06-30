@@ -87,19 +87,17 @@ public class ThemesUtils {
         "com.android.systemui.qstile.dualtonecircletrim", // 2
         "com.android.systemui.qstile.squircletrim", // 3
         "com.android.systemui.qstile.wavey", // 4
-        "com.android.systemui.qstile.pokesign", // 5
-        "com.android.systemui.qstile.ninja", // 6
-        "com.android.systemui.qstile.dottedcircle", // 7
-        "com.android.systemui.qstile.attemptmountain", // 8
-        "com.android.systemui.qstile.squaremedo", // 9
-        "com.android.systemui.qstile.inkdrop", // 10
-        "com.android.systemui.qstile.cookie", // 11
-        "com.android.systemui.qstile.circleoutline", // 12
-        "com.bootleggers.qstile.cosmos", // 13
-        "com.bootleggers.qstile.divided", // 14
-        "com.bootleggers.qstile.neonlike", // 15
-        "com.bootleggers.qstile.oos", // 16
-        "com.bootleggers.qstile.triangles", // 17
+        "com.android.systemui.qstile.ninja", // 5
+        "com.android.systemui.qstile.dottedcircle", // 6
+        "com.android.systemui.qstile.attemptmountain", // 7
+        "com.android.systemui.qstile.squaremedo", // 8
+        "com.android.systemui.qstile.inkdrop", // 9
+        "com.android.systemui.qstile.cookie", // 10
+        "com.android.systemui.qstile.circleoutline", // 11
+        "com.bootleggers.qstile.cosmos", // 12
+        "com.bootleggers.qstile.divided", // 13
+        "com.bootleggers.qstile.neonlike", // 14
+        "com.bootleggers.qstile.triangles", // 15
     };
 
     public static void updateSwitchStyle(IOverlayManager om, int userId, int switchStyle) {
