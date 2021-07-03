@@ -780,11 +780,13 @@ public final class BatteryService extends SystemService {
                 com.android.internal.R.bool.config_hasWarpCharger);
         boolean hasVoocCharger = mContext.getResources().getBoolean(
                 com.android.internal.R.bool.config_hasVoocCharger);
+        boolean hasSuperdartCharger = mContext.getResources().getBoolean(
+                com.android.internal.R.bool.config_hasSuperdartCharger);
         String path = mContext.getResources().getString(
                 com.android.internal.R.string.config_oemFastChargerStatusPath);
         if (hasDashCharger || hasWarpCharger) {
             path = "/sys/class/power_supply/battery/fastchg_status";
-        } else if (hasVoocCharger) {
+        } else if (hasVoocCharger || hasSuperdartCharger) {
             path = "/sys/class/power_supply/battery/voocchg_ing";
         }
         if (TextUtils.isEmpty(path))
