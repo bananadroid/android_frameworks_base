@@ -126,105 +126,45 @@ public class LogoImageViewRight extends ImageView {
         }
 
         if (mCustomLogoStyle == 0) {
-            drawable = mContext.getDrawable(R.drawable.ic_banana_logo);
+            drawable = mContext.getDrawable(R.drawable.ic_bananagear_logo);
         } else if (mCustomLogoStyle == 1) {
-            drawable = mContext.getDrawable(R.drawable.ic_android_logo);
+            drawable = mContext.getDrawable(R.drawable.ic_bananadroid_logo);
         } else if (mCustomLogoStyle == 2) {
-            drawable = mContext.getDrawable(R.drawable.ic_apple_logo);
+            drawable = mContext.getDrawable(R.drawable.ic_adidas);
         } else if (mCustomLogoStyle == 3) {
-            drawable = mContext.getDrawable(R.drawable.ic_beats);
+            drawable = mContext.getDrawable(R.drawable.ic_airjordan);
         } else if (mCustomLogoStyle == 4) {
-            drawable = mContext.getDrawable(R.drawable.ic_biohazard);
+            drawable = mContext.getDrawable(R.drawable.ic_apple_logo);
         } else if (mCustomLogoStyle == 5) {
-            drawable = mContext.getDrawable(R.drawable.ic_blackberry);
+            drawable = mContext.getDrawable(R.drawable.ic_avengers);
         } else if (mCustomLogoStyle == 6) {
-            drawable = mContext.getDrawable(R.drawable.ic_blogger);
+            drawable = mContext.getDrawable(R.drawable.ic_batman);
         } else if (mCustomLogoStyle == 7) {
-            drawable = mContext.getDrawable(R.drawable.ic_bomb);
+            drawable = mContext.getDrawable(R.drawable.ic_batman_tdk);
         } else if (mCustomLogoStyle == 8) {
-            drawable = mContext.getDrawable(R.drawable.ic_brain);
+            drawable = mContext.getDrawable(R.drawable.ic_beats);
         } else if (mCustomLogoStyle == 9) {
-            drawable = mContext.getDrawable(R.drawable.ic_cake);
+            drawable = mContext.getDrawable(R.drawable.ic_biohazard);
         } else if (mCustomLogoStyle == 10) {
-            drawable = mContext.getDrawable(R.drawable.ic_cannabis);
+            drawable = mContext.getDrawable(R.drawable.ic_blackberry);
         } else if (mCustomLogoStyle == 11) {
-            drawable = mContext.getDrawable(R.drawable.ic_death_star);
+            drawable = mContext.getDrawable(R.drawable.ic_cannabis);
         } else if (mCustomLogoStyle == 12) {
-            drawable = mContext.getDrawable(R.drawable.ic_emoticon);
-        } else if (mCustomLogoStyle == 13) {
-            drawable = mContext.getDrawable(R.drawable.ic_emoticon_cool);
-        } else if (mCustomLogoStyle == 14) {
-            drawable = mContext.getDrawable(R.drawable.ic_emoticon_dead);
-        } else if (mCustomLogoStyle == 15) {
-            drawable = mContext.getDrawable(R.drawable.ic_emoticon_devil);
-        } else if (mCustomLogoStyle == 16) {
-            drawable = mContext.getDrawable(R.drawable.ic_emoticon_happy);
-        } else if (mCustomLogoStyle == 17) {
-            drawable = mContext.getDrawable(R.drawable.ic_emoticon_neutral);
-        } else if (mCustomLogoStyle == 18) {
-            drawable = mContext.getDrawable(R.drawable.ic_emoticon_poop);
-        } else if (mCustomLogoStyle == 19) {
-            drawable = mContext.getDrawable(R.drawable.ic_emoticon_sad);
-        } else if (mCustomLogoStyle == 20) {
-            drawable = mContext.getDrawable(R.drawable.ic_emoticon_tongue);
-        } else if (mCustomLogoStyle == 21) {
             drawable = mContext.getDrawable(R.drawable.ic_fire);
-        } else if (mCustomLogoStyle == 22) {
-            drawable = mContext.getDrawable(R.drawable.ic_flask);
-        } else if (mCustomLogoStyle == 23) {
-            drawable = mContext.getDrawable(R.drawable.ic_gender_female);
-        } else if (mCustomLogoStyle == 24) {
-            drawable = mContext.getDrawable(R.drawable.ic_gender_male);
-        } else if (mCustomLogoStyle == 25) {
-            drawable = mContext.getDrawable(R.drawable.ic_gender_male_female);
-        } else if (mCustomLogoStyle == 26) {
-            drawable = mContext.getDrawable(R.drawable.ic_ghost);
-        } else if (mCustomLogoStyle == 27) {
-            drawable = mContext.getDrawable(R.drawable.ic_google);
-        } else if (mCustomLogoStyle == 28) {
-            drawable = mContext.getDrawable(R.drawable.ic_guitar_acoustic);
-        } else if (mCustomLogoStyle == 29) {
-            drawable = mContext.getDrawable(R.drawable.ic_guitar_electric);
-        } else if (mCustomLogoStyle == 30) {
-            drawable = mContext.getDrawable(R.drawable.ic_heart);
-        } else if (mCustomLogoStyle == 31) {
-            drawable = mContext.getDrawable(R.drawable.ic_human_female);
-        } else if (mCustomLogoStyle == 32) {
-            drawable = mContext.getDrawable(R.drawable.ic_human_male);
-        } else if (mCustomLogoStyle == 33) {
-            drawable = mContext.getDrawable(R.drawable.ic_human_male_female);
-        } else if (mCustomLogoStyle == 34) {
-            drawable = mContext.getDrawable(R.drawable.ic_incognito);
-        } else if (mCustomLogoStyle == 35) {
-            drawable = mContext.getDrawable(R.drawable.ic_ios_logo);
-        } else if (mCustomLogoStyle == 36) {
-            drawable = mContext.getDrawable(R.drawable.ic_linux);
-        } else if (mCustomLogoStyle == 37) {
-            drawable = mContext.getDrawable(R.drawable.ic_lock);
-        } else if (mCustomLogoStyle == 38) {
-            drawable = mContext.getDrawable(R.drawable.ic_music);
-        } else if (mCustomLogoStyle == 39) {
-            drawable = mContext.getDrawable(R.drawable.ic_ninja);
-        } else if (mCustomLogoStyle == 40) {
+        } else if (mCustomLogoStyle == 13) {
+            drawable = mContext.getDrawable(R.drawable.ic_nike);
+        } else if (mCustomLogoStyle == 14) {
             drawable = mContext.getDrawable(R.drawable.ic_pac_man);
-        } else if (mCustomLogoStyle == 41) {
-            drawable = mContext.getDrawable(R.drawable.ic_peace);
-        } else if (mCustomLogoStyle == 42) {
-            drawable = mContext.getDrawable(R.drawable.ic_robot);
-        } else if (mCustomLogoStyle == 43) {
-            drawable = mContext.getDrawable(R.drawable.ic_skull);
-        } else if (mCustomLogoStyle == 44) {
-            drawable = mContext.getDrawable(R.drawable.ic_smoking);
-        } else if (mCustomLogoStyle == 45) {
-            drawable = mContext.getDrawable(R.drawable.ic_wallet);
-        } else if (mCustomLogoStyle == 46) {
+        } else if (mCustomLogoStyle == 15) {
+            drawable = mContext.getDrawable(R.drawable.ic_puma);
+        } else if (mCustomLogoStyle == 16) {
+            drawable = mContext.getDrawable(R.drawable.ic_rog);
+        } else if (mCustomLogoStyle == 17) {
+            drawable = mContext.getDrawable(R.drawable.ic_superman);
+        } else if (mCustomLogoStyle == 18) {
             drawable = mContext.getDrawable(R.drawable.ic_windows);
-        } else if (mCustomLogoStyle == 47) {
+        } else if (mCustomLogoStyle == 19) {
             drawable = mContext.getDrawable(R.drawable.ic_xbox);
-        } else if (mCustomLogoStyle == 48) {
-            drawable = mContext.getDrawable(R.drawable.ic_xbox_controller);
-        } else if (mCustomLogoStyle == 49) {
-            drawable = mContext.getDrawable(R.drawable.ic_yin_yang);
         }
 
         setImageDrawable(null);
