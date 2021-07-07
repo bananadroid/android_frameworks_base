@@ -271,7 +271,6 @@ public class EdgeBackGestureHandler extends CurrentUserTracker implements Displa
             Runnable stateChangeCallback) {
         super(Dependency.get(BroadcastDispatcher.class));
         mContext = context;
-        mVibrator = context.getSystemService(Vibrator.class);
         mDisplayId = context.getDisplayId();
         mMainExecutor = context.getMainExecutor();
         mOverviewProxyService = overviewProxyService;
