@@ -78,6 +78,7 @@ public class VolumePluginManager extends BroadcastReceiver {
         "co.potatoproject.plugin.volume.tiled",
         "com.kangos.plugin.volume.miui",
         "co.potatoproject.plugin.volume.p404",
+        "co.potatoproject.plugin.volume.ssos",
     };
 
     private PluginPrefs mPluginPrefs;
