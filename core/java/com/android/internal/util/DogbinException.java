@@ -16,11 +16,11 @@
 
 package com.android.internal.util;
 
-public class PastyException extends Exception {
+public class DogbinException extends Exception {
 
     private static final long serialVersionUID = 666L;
 
-	public PastyException(String message) {
+	public DogbinException(String message) {
         super(message);
     }
 }
