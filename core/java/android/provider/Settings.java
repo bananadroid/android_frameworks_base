@@ -5764,12 +5764,6 @@ public final class Settings {
         public static final String SCREEN_OFF_FOD_ICON = "screen_off_fod_icon";
 
         /**
-         * Whether StatusBar icons should use app icon
-         * @hide
-         */
-        public static final String STATUSBAR_ICONS_STYLE = "statusbar_icons_style";
-
-        /**
          * Hold current font name and name of the originating package Uses "|" as a delimiter
          * @hide
          */
@@ -6166,7 +6160,6 @@ public final class Settings {
             PRIVATE_SETTINGS.add(VOLUME_PANEL_ON_LEFT);
             PRIVATE_SETTINGS.add(SETTINGS_DASHBOARD_ICONS);
             PRIVATE_SETTINGS.add(APP_LOCK_LOCK_AFTER);
-            PRIVATE_SETTINGS.add(STATUSBAR_ICONS_STYLE);
             PRIVATE_SETTINGS.add(COLOR_BUCKET_OVERLAY);
             PRIVATE_SETTINGS.add(ACCENT_COLOR);
             PRIVATE_SETTINGS.add(QS_TILE_STYLE);
