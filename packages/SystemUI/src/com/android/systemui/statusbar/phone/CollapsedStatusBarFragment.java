@@ -135,11 +135,13 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mContentResolver = getContext().getContentResolver();
         mKeyguardStateController = Dependency.get(KeyguardStateController.class);
         mNetworkController = Dependency.get(NetworkController.class);
         mStatusBarStateController = Dependency.get(StatusBarStateController.class);
         mStatusBarComponent = Dependency.get(StatusBar.class);
         mCommandQueue = Dependency.get(CommandQueue.class);
+        mSettingsObserver.observe();
     }
 
     @Override
@@ -180,6 +182,8 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
         animateHide(mClockView, false, false);
         initOperatorName();
         initTickerView();
+        mSettingsObserver.observe();
+        updateSettings(false);
     }
 
     @Override
