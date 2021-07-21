@@ -21,8 +21,6 @@
 
     <java-symbol type="array" name="config_vendorPlatformSignatures" />
 
-    <java-symbol type="array" name="config_blockPackagesSensorDrain" />
-
     <!-- Device keyhandlers -->
     <java-symbol type="array" name="config_deviceKeyHandlerLibs" />
     <java-symbol type="array" name="config_deviceKeyHandlerClasses" />
