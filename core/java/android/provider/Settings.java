@@ -5141,7 +5141,7 @@ public final class Settings {
         /**
          * @hide
          */
-        public static final String ADAPTIVE_CHARGING_MODE = "adaptive_charging_mode";
+        public static final String ADAPTIVE_CHARGING_TEMPERATURE = "adaptive_charging_temperature";
 
         /**
          * @hide

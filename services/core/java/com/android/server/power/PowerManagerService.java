@@ -654,9 +654,9 @@ public final class PowerManagerService extends SystemService
 
     // Adaptive charging
     private boolean mAdaptiveChargingEnabled;
+    private boolean mAdaptiveChargingTemperatureEnabled;
     private boolean mAdaptiveChargingResetStats;
     private boolean mPowerInputSuspended = false;
-    private int mAdaptiveChargingMode;
     private int mAdaptiveChargingCutoffLevel;
     private int mAdaptiveChargingResumeLevel;
     private int mAdaptiveChargingCutoffTemperature;
@@ -1189,7 +1189,7 @@ public final class PowerManagerService extends SystemService
                 Settings.System.ADAPTIVE_CHARGING),
                 false, mSettingsObserver, UserHandle.USER_SYSTEM);
         resolver.registerContentObserver(Settings.System.getUriFor(
-                Settings.System.ADAPTIVE_CHARGING_MODE),
+                Settings.System.ADAPTIVE_CHARGING_TEMPERATURE),
                 false, mSettingsObserver, UserHandle.USER_ALL);
         resolver.registerContentObserver(Settings.System.getUriFor(
                 Settings.System.ADAPTIVE_CHARGING_CUTOFF_LEVEL),
@@ -1359,8 +1359,8 @@ public final class PowerManagerService extends SystemService
         // Adaptive charging
         mAdaptiveChargingEnabled = Settings.System.getInt(resolver,
                 Settings.System.ADAPTIVE_CHARGING, 0) == 1;
-        mAdaptiveChargingMode = Settings.System.getInt(resolver,
-                Settings.System.ADAPTIVE_CHARGING_MODE, 0);
+        mAdaptiveChargingTemperatureEnabled = Settings.System.getInt(resolver,
+                Settings.System.ADAPTIVE_CHARGING_TEMPERATURE, 0) == 1;
         mAdaptiveChargingCutoffLevel = Settings.System.getInt(resolver,
                 Settings.System.ADAPTIVE_CHARGING_CUTOFF_LEVEL, mAdaptiveChargingCutoffLevelConfig);
         mAdaptiveChargingResumeLevel = Settings.System.getInt(resolver,
@@ -2241,28 +2241,32 @@ public final class PowerManagerService extends SystemService
     }
 
     private void updateAdaptiveChargingStatus() {
-        boolean levelCutoffEnabled = mAdaptiveChargingEnabled && mAdaptiveChargingMode != 1;
-        boolean temperatureCutoffEnabled = mAdaptiveChargingEnabled && mAdaptiveChargingMode != 0;
         if (mPowerInputSuspended) {
-            boolean resumeByLevel = !levelCutoffEnabled || (levelCutoffEnabled &&
-                    (mBatteryLevel <= mAdaptiveChargingResumeLevel));
-            boolean resumeByTemperature = !temperatureCutoffEnabled || (temperatureCutoffEnabled &&
-                    (mBatteryTemperature <= mAdaptiveChargingResumeTemperature));
+            boolean resumeByAdaptiveCharging = !mAdaptiveChargingEnabled || (mAdaptiveChargingEnabled && (mBatteryLevel <= mAdaptiveChargingResumeLevel));
+            boolean resumeByAdaptiveChargingTemperature = !mAdaptiveChargingTemperatureEnabled || (mAdaptiveChargingTemperatureEnabled && (mBatteryTemperature <= mAdaptiveChargingResumeTemperature));
             // Charging should only be resumed when all factors vote yes
-            if (resumeByLevel && resumeByTemperature) {
-                setChargingStatus(true);
+            if (resumeByAdaptiveCharging && resumeByAdaptiveChargingTemperature) {
+                try {
+                    FileUtils.stringToFile(mPowerInputSuspendSysfsNode, mPowerInputResumeValue);
+                    mPowerInputSuspended = false;
+                } catch (IOException e) {
+                    Slog.e(TAG, "failed to write to " + mPowerInputSuspendSysfsNode);
+                }
                 return;
             }
         } else {
-            boolean suspendByLevel = levelCutoffEnabled &&
-                    (mBatteryLevel >= mAdaptiveChargingCutoffLevel);
-            boolean suspendByTemperature = temperatureCutoffEnabled &&
-                    (mBatteryTemperature >= mAdaptiveChargingCutoffTemperature);
+            boolean suspendByAdaptiveCharging = mAdaptiveChargingEnabled && (mBatteryLevel >= mAdaptiveChargingCutoffLevel);
+            boolean suspendByAdaptiveChargingTemperature = mAdaptiveChargingTemperatureEnabled && (mBatteryTemperature >= mAdaptiveChargingCutoffTemperature);
             // Charging should be suspended when any of the factors vote yes
-            if (suspendByLevel || suspendByTemperature) {
-                setChargingStatus(false);
+            if (suspendByAdaptiveCharging || suspendByAdaptiveChargingTemperature) {
+                try {
+                    FileUtils.stringToFile(mPowerInputSuspendSysfsNode, mPowerInputSuspendValue);
+                    mPowerInputSuspended = true;
+                } catch (IOException e) {
+                        Slog.e(TAG, "failed to write to " + mPowerInputSuspendSysfsNode);
+                }
 
-                if (suspendByLevel && mAdaptiveChargingResetStats) {
+                if (suspendByAdaptiveCharging && mAdaptiveChargingResetStats) {
                     try {
                         mBatteryStats.resetStatistics();
                     } catch (RemoteException e) {
