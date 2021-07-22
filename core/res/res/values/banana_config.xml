@@ -248,4 +248,7 @@
          to enable/disable DC dimming. -->
     <string name="config_deviceDcDimmingSysfsNode"></string>
 
+    <!-- Whether to show settings for hiding notch fill -->
+    <bool name="config_showHideNotchSettings">false</bool>
+
 </resources>
