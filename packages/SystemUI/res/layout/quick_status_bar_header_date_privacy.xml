@@ -74,11 +74,38 @@
 
     <FrameLayout
         android:id="@+id/privacy_container"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:minHeight="48dp"
         android:layout_weight="1"
+        android:layout_gravity="center_vertical|end"
         android:gravity="center_vertical|end" >
+
+        <LinearLayout
+            android:id="@+id/weather_view_header"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="2dp"
+            android:layout_marginEnd="2dp"
+            android:orientation="horizontal"
+            android:layout_gravity="end"
+            android:gravity="center_vertical|end">
+
+            <com.android.systemui.banana.qsweather.QsWeatherImage
+                android:id="@+id/weather_image"
+                android:layout_width="24dp"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical|end" />
+
+            <com.android.systemui.banana.qsweather.QsWeatherText
+                android:id="@+id/weather_temp"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical|end"
+                android:maxLines="1"
+                android:textAppearance="@style/TextAppearance.QS.Status" />
+    
+        </LinearLayout>
 
         <include layout="@layout/ongoing_privacy_chip" />
 
