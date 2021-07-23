@@ -16,7 +16,6 @@ import com.android.internal.logging.MetricsLogger;
 import com.android.keyguard.KeyguardUpdateMonitor;
 import com.android.keyguard.ViewMediatorCallback;
 import com.android.systemui.dagger.qualifiers.UiBackground;
-import com.android.systemui.Dependency;
 import com.android.systemui.InitController;
 import com.android.systemui.assist.AssistManager;
 import com.android.systemui.biometrics.FODCircleViewImpl;
@@ -94,13 +93,8 @@ import com.android.systemui.statusbar.policy.UserSwitcherController;
 import com.android.systemui.tuner.TunerService;
 import com.android.systemui.volume.VolumeComponent;
 
-import com.google.android.systemui.NotificationLockscreenUserManagerGoogle;
-import com.google.android.systemui.smartspace.SmartSpaceController;
-
 import dagger.Lazy;
 
-import java.io.FileDescriptor;
-import java.io.PrintWriter;
 import java.util.Optional;
 import java.util.concurrent.Executor;
 
@@ -110,11 +104,7 @@ import javax.inject.Inject;
 
 public class StatusBarGoogle extends StatusBar {
 
-    @Inject
-    public SmartSpaceController mSmartSpaceController;
-
     public StatusBarGoogle(
-            SmartSpaceController smartSpaceController,
             Context context,
             NotificationsController notificationsController,
             LightBarController lightBarController,
@@ -278,24 +268,15 @@ public class StatusBarGoogle extends StatusBar {
                 taskHelper,
                 tunerService,
                 fodCircleViewImpl);
-        mSmartSpaceController = smartSpaceController;
     }
 
     @Override
     public void start() {
         super.start();
-        ((NotificationLockscreenUserManagerGoogle) Dependency.get(NotificationLockscreenUserManager.class)).updateSmartSpaceVisibilitySettings();
     }
 
     @Override
     public void setLockscreenUser(int i) {
         super.setLockscreenUser(i);
-        mSmartSpaceController.reloadData();
-    }
-
-    @Override
-    public void dump(FileDescriptor fileDescriptor, PrintWriter printWriter, String[] strArr) {
-        super.dump(fileDescriptor, printWriter, strArr);
-        mSmartSpaceController.dump(fileDescriptor, printWriter, strArr);
     }
 }
