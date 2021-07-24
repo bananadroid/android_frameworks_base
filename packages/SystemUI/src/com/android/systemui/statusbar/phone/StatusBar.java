@@ -153,6 +153,7 @@ import com.android.internal.logging.UiEventLoggerImpl;
 import com.android.internal.logging.nano.MetricsProto.MetricsEvent;
 import com.android.internal.statusbar.IStatusBarService;
 import com.android.internal.statusbar.RegisterStatusBarResult;
+import com.android.internal.statusbar.ThemeAccentUtils;
 import com.android.internal.view.AppearanceRegion;
 import com.android.keyguard.KeyguardUpdateMonitor;
 import com.android.keyguard.KeyguardUpdateMonitorCallback;
@@ -162,6 +163,7 @@ import com.android.systemui.AutoReinflateContainer;
 import com.android.systemui.DejankUtils;
 import com.android.systemui.Dependency;
 import com.android.systemui.DemoMode;
+import com.android.systemui.Dependency;
 import com.android.systemui.Dumpable;
 import com.android.systemui.EventLogTags;
 import com.android.systemui.InitController;
@@ -169,6 +171,7 @@ import com.android.systemui.Prefs;
 import com.android.systemui.R;
 import com.android.systemui.SystemUI;
 import com.android.systemui.SystemUIFactory;
+import com.android.systemui.UiOffloadThread;
 import com.android.systemui.ambientmusic.AmbientIndicationContainer;
 import com.android.systemui.assist.AssistManager;
 import com.android.systemui.biometrics.FODCircleViewImpl;
@@ -308,6 +311,8 @@ public class StatusBar extends SystemUI implements DemoMode,
             "system:" + Settings.System.STATUS_BAR_TICKER_ANIMATION_MODE;
     private static final String STATUS_BAR_TICKER_TICK_DURATION =
             "system:" + Settings.System.STATUS_BAR_TICKER_TICK_DURATION;
+    private static final String BERRY_ROUNDED_STYLE =
+            "system:" + Settings.System.BERRY_ROUNDED_STYLE;
     private static final String SYSUI_ROUNDED_FWVALS =
             Settings.Secure.SYSUI_ROUNDED_FWVALS;
 
@@ -733,6 +738,7 @@ public class StatusBar extends SystemUI implements DemoMode,
     protected final BatteryController mBatteryController;
     protected boolean mPanelExpanded;
     private IOverlayManager mOverlayManager;
+    private final UiOffloadThread mUiOffloadThread = Dependency.get(UiOffloadThread.class);
     private UiModeManager mUiModeManager;
     protected boolean mIsKeyguard;
     private LogMaker mStatusBarStateLog;
@@ -789,32 +795,7 @@ public class StatusBar extends SystemUI implements DemoMode,
 
     private ActivityIntentHelper mActivityIntentHelper;
 
-    private StatusBarSettingsObserver mStatusBarSettingsObserver = new StatusBarSettingsObserver(mHandler);
-    private class StatusBarSettingsObserver extends ContentObserver {
-        StatusBarSettingsObserver(Handler handler) {
-            super(handler);
-        }
-
-        void observe() {
-            mContext.getContentResolver().registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.DOUBLE_TAP_SLEEP_GESTURE),
-                    false, this, UserHandle.USER_ALL);
-            mContext.getContentResolver().registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.DOUBLE_TAP_SLEEP_LOCKSCREEN),
-                    false, this, UserHandle.USER_ALL);
-        }
-
-        @Override
-        public void onChange(boolean selfChange) {
-            update();
-        }
-
-        public void update() {
-            if (mNotificationShadeWindowViewController != null) {
-                mNotificationShadeWindowViewController.updateSettings();
-            }
-        }
-    }
+    private int mRoundedStyle;
 
     /**
      * Public constructor for StatusBar.
@@ -1018,6 +999,7 @@ public class StatusBar extends SystemUI implements DemoMode,
         mTunerService.addTunable(this, STATUS_BAR_TICKER_ANIMATION_MODE);
         mTunerService.addTunable(this, STATUS_BAR_TICKER_TICK_DURATION);
         mTunerService.addTunable(this, SYSUI_ROUNDED_FWVALS);
+        mTunerService.addTunable(this, BERRY_ROUNDED_STYLE);
 
         mDisplayManager = mContext.getSystemService(DisplayManager.class);
 
@@ -1068,9 +1050,6 @@ public class StatusBar extends SystemUI implements DemoMode,
         }
 
         createAndAddWindows(result);
-
-        mStatusBarSettingsObserver.observe();
-        mStatusBarSettingsObserver.update();
 
         if (mWallpaperSupported) {
             // Make sure we always have the most current wallpaper info.
@@ -2283,6 +2262,12 @@ public class StatusBar extends SystemUI implements DemoMode,
 
         void observe() {
             ContentResolver resolver = mContext.getContentResolver();
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.DOUBLE_TAP_SLEEP_GESTURE),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.DOUBLE_TAP_SLEEP_LOCKSCREEN),
+                    false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.Secure.getUriFor(
                     Settings.Secure.FP_SWIPE_TO_DISMISS_NOTIFICATIONS),
                     false, this, UserHandle.USER_ALL);
@@ -2411,9 +2396,13 @@ public class StatusBar extends SystemUI implements DemoMode,
                     uri.equals(Settings.Secure.getUriFor("sysui_rounded_size"))) {
                 handleCutout(null);
             }
+            update();
         }
 
         public void update() {
+            if (mNotificationShadeWindowViewController != null) {
+                mNotificationShadeWindowViewController.updateSettings();
+            }
             setFpToDismissNotifications();
             updateQsPanelResources();
             updateNavigationBar(false);
@@ -4294,6 +4283,12 @@ public class StatusBar extends SystemUI implements DemoMode,
         ThemesUtils.stockSwitchStyle(mOverlayManager, mLockscreenUserManager.getCurrentUserId());
     }
 
+    private void updateRoundedStyle() {
+        mUiOffloadThread.execute(() -> {
+            ThemeAccentUtils.setRoundedStyle(mOverlayManager, mRoundedStyle, mContext.getUserId());
+        });
+    }
+
     private void updateDozingState() {
         Trace.traceCounter(Trace.TRACE_TAG_APP, "dozing", mDozing ? 1 : 0);
         Trace.beginSection("StatusBar#updateDozingState");
@@ -5367,6 +5362,14 @@ public class StatusBar extends SystemUI implements DemoMode,
                 mSysuiRoundedFwvals =
                         TunerService.parseIntegerSwitch(newValue, true);
                 updateCorners();
+                break;
+            case BERRY_ROUNDED_STYLE:
+                int roundedStyle =
+                        TunerService.parseInteger(newValue, 0);
+                if (mRoundedStyle != roundedStyle) {
+                    mRoundedStyle = roundedStyle;
+                    updateRoundedStyle();
+                }
                 break;
             default:
                 break;
