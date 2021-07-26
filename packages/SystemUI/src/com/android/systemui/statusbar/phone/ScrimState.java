@@ -19,6 +19,7 @@ package com.android.systemui.statusbar.phone;
 import android.graphics.Color;
 import android.os.Trace;
 
+import com.android.internal.util.banana.bananaUtils;
 import com.android.systemui.dock.DockManager;
 import com.android.systemui.statusbar.ScrimView;
 import com.android.systemui.statusbar.notification.stack.StackStateAnimator;
@@ -92,7 +93,8 @@ public enum ScrimState {
     BOUNCER {
         @Override
         public void prepare(ScrimState previousState) {
-            mBehindAlpha = mDefaultScrimAlpha;
+            mBehindTint = bananaUtils.isDarkMode() ? Color.BLACK : Color.WHITE;
+            mBehindAlpha = 1f;
             mFrontAlpha = 0f;
             mBubbleAlpha = 0f;
         }
@@ -104,9 +106,10 @@ public enum ScrimState {
     BOUNCER_SCRIMMED {
         @Override
         public void prepare(ScrimState previousState) {
-            mBehindAlpha = 0;
+            mFrontTint = bananaUtils.isDarkMode() ? Color.BLACK : Color.WHITE;
+            mBehindAlpha = 0f;
             mBubbleAlpha = 0f;
-            mFrontAlpha = mDefaultScrimAlpha;
+            mFrontAlpha = 1f;
         }
     },
 

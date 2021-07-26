@@ -17,6 +17,7 @@
 package com.android.internal.util.banana;
 
 import android.app.ActivityManager;
+import android.app.IUiModeManager;
 import android.app.NotificationManager;
 import android.content.ComponentName;
 import android.content.Context;
@@ -550,5 +551,17 @@ public class bananaUtils {
         newColor[2] = empty[2] + ((full[2]-empty[2])*blendFactor);
         int newAlpha = (int) (emptyAlpha + ((fullAlpha-emptyAlpha)*blendFactor));
         return Color.HSVToColor(newAlpha, newColor);
+    }
+
+    // Check if system is in dark mode
+    public static boolean isDarkMode() {
+        IUiModeManager uiModeManager = IUiModeManager.Stub.asInterface(
+                    ServiceManager.getService(Context.UI_MODE_SERVICE));
+        try {
+            return uiModeManager.getNightMode() == 2;
+        } catch (android.os.RemoteException e) {
+            // assume light mode
+            return false;
+        }
     }
 }
