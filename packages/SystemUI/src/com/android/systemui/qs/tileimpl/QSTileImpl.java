@@ -566,7 +566,7 @@ public abstract class QSTileImpl<TState extends State> implements QSTile, Lifecy
                      if (qsIconPrimary) {
                          return Utils.getColorAttrDefaultColor(context, android.R.attr.textColorPrimary);
                      } else {
-                         return Utils.getColorAttrDefaultColor(context, android.R.attr.colorPrimary);
+                         return context.getResources().getColor(com.android.systemui.R.color.qs_icon_active_color);
                      }
                  }
             default:
