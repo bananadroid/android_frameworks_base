@@ -529,7 +529,7 @@ public abstract class QSTileImpl<TState extends State> implements QSTile, Lifecy
                 }
             case Tile.STATE_ACTIVE:
                 if (!enableQsTileTinting) {
-                    return Utils.getColorAttrDefaultColor(context, android.R.attr.panelColorBackground);
+                    return Utils.getColorAttrDefaultColor(context, android.R.attr.colorPrimary);
                 } else {
                     return context.getColor(R.color.qs_tiles_active_tint);
                 }
