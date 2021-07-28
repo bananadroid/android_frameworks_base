@@ -22,4 +22,6 @@
     <!-- Bootleg unneccesary gradient declaration | Just for our shishu bars -->
     <color name="bootleg_accent_gradient_end_color">#00000000</color>
 
+    <color name="qs_icon_active_color">#ffffffff</color>
+
 </resources>

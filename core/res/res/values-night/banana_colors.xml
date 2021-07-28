@@ -19,4 +19,6 @@
     <color name="toast_bg">@color/material_grey_800</color>
     <color name="toast_text">@color/white</color>
 
+    <color name="qs_icon_active_color">#ff000000</color>
+
 </resources>
