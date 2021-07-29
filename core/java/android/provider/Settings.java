@@ -5957,12 +5957,6 @@ public final class Settings {
         public static final String SWITCH_STYLE = "switch_style";
 
         /**
-         * Accent Color
-         * @hide
-         */
-        public static final String ACCENT_COLOR = "accent_color";
-
-        /**
          * @hide
          */
         public static final String QS_TILE_STYLE = "qs_tile_style";
@@ -6391,7 +6385,6 @@ public final class Settings {
             PRIVATE_SETTINGS.add(SETTINGS_DASHBOARD_ICONS);
             PRIVATE_SETTINGS.add(APP_LOCK_LOCK_AFTER);
             PRIVATE_SETTINGS.add(COLOR_BUCKET_OVERLAY);
-            PRIVATE_SETTINGS.add(ACCENT_COLOR);
             PRIVATE_SETTINGS.add(QS_TILE_STYLE);
             PRIVATE_SETTINGS.add(SYSTEMUI_PLUGIN_VOLUME);
             PRIVATE_SETTINGS.add(FORCE_FULLSCREEN_CUTOUT_APPS);

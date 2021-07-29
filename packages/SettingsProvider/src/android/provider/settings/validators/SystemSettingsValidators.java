@@ -16,7 +16,6 @@
 
 package android.provider.settings.validators;
 
-import static android.provider.settings.validators.SettingsValidators.ANY_INTEGER_VALIDATOR;
 import static android.provider.settings.validators.SettingsValidators.BOOLEAN_VALIDATOR;
 import static android.provider.settings.validators.SettingsValidators.COMPONENT_NAME_VALIDATOR;
 import static android.provider.settings.validators.SettingsValidators.DATE_FORMAT_VALIDATOR;
@@ -229,7 +228,6 @@ public class SystemSettingsValidators {
                         return true;
                     }
                 });
-        VALIDATORS.put(System.ACCENT_COLOR, ANY_INTEGER_VALIDATOR);
         VALIDATORS.put(System.ACCELEROMETER_ROTATION_ANGLES, NON_NEGATIVE_INTEGER_VALIDATOR);
         VALIDATORS.put(System.DONT_TOUCH_HEADSUP, BOOLEAN_VALIDATOR);
         VALIDATORS.put(System.DISPLAY_TEMPERATURE_DAY, new InclusiveIntegerRangeValidator(0, 100000));
