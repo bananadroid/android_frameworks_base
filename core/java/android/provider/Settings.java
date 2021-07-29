@@ -6252,13 +6252,6 @@ public final class Settings {
         };
 
         /**
-         * Wallpaper based accents
-         * @hide
-         */
-        public static final String USE_WALL_ACCENT = "use_wall_accent";
-        public static final String AUTO_ACCENT_TYPE = "auto_accent_type";
-
-        /**
          * Whether to show artist and title on ambient/lock screen on new music tracks
          * 0 - don't show track info
          * 1 - show track info on bottom of Ambient Display (Pixel style)
@@ -6405,8 +6398,6 @@ public final class Settings {
             PRIVATE_SETTINGS.add(BACK_GESTURE_HAPTIC);
             PRIVATE_SETTINGS.add(DONT_TOUCH_HEADSUP);
             PRIVATE_SETTINGS.add(HIDE_SMART_REPLIES);
-            PRIVATE_SETTINGS.add(USE_WALL_ACCENT);
-            PRIVATE_SETTINGS.add(AUTO_ACCENT_TYPE);
             PRIVATE_SETTINGS.add(OMNIJAWS_WEATHER_ICON_PACK);
             PRIVATE_SETTINGS.add(OMNI_LOCKSCREEN_WEATHER_ENABLED);
             PRIVATE_SETTINGS.add(AICP_LOCKSCREEN_WEATHER_STYLE);
