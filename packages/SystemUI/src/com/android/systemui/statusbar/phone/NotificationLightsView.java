@@ -112,9 +112,6 @@ public class NotificationLightsView extends RelativeLayout {
             case 3: // Custom
                 color = customColor;
                 break;
-            case 4: // Random
-                color = randomColor();
-                break;
             default: // White
                 color = 0xFFFFFFFF;
         }
@@ -194,14 +191,5 @@ public class NotificationLightsView extends RelativeLayout {
         });
         if (DEBUG) Log.d(TAG, "start");
         mLightAnimator.start();
-    }
-
-    private int randomColor() {
-        int red = (int)(Math.random() * 128);
-        int green = (int)(Math.random() * 128);
-        int blue = (int)(Math.random() * 128);
-        int generatedColor = 0xFF000000 | (red << 16) | (green << 8) | blue;
-        if (DEBUG) Log.d(TAG, Integer.toHexString(generatedColor));
-        return generatedColor;
     }
 }
