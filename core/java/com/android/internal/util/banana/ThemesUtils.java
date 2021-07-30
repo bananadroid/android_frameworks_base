@@ -100,7 +100,6 @@ public class ThemesUtils {
         "com.bootleggers.qstile.triangles", // 15
         "com.bootleggers.qstile.deletround", // 16
         "com.bootleggers.qstile.monogradient", // 17
-        "com.bootleggers.qstile.pureaccent" // 18
     };
 
     public static void updateSwitchStyle(IOverlayManager om, int userId, int switchStyle) {
