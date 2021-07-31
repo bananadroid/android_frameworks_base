@@ -37,8 +37,6 @@ import android.metrics.LogMaker;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.os.VibrationEffect;
-import android.os.Vibrator;
 import android.provider.Settings;
 import android.service.quicksettings.Tile;
 import android.text.format.DateUtils;
@@ -280,8 +278,6 @@ public abstract class QSTileImpl<TState extends State> implements QSTile, Lifecy
                 getInstanceId());
         mQSLogger.logTileLongClick(mTileSpec, mStatusBarStateController.getState(), mState.state);
         mHandler.sendEmptyMessage(H.LONG_CLICK);
-        Vibrator vib = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
-        vib.vibrate(VibrationEffect.createPredefined(VibrationEffect.EFFECT_CLICK));
 
         Prefs.putInt(
                 mContext,
