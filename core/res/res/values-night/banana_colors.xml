@@ -19,8 +19,6 @@
     <color name="toast_bg">@color/material_grey_800</color>
     <color name="toast_text">@color/white</color>
 
-    <color name="qs_icon_active_color">#ff000000</color>
-
     <!-- Gradient Shit -->
     <color name="gradient_start">#fff3d324</color>
     <color name="gradient_end">#fff3d324</color>

@@ -18,7 +18,4 @@
 
     <!-- QS Drag handle -->
     <color name="op_qs_footer_drag_handle">#ffc8c8c8</color>
-
-    <color name="qs_icon_active_color">@*android:color/qs_icon_active_color</color>
-
 </resources>
