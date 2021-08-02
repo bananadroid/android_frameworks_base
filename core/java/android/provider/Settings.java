@@ -6351,6 +6351,12 @@ public final class Settings {
          */
         public static final String AMBIENT_MUSIC_TICKER = "ambient_music_ticker";
 
+       /**
+        * Vowifi + Volte Icon Picker
+        * @hide
+        */
+       public static final String VO_ICON_PICKER = "vo_icon_picker";
+
         /**
          * These are all public system settings
          *
