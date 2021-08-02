@@ -39,13 +39,11 @@ import android.os.Looper;
 import android.os.Message;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
-import android.provider.Settings;
 import android.service.quicksettings.Tile;
 import android.text.format.DateUtils;
 import android.util.ArraySet;
 import android.util.Log;
 import android.util.SparseArray;
-import android.os.UserHandle;
 
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleOwner;
@@ -61,7 +59,6 @@ import com.android.settingslib.Utils;
 import com.android.systemui.Dependency;
 import com.android.systemui.Dumpable;
 import com.android.systemui.Prefs;
-import com.android.systemui.R;
 import com.android.systemui.plugins.ActivityStarter;
 import com.android.systemui.plugins.qs.DetailAdapter;
 import com.android.systemui.plugins.qs.QSIconView;
@@ -540,9 +537,6 @@ public abstract class QSTileImpl<TState extends State> implements QSTile, Lifecy
     public abstract CharSequence getTileLabel();
 
     public static int getColorForState(Context context, int state) {
-        boolean setQsUseNewTint = Settings.System.getIntForUser(context.getContentResolver(),
-                Settings.System.QS_PANEL_BG_USE_NEW_TINT, 0, UserHandle.USER_CURRENT) == 1;
-        boolean themeQsUseNewTint = context.getResources().getBoolean(R.bool.config_enable_qs_tile_tinting);
         switch (state) {
             case Tile.STATE_UNAVAILABLE:
                 return Utils.getDisabled(context,
@@ -550,11 +544,7 @@ public abstract class QSTileImpl<TState extends State> implements QSTile, Lifecy
             case Tile.STATE_INACTIVE:
                 return Utils.getColorAttrDefaultColor(context, android.R.attr.textColorSecondary);
             case Tile.STATE_ACTIVE:
-                if (setQsUseNewTint || themeQsUseNewTint) {
-                    return Utils.getColorAttrDefaultColor(context, android.R.attr.colorAccent);
-                } else {
-                    return context.getResources().getColor(com.android.systemui.R.color.qs_icon_active_color);
-                }
+                return context.getResources().getColor(com.android.systemui.R.color.qs_icon_active_color);
             default:
                 Log.e("QSTile", "Invalid state " + state);
                 return 0;

@@ -6234,12 +6234,6 @@ public final class Settings {
         public static final String VOLUME_ROCKER_WAKE = "volume_rocker_wake";
 
         /**
-         * Whether to use new QS panel bg tint or not
-         * @hide
-         */
-        public static final String QS_PANEL_BG_USE_NEW_TINT = "qs_panel_bg_use_new_tint";
-
-        /**
          * Whether to vibrate when quick settings tile is pressed.
          * @hide
          */

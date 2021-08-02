@@ -313,8 +313,6 @@ public class StatusBar extends SystemUI implements DemoMode,
             "system:" + Settings.System.STATUS_BAR_TICKER_TICK_DURATION;
     private static final String BERRY_ROUNDED_STYLE =
             "system:" + Settings.System.BERRY_ROUNDED_STYLE;
-    private static final String QS_PANEL_BG_USE_NEW_TINT =
-            "system:" + Settings.System.QS_PANEL_BG_USE_NEW_TINT;
     private static final String SYSUI_ROUNDED_FWVALS =
             Settings.Secure.SYSUI_ROUNDED_FWVALS;
 
@@ -1002,7 +1000,6 @@ public class StatusBar extends SystemUI implements DemoMode,
         mTunerService.addTunable(this, STATUS_BAR_TICKER_TICK_DURATION);
         mTunerService.addTunable(this, SYSUI_ROUNDED_FWVALS);
         mTunerService.addTunable(this, BERRY_ROUNDED_STYLE);
-        mTunerService.addTunable(this, QS_PANEL_BG_USE_NEW_TINT);
 
         mDisplayManager = mContext.getSystemService(DisplayManager.class);
 
@@ -5372,11 +5369,6 @@ public class StatusBar extends SystemUI implements DemoMode,
                 if (mRoundedStyle != roundedStyle) {
                     mRoundedStyle = roundedStyle;
                     updateRoundedStyle();
-                }
-                break;
-            case QS_PANEL_BG_USE_NEW_TINT:
-                if (mQSPanel != null) {
-                    mQSPanel.getHost().reloadAllTiles();
                 }
                 break;
             default:

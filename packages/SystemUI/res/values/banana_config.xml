@@ -62,6 +62,4 @@
     <!-- Whether to invert the sim slots for VoLTE/VoWiFi icon -->
     <bool name="config_invertImsSlots">false</bool>
 
-    <!-- Config to enable/disable qs tile tinting -->
-    <bool name="config_enable_qs_tile_tinting">false</bool>
 </resources>
