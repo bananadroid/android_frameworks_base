@@ -546,7 +546,7 @@ public abstract class QSTileImpl<TState extends State> implements QSTile, Lifecy
 
     public static int getColorForState(Context context, int state) {
         int setQsUseNewTint = Settings.System.getIntForUser(context.getContentResolver(),
-                    Settings.System.QS_PANEL_BG_USE_NEW_TINT, 1, UserHandle.USER_CURRENT);
+                    Settings.System.QS_PANEL_BG_USE_NEW_TINT, 0, UserHandle.USER_CURRENT);
 
         boolean qsIconPrimary = Settings.System.getIntForUser(context.getContentResolver(),
                     Settings.System.QS_TILE_ICON_PRIMARY, 0, UserHandle.USER_CURRENT) == 1;
