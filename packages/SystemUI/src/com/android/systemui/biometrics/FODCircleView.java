@@ -35,7 +35,6 @@ import android.os.Looper;
 import android.os.RemoteException;
 import android.os.UserHandle;
 import android.provider.Settings;
-import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -515,16 +514,6 @@ public class FODCircleView extends ImageView implements ConfigurationListener {
         ThreadUtils.postOnBackgroundThread(() -> {
             dispatchHide();
         });
-    }
-
-    public int getHeight(boolean includeDecor) {
-        DisplayMetrics dm = new DisplayMetrics();
-        if (includeDecor) {
-            mWindowManager.getDefaultDisplay().getMetrics(dm);
-        } else {
-            mWindowManager.getDefaultDisplay().getRealMetrics(dm);
-        }
-        return dm.heightPixels - mPositionY + mSize / 2;
     }
 
     private void updateAlpha() {
