@@ -380,8 +380,7 @@ public class VolumeDialogImpl implements VolumeDialog,
                 mLocalMediaManager.startScan();
             });
             if (!isLandscape()) {
-                mDialogView.setTranslationX(
-                        (mDialogView.getWidth() / 2.0f) * (!isAudioPanelOnLeftSide() ? 1 : -1));
+                mDialogView.setTranslationX(getAnimatorX());
             }
             mDialogView.setAlpha(0);
             mDialogView.animate()
