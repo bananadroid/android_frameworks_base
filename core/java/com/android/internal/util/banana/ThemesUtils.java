@@ -33,15 +33,15 @@ public class ThemesUtils {
 
     // Switch themes
     private static final String[] SWITCH_THEMES = {
-        "com.android.system.switch.oneplus", // 0
-        "com.android.system.switch.md2", // 1
-        "com.android.system.switch.telegram", // 2
-        "com.android.system.switch.narrow", // 3
-        "com.android.system.switch.contained", // 4
-        "com.android.system.switch.retro", // 5
-        "com.android.system.switch.stockish", // 6
-        "com.android.system.switch.fluid", // 7
-        "com.android.system.switch.android_s", // 8
+        "com.android.system.switch.default",
+        "com.android.system.switch.oneplus",
+        "com.android.system.switch.md2",
+        "com.android.system.switch.telegram",
+        "com.android.system.switch.narrow",
+        "com.android.system.switch.contained",
+        "com.android.system.switch.fluid",
+        "com.android.system.switch.android_s",
+        "com.android.system.switch.android_s_alt",
     };
 
     public static final String[] NAVBAR_STYLES = {
