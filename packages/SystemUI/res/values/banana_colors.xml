@@ -22,8 +22,8 @@
     <color name="qs_icon_active_color">@*android:color/qs_icon_active_color</color>
 
     <!-- Clear all notifications button -->
-    <color name="dismiss_all_background_color">@android:color/white</color>
+    <color name="dismiss_all_background_color">@*android:color/notification_material_background_color</color>
     <color name="dismiss_all_background_color_ripple">#a8a8a8</color>
-    <color name="dismiss_all_icon_color">#8a000000</color>
+    <color name="dismiss_all_icon_color">@*android:color/accent_device_default</color>
 
 </resources>
