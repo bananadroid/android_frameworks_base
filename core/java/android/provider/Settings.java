@@ -6253,6 +6253,14 @@ public final class Settings {
         public static final String GRADIENT_COLOR = "gradient_color";
 
         /**
+         * Wallpaper based accents
+         * @hide
+         */
+        public static final String USE_WALL_ACCENT = "use_wall_accent";
+        public static final String AUTO_ACCENT_TYPE = "auto_accent_type";
+
+
+        /**
          * Whether to use new QS panel bg tint or not
          * @hide
          */
@@ -6465,6 +6473,8 @@ public final class Settings {
             PRIVATE_SETTINGS.add(ACCENT_COLOR);
             PRIVATE_SETTINGS.add(GRADIENT_COLOR);
             PRIVATE_SETTINGS.add(QS_PANEL_BG_USE_NEW_TINT);
+            PRIVATE_SETTINGS.add(USE_WALL_ACCENT);
+            PRIVATE_SETTINGS.add(AUTO_ACCENT_TYPE);
         }
 
         /**
