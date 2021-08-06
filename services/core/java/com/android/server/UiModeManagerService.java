@@ -348,10 +348,8 @@ final class UiModeManagerService extends SystemService {
     private final ContentObserver mAccentObserver = new ContentObserver(mHandler) {
         @Override
         public void onChange(boolean selfChange, Uri uri) {
-            if (uri.equals(System.getUriFor(System.GRADIENT_COLOR))) {
-                applyGradientColor();
-            }
             applyAccentColor();
+            applyGradientColor();
         }
     };
 
@@ -359,6 +357,13 @@ final class UiModeManagerService extends SystemService {
         @Override
         public void onChange(boolean selfChange, Uri uri) {
             applyWallAccentColor();
+        }
+    };
+
+    private final ContentObserver mWallGradientObserver = new ContentObserver(mHandler) {
+        @Override
+        public void onChange(boolean selfChange, Uri uri) {
+            applyWallGradientColor();
         }
     };
 
@@ -465,6 +470,8 @@ final class UiModeManagerService extends SystemService {
                 false, mWallAccentObserver, UserHandle.USER_ALL);
         context.getContentResolver().registerContentObserver(Settings.System.getUriFor(Settings.System.AUTO_ACCENT_TYPE),
                 false, mWallAccentObserver, UserHandle.USER_ALL);
+        context.getContentResolver().registerContentObserver(Settings.System.getUriFor(Settings.System.AUTO_GRADIENT_TYPE),
+                false, mWallGradientObserver, UserHandle.USER_ALL);
     }
 
     private final BroadcastReceiver mOnShutdown = new BroadcastReceiver() {
@@ -709,14 +716,65 @@ final class UiModeManagerService extends SystemService {
         int intColor = System.getIntForUser(context.getContentResolver(),
                 System.GRADIENT_COLOR, 0xFFF3D324, UserHandle.USER_CURRENT);
         String colorHex = String.format("%08x", (0xFFFFFFFF & intColor));
+        setGradientColor(colorHex);
+    }
+
+    private void applyWallGradientColor() {
+        try {
+            final Context context = getContext();
+            int defaultColor = 0x000000;
+            WallpaperManager wallpaperManager = WallpaperManager.getInstance(context);
+            Drawable wallpaperDrawable = wallpaperManager.getDrawable();
+            Bitmap bitmap = ((BitmapDrawable)wallpaperDrawable).getBitmap();
+
+            if (bitmap != null) {
+                Palette p = Palette.from(bitmap).generate();
+                int wallColor = fallbackColor;
+                int ag_type = Settings.System.getInt(context.getContentResolver(),Settings.System.AUTO_GRADIENT_TYPE, 3);
+                if(ag_type == 0){
+                    wallColor = p.getVibrantColor(defaultColor);
+                } else if (ag_type == 1){
+                    wallColor = p.getLightVibrantColor(defaultColor);
+                } else if(ag_type == 2){
+                    wallColor = p.getDominantColor(defaultColor);
+                } else if(ag_type == 3){
+                    wallColor = p.getDominantColor(defaultColor);
+                    wallColor = ColorUtils.blendARGB(wallColor, Color.WHITE, 0.5f);
+                } else if(ag_type == 4){
+                    wallColor = getAvgColor(bitmap);
+                } else {
+                    Slog.d(TAG, "Gradient type not found");
+                }
+
+                // Safety Colors
+                if(wallColor == 0){
+                    if(p.getDominantColor(defaultColor) != 0){
+                        Slog.d(TAG, "Set fallback gradient to Dominant");
+                        wallColor = p.getDominantColor(defaultColor);
+                    } else {
+                        Slog.d(TAG, "Set fallback gradient to Banana Yellow");
+                        wallColor = fallbackColor;
+                    }
+                }
+                String colorHex = String.format("%08x", (0xFFFFFFFF & wallColor));
+                System.putIntForUser(context.getContentResolver(),System.GRADIENT_COLOR, wallColor, UserHandle.USER_CURRENT);
+                setGradientColor(colorHex);
+            }
+        } catch (Exception e) {
+            Slog.d(TAG, "gradient EXEP1" + e);
+        }
+    }
+
+    private void setGradientColor(String colorHex) {
         String gradientVal = SystemProperties.get(GRADIENT_COLOR_PROP);
         if (!gradientVal.equals(colorHex)) {
             SystemProperties.set(GRADIENT_COLOR_PROP, colorHex);
+            Slog.d(TAG, "Set gradient to" + colorHex);
             try {
                 mOverlayManager.reloadAndroidAssets(UserHandle.USER_CURRENT);
                 mOverlayManager.reloadAssets("com.android.settings", UserHandle.USER_CURRENT);
                 mOverlayManager.reloadAssets("com.android.systemui", UserHandle.USER_CURRENT);
-            } catch (Exception e) { }
+            } catch (Exception e) { Slog.d(TAG, "gradient EXEP2" + e); }
         }
     }
 

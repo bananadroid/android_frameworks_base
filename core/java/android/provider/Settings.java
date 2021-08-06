@@ -6258,7 +6258,7 @@ public final class Settings {
          */
         public static final String USE_WALL_ACCENT = "use_wall_accent";
         public static final String AUTO_ACCENT_TYPE = "auto_accent_type";
-
+        public static final String AUTO_GRADIENT_TYPE = "auto_gradient_type";
 
         /**
          * Whether to use new QS panel bg tint or not
@@ -6475,6 +6475,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(QS_PANEL_BG_USE_NEW_TINT);
             PRIVATE_SETTINGS.add(USE_WALL_ACCENT);
             PRIVATE_SETTINGS.add(AUTO_ACCENT_TYPE);
+            PRIVATE_SETTINGS.add(AUTO_GRADIENT_TYPE);
         }
 
         /**
