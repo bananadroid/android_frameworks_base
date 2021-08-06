@@ -15,7 +15,11 @@ public class AccentUtils {
             Arrays.asList("accent_device_default",
                     "accent_device_default_light",
                     "accent_device_default_dark",
+                    "accent_material_light",
+                    "accent_material_dark",
+                    "biometric_dialog_accent",
                     "colorAccent",
+                    "system_notification_accent_color",
                     "alert_dialog_color_accent_light",
                     "alert_dialog_color_accent_dark",
                     "lockscreen_clock_accent_color",
@@ -29,12 +33,13 @@ public class AccentUtils {
                     "dialer_theme_color",
                     "dialer_theme_color_dark",
                     "dialer_theme_color_20pct",
-                    "settings_accent_color",
-                    "settingsHeaderColor",
                     "gradient_start"));
 
     private static ArrayList<String> gradientResources = new ArrayList<>(
-            Arrays.asList("gradient_end"));
+            Arrays.asList("settings_accent_color",
+                    "settingsHeaderColor",
+                    "bootleg_accent_gradient_end_color",
+                    "gradient_end"));
 
     private static final String ACCENT_COLOR_PROP = "persist.sys.theme.accentcolor";
     private static final String GRADIENT_COLOR_PROP = "persist.sys.theme.gradientcolor";
