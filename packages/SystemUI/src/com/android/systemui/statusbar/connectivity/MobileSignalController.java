@@ -18,11 +18,14 @@ package com.android.systemui.statusbar.connectivity;
 import static android.telephony.TelephonyManager.UNKNOWN_CARRIER_ID;
 
 import android.content.Context;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.ContentObserver;
 import android.net.NetworkCapabilities;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.UserHandle;
 import android.provider.Settings;
 import android.provider.Settings.Global;
 import android.telephony.CellSignalStrength;
@@ -104,6 +107,11 @@ public class MobileSignalController extends SignalController<MobileState, Mobile
     private final String[] mMobileStatusHistory = new String[STATUS_HISTORY_SIZE];
     // Where to copy the next state into.
     private int mMobileStatusHistoryIndex;
+
+    // Volte Icon Style
+    private int mVolteIconStyle = 1;
+    // VoWiFi Icon
+    private int mVoWifiIconStyle = 1;
 
     private boolean mIsVowifiAvailable;
 
@@ -208,6 +216,9 @@ public class MobileSignalController extends SignalController<MobileState, Mobile
 
         mImsMmTelManager = ImsMmTelManager.createForSubscriptionId(info.getSubscriptionId());
         mMobileStatusTracker = mobileStatusTrackerFactory.createTracker(mMobileCallback);
+	    Handler mHandler = new Handler();
+        SettingsObserver settingsObserver = new SettingsObserver(mHandler);
+        settingsObserver.observe();
 
         Dependency.get(TunerService.class).addTunable(this, DATA_DISABLED_ICON);
         Dependency.get(TunerService.class).addTunable(this, SHOW_FOURG_ICON);
@@ -235,6 +246,46 @@ public class MobileSignalController extends SignalController<MobileState, Mobile
             default:
                 break;
         }
+    }
+
+    class SettingsObserver extends ContentObserver {
+        SettingsObserver(Handler handler) {
+            super(handler);
+        }
+        void observe() {
+            ContentResolver resolver = mContext.getContentResolver();
+            resolver.registerContentObserver(
+                    Settings.System.getUriFor(Settings.System.VOLTE_ICON_STYLE), false,
+                    this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(
+                    Settings.System.getUriFor(Settings.System.VOWIFI_ICON_STYLE), false,
+                    this, UserHandle.USER_ALL);
+            updateSettings();
+        }
+
+        /*
+         *  @hide
+         */
+        @Override
+        public void onChange(boolean selfChange) {
+            updateSettings();
+        }
+    }
+
+    private void updateSettings() {
+        ContentResolver resolver = mContext.getContentResolver();
+
+        mVolteIconStyle = Settings.System.getIntForUser(resolver,
+                Settings.System.VOLTE_ICON_STYLE, 1,
+                UserHandle.USER_CURRENT);
+
+        mVoWifiIconStyle = Settings.System.getIntForUser(resolver,
+                Settings.System.VOWIFI_ICON_STYLE, 1,
+                UserHandle.USER_CURRENT);
+
+        mConfig = Config.readConfig(mContext);
+        setConfiguration(mConfig);
+        notifyListeners();
     }
 
     void setConfiguration(Config config) {
