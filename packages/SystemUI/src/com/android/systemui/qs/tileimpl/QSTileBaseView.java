@@ -126,7 +126,7 @@ public class QSTileBaseView extends com.android.systemui.plugins.qs.QSTileView {
         // The drawable shown when the tile is active
         foregroundDrawable = new ShapeDrawable(p);
         if (context.getResources().getBoolean(R.bool.config_useMaskForQs)) {
-            if (setQsUseNewTint == 0) {
+            if (setQsUseNewTint == 1) {
                 backgroundDrawable.setTintList(ColorStateList.valueOf(mColorDisabled));
                 backgroundDrawable.setIntrinsicHeight(bgSize);
                 backgroundDrawable.setIntrinsicWidth(bgSize);
@@ -190,28 +190,32 @@ public class QSTileBaseView extends com.android.systemui.plugins.qs.QSTileView {
 
     private void setActiveColor(Context context) {
         if (setQsUseNewTint == 1) {
+            mColorActive = Utils.getColorAttrDefaultColor(context, android.R.attr.colorAccent);
+            mColorDisabled = Utils.getDisabled(context,
+                   Utils.getColorAttrDefaultColor(context, android.R.attr.textColorTertiary));
+        } else if (setQsUseNewTint == 2) {
             mColorActive = ColorUtils.genRandomAccentColor(isThemeDark(context));
             mColorActiveAlpha = adjustAlpha(mColorActive, 0.3f);
             mColorActive = mColorActiveAlpha;
             mColorDisabled = Utils.getDisabled(context,
                    Utils.getColorAttrDefaultColor(context, android.R.attr.textColorTertiary));
-        } else if (setQsUseNewTint == 2) {
+        } else if (setQsUseNewTint == 3) {
             mColorActive = Utils.getColorAttrDefaultColor(context, android.R.attr.colorAccent);
             mColorActiveAlpha = adjustAlpha(mColorActive, 0.3f);
             mColorActive = mColorActiveAlpha;
             mColorDisabled = Utils.getDisabled(context,
                    Utils.getColorAttrDefaultColor(context, android.R.attr.textColorTertiary));
-        } else if (setQsUseNewTint == 3) {
+        } else if (setQsUseNewTint == 4) {
             mColorActive = context.getResources().getColor(R.color.qs_tile_oos_background);
             mColorDisabled = context.getResources().getColor(R.color.op_qs_tile_background_color_disabled);
-        } else if (setQsUseNewTint == 4) {
+        } else if (setQsUseNewTint == 5) {
             mColorActive = Utils.getColorAttrDefaultColor(context, android.R.attr.colorAccent);
             mColorActiveAlpha = adjustAlpha(mColorActive, 0.2f);
             mColorDisabled = mColorActiveAlpha;
         } else {
             mColorActive = Utils.getColorAttrDefaultColor(context, android.R.attr.colorAccent);
             mColorDisabled = Utils.getDisabled(context,
-                   Utils.getColorAttrDefaultColor(context, android.R.attr.textColorTertiary));
+                      Utils.getColorAttrDefaultColor(context, android.R.attr.textColorTertiary));
         }
     }
 
@@ -334,7 +338,7 @@ public class QSTileBaseView extends com.android.systemui.plugins.qs.QSTileView {
         setQsUseNewTint = Settings.System.getIntForUser(getContext().getContentResolver(),
                     Settings.System.QS_PANEL_BG_USE_NEW_TINT, 0, UserHandle.USER_CURRENT);
         boolean allowAnimations = animationsEnabled();
-        if (getResources().getBoolean(R.bool.config_useMaskForQs) && setQsUseNewTint == 0) {
+        if (getResources().getBoolean(R.bool.config_useMaskForQs) && setQsUseNewTint == 1) {
             int newTileState = state.state;
             if (newTileState != mState) {
                 if (allowAnimations) {
