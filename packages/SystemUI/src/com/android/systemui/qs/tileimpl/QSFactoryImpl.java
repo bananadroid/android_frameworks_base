@@ -42,7 +42,6 @@ import com.android.systemui.qs.tiles.DcDimmingTile;
 import com.android.systemui.qs.tiles.DndTile;
 import com.android.systemui.qs.tiles.FlashlightTile;
 import com.android.systemui.qs.tiles.FPSInfoTile;
-import com.android.systemui.qs.tiles.GamingModeTile;
 import com.android.systemui.qs.tiles.HeadsUpTile;
 import com.android.systemui.qs.tiles.HotspotTile;
 import com.android.systemui.qs.tiles.LiveDisplayTile;
@@ -110,7 +109,6 @@ public class QSFactoryImpl implements QSFactory {
     private final Provider<RebootTile> mRebootTileProvider;
     private final Provider<SoundTile> mSoundTileProvider;
     private final Provider<ScreenshotTile> mScreenshotTileProvider;
-    private final Provider<GamingModeTile> mGamingModeTileProvider;
     private final Provider<CompassTile> mCompassTileProvider;
     private final Provider<SyncTile> mSyncTileProvider;
     private final Provider<LocaleTile> mLocaleTileProvider;
@@ -160,7 +158,6 @@ public class QSFactoryImpl implements QSFactory {
             Provider<RebootTile> rebootTileProvider,
             Provider<SoundTile> soundTileProvider,
             Provider<ScreenshotTile> screenshotTileProvider,
-            Provider<GamingModeTile> gamingModeTileProvider,
             Provider<CompassTile> compassTileProvider,
             Provider<SyncTile> syncTileProvider,
             Provider<LocaleTile> localeTileProvider,
@@ -206,7 +203,6 @@ public class QSFactoryImpl implements QSFactory {
         mRebootTileProvider = rebootTileProvider;
         mSoundTileProvider = soundTileProvider;
         mScreenshotTileProvider = screenshotTileProvider;
-        mGamingModeTileProvider = gamingModeTileProvider;
         mCompassTileProvider = compassTileProvider;
         mSyncTileProvider = syncTileProvider;
         mLocaleTileProvider = localeTileProvider;
@@ -290,8 +286,6 @@ public class QSFactoryImpl implements QSFactory {
                 return mSoundTileProvider.get();
             case "screenshot":
                 return mScreenshotTileProvider.get();
-            case "gaming":
-                return mGamingModeTileProvider.get();
             case "compass":
                 return mCompassTileProvider.get();
             case "sync":
