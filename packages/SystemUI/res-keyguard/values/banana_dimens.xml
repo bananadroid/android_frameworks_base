@@ -16,10 +16,6 @@
 -->
 <resources>
 
-    <!-- Burn-in protection -->
-    <dimen name="horizontal_max_swift">3.0dp</dimen>
-    <dimen name="vertical_max_swift">1.0dp</dimen>
-
     <!-- Custom clock -->
     <dimen name="custom_clock_left_padding">50dp</dimen>
     <dimen name="type_clock_left_padding">50dp</dimen>
