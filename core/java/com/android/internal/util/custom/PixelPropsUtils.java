@@ -16,11 +16,11 @@
 package com.android.internal.util.custom;
 
 import android.os.Build;
+import android.util.ArrayMap;
 import android.util.Log;
 
 import java.util.Arrays;
 import java.lang.reflect.Field;
-import java.util.HashMap;
 import java.util.Map;
 
 public class PixelPropsUtils {
@@ -78,28 +78,28 @@ public class PixelPropsUtils {
     };
 
     static {
-        propsToChange = new HashMap<>();
+        propsToChange = new ArrayMap<>(6);
         propsToChange.put("BRAND", "google");
         propsToChange.put("MANUFACTURER", "Google");
         propsToChange.put("DEVICE", "redfin");
         propsToChange.put("PRODUCT", "redfin");
         propsToChange.put("MODEL", "Pixel 5");
         propsToChange.put("FINGERPRINT", "google/redfin/redfin:11/RQ3A.211001.001/7641976:user/release-keys");
-        propsToChangePixelXL = new HashMap<>();
+        propsToChangePixelXL = new ArrayMap<>(6);
         propsToChangePixelXL.put("BRAND", "google");
         propsToChangePixelXL.put("MANUFACTURER", "Google");
         propsToChangePixelXL.put("DEVICE", "marlin");
         propsToChangePixelXL.put("PRODUCT", "marlin");
         propsToChangePixelXL.put("MODEL", "Pixel XL");
         propsToChangePixelXL.put("FINGERPRINT", "google/marlin/marlin:10/QP1A.191005.007.A3/5972272:user/release-keys");
-        propsToChangePixel2 = new HashMap<>();
+        propsToChangePixel2 = new ArrayMap<>(6);
         propsToChangePixel2.put("BRAND", "google");
         propsToChangePixel2.put("MANUFACTURER", "Google");
         propsToChangePixel2.put("DEVICE", "walleye");
         propsToChangePixel2.put("PRODUCT", "walleye");
         propsToChangePixel2.put("MODEL", "Pixel 2");
         propsToChangePixel2.put("FINGERPRINT", "google/walleye/walleye:8.1.0/OPM1.171019.011/4448085:user/release-keys");
-        propsToChangePixel3XL = new HashMap<>();
+        propsToChangePixel3XL = new ArrayMap<>(6);
         propsToChangePixel3XL.put("BRAND", "google");
         propsToChangePixel3XL.put("MANUFACTURER", "Google");
         propsToChangePixel3XL.put("DEVICE", "crosshatch");
@@ -112,45 +112,29 @@ public class PixelPropsUtils {
         if (packageName == null) {
             return;
         }
-        if (Arrays.asList(packagesToChange).contains(packageName)) {
+        if (contains(packagesToChange, packageName)) {
             if (DEBUG) {
                 Log.d(TAG, "Defining props for: " + packageName);
             }
-            for (Map.Entry<String, Object> prop : propsToChange.entrySet()) {
-                String key = prop.getKey();
-                Object value = prop.getValue();
-                setPropValue(key, value);
-            }
+            propsToChange.forEach((key, value) -> setPropValue(key, value));
         }
-        if (Arrays.asList(packagesToChangePixelXL).contains(packageName)){
+        if (contains(packagesToChangePixelXL, packageName)){
             if (DEBUG){
                 Log.d(TAG, "Defining props for: " + packageName);
             }
-            for (Map.Entry<String, Object> prop : propsToChangePixelXL.entrySet()) {
-                String key = prop.getKey();
-                Object value = prop.getValue();
-                setPropValue(key, value);
-            }
+            propsToChangePixelXL.forEach((key, value) -> setPropValue(key, value));
         }
-        if (Arrays.asList(packagesToChangePixel2).contains(packageName)){
+        if (contains(packagesToChangePixel2, packageName)){
             if (DEBUG){
                 Log.d(TAG, "Defining props for: " + packageName);
             }
-            for (Map.Entry<String, Object> prop : propsToChangePixel2.entrySet()) {
-                String key = prop.getKey();
-                Object value = prop.getValue();
-                setPropValue(key, value);
-            }
+            propsToChangePixel2.forEach((key, value) -> setPropValue(key, value));
         }
-        if (Arrays.asList(packagesToChangePixel3XL).contains(packageName)){
+        if (contains(packagesToChangePixel3XL, packageName)){
             if (DEBUG){
                 Log.d(TAG, "Defining props for: " + packageName);
             }
-            for (Map.Entry<String, Object> prop : propsToChangePixel3XL.entrySet()) {
-                String key = prop.getKey();
-                Object value = prop.getValue();
-                setPropValue(key, value);
-            }
+            propsToChangePixel3XL.forEach((key, value) -> setPropValue(key, value));
         }
         // Set proper indexing fingerprint
         if (packageName.equals("com.google.android.settings.intelligence")) {
@@ -163,12 +147,16 @@ public class PixelPropsUtils {
             if (DEBUG) {
                 Log.d(TAG, "Defining prop " + key + " to " + value.toString());
             }
-            Field field = Build.class.getDeclaredField(key);
+            final Field field = Build.class.getDeclaredField(key);
             field.setAccessible(true);
             field.set(null, value);
             field.setAccessible(false);
         } catch (NoSuchFieldException | IllegalAccessException e) {
             Log.e(TAG, "Failed to set prop " + key, e);
         }
+    }
+
+    private static boolean contains(String[] pkgs, String pkg) {
+        return Arrays.binarySearch(pkgs, pkg) != -1;
     }
 }
