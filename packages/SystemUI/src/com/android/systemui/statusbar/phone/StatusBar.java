@@ -893,7 +893,8 @@ public class StatusBar extends SystemUI implements DemoMode,
             FlashlightController flashlightController,
             TaskHelper taskHelper,
             TunerService tunerService,
-            FODCircleViewImpl fodCircleViewImpl) {
+            FODCircleViewImpl fodCircleViewImpl,
+            BurnInProtectionController burnInProtectionController) {
         super(context);
         mNotificationsController = notificationsController;
         mLightBarController = lightBarController;
@@ -974,6 +975,7 @@ public class StatusBar extends SystemUI implements DemoMode,
         mTaskHelper = taskHelper;
         mTunerService = tunerService;
         mFODCircleViewImpl = fodCircleViewImpl;
+        mBurnInProtectionController = burnInProtectionController;
 
         mBubbleExpandListener =
                 (isExpanding, key) -> {
@@ -986,8 +988,7 @@ public class StatusBar extends SystemUI implements DemoMode,
         mFingerprintService = IFingerprintService.Stub.asInterface(
                 ServiceManager.getService(Context.FINGERPRINT_SERVICE));
 
-        mBurnInProtectionController = new BurnInProtectionController(context,
-                this, configurationController);
+        mBurnInProtectionController.setStatusBar(this);
     }
 
     @Override
