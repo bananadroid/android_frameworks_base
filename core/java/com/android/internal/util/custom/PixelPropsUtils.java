@@ -33,48 +33,53 @@ public class PixelPropsUtils {
     private static final Map<String, Object> propsToChangePixel2;
     private static final Map<String, Object> propsToChangePixel3XL;
 
+    // Keep the arrays sorted lexicographically
     private static final String[] packagesToChange = {
-            "com.android.vending",
-            "com.breel.wallpapers20",
-            "com.google.android.apps.customization.pixel",
-            "com.google.android.apps.fitness",
-            "com.google.android.apps.recorder",
-            "com.google.android.apps.subscriptions.red",
-            "com.google.android.apps.tachyon",
-            "com.google.android.apps.turboadapter",
-            "com.google.android.apps.wallpaper.pixel",
-            "com.google.android.as",
-            "com.google.android.dialer",
-            "com.google.android.gms.location.history",
-            "com.google.android.inputmethod.latin",
-            "com.google.android.soundpicker",
-            "com.google.pixel.dynamicwallpapers",
-            "com.google.pixel.livewallpaper",
-            "com.google.android.apps.safetyhub",
-            "com.google.android.apps.turbo",
-            "com.google.android.apps.wallpaper",
-            "com.google.android.apps.maps",
-            "com.google.android.apps.nexuslauncher"
+        "com.android.vending",
+        "com.breel.wallpapers20",
+        "com.google.android.apps.customization.pixel",
+        "com.google.android.apps.fitness",
+        "com.google.android.apps.maps",
+        "com.google.android.apps.nexuslauncher",
+        "com.google.android.apps.recorder",
+        "com.google.android.apps.safetyhub",
+        "com.google.android.apps.subscriptions.red",
+        "com.google.android.apps.tachyon",
+        "com.google.android.apps.turbo",
+        "com.google.android.apps.turboadapter",
+        "com.google.android.apps.wallpaper",
+        "com.google.android.apps.wallpaper.pixel",
+        "com.google.android.as",
+        "com.google.android.dialer",
+        "com.google.android.gms.location.history",
+        "com.google.android.inputmethod.latin",
+        "com.google.android.soundpicker",
+        "com.google.pixel.dynamicwallpapers",
+        "com.google.pixel.livewallpaper"
     };
 
+    // Keep the arrays sorted lexicographically
     private static final String[] packagesToChangePixelXL = {
-            "com.google.android.apps.photos",
-            "com.samsung.accessory.fridaymgr",
-            "com.samsung.accessory.berrymgr",
-            "com.samsung.accessory.neobeanmgr",
-            "com.samsung.android.app.watchmanager",
-            "com.samsung.android.geargplugin",
-            "com.samsung.android.gearnplugin",
-            "com.samsung.android.modenplugin",
-            "com.samsung.android.neatplugin"
+        "com.google.android.apps.photos",
+        "com.samsung.accessory.berrymgr",
+        "com.samsung.accessory.fridaymgr",
+        "com.samsung.accessory.neobeanmgr",
+        "com.samsung.android.app.watchmanager",
+        "com.samsung.android.geargplugin",
+        "com.samsung.android.gearnplugin",
+        "com.samsung.android.modenplugin",
+        "com.samsung.android.neatplugin",
+        "com.samsung.android.waterplugin"
     };
 
+    // Keep the arrays sorted lexicographically
     private static final String[] packagesToChangePixel2 = {
-            "com.google.android.gms"
+        "com.google.android.gms"
     };
 
+    // Keep the arrays sorted lexicographically
     private static final String[] packagesToChangePixel3XL = {
-            "com.google.android.googlequicksearchbox"
+        "com.google.android.googlequicksearchbox"
     };
 
     static {
@@ -157,6 +162,6 @@ public class PixelPropsUtils {
     }
 
     private static boolean contains(String[] pkgs, String pkg) {
-        return Arrays.binarySearch(pkgs, pkg) != -1;
+        return Arrays.binarySearch(pkgs, pkg) >= 0;
     }
 }
