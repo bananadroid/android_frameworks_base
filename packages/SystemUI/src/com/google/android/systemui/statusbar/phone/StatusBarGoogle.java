@@ -80,6 +80,7 @@ import com.android.systemui.statusbar.phone.StatusBarNotificationActivityStarter
 import com.android.systemui.statusbar.phone.StatusBarTouchableRegionManager;
 import com.android.systemui.statusbar.phone.dagger.StatusBarComponent;
 import com.android.systemui.statusbar.policy.BatteryController;
+import com.android.systemui.statusbar.policy.BurnInProtectionController;
 import com.android.systemui.statusbar.policy.ConfigurationController;
 import com.android.systemui.statusbar.policy.DeviceProvisionedController;
 import com.android.systemui.statusbar.policy.FlashlightController;
@@ -186,7 +187,8 @@ public class StatusBarGoogle extends StatusBar {
             FlashlightController flashlightController,
             TaskHelper taskHelper,
             TunerService tunerService,
-            FODCircleViewImpl fodCircleViewImpl) {
+            FODCircleViewImpl fodCircleViewImpl,
+            BurnInProtectionController burnInProtectionController) {
         super(context,
                 notificationsController,
                 lightBarController,
@@ -267,7 +269,8 @@ public class StatusBarGoogle extends StatusBar {
                 flashlightController,
                 taskHelper,
                 tunerService,
-                fodCircleViewImpl);
+                fodCircleViewImpl,
+                burnInProtectionController);
     }
 
     @Override
