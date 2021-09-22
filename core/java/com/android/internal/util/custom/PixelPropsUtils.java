@@ -61,6 +61,7 @@ public class PixelPropsUtils {
     // Keep the arrays sorted lexicographically
     private static final String[] packagesToChangePixelXL = {
         "com.google.android.apps.photos",
+        "com.samsung.accessory",
         "com.samsung.accessory.berrymgr",
         "com.samsung.accessory.fridaymgr",
         "com.samsung.accessory.neobeanmgr",
