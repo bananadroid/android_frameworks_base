@@ -16,6 +16,7 @@
 package com.android.internal.util.custom;
 
 import android.os.Build;
+import android.os.SystemProperties;
 import android.util.Log;
 
 import java.util.Arrays;
@@ -31,6 +32,10 @@ public class PixelPropsUtils {
 
     private static volatile boolean sIsGms = false;
     public static final String PACKAGE_GMS = "com.google.android.gms";
+    private static final boolean PRODUCT_SUPPORT_HIGH_FPS =
+            SystemProperties.getBoolean("ro.device.support_high_fps", false);
+    private static final boolean PRODUCT_SUPPORT_CONTENT_REFRESH =
+            SystemProperties.getBoolean("ro.surface_flinger.use_content_detection_for_refresh_rate", false);
     private static final Map<String, Object> propsToChangePUBG;
     private static final Map<String, Object> propsToChangeCOD;
     private static final Map<String, Object> propsToChangePixel6pro;
@@ -166,24 +171,26 @@ public class PixelPropsUtils {
                 setPropValue(key, value);
             }
         }
-        if (Arrays.asList(packagesToChangePUBG).contains(packageName)){
-            if (DEBUG){
-                Log.d(TAG, "Defining props for: " + packageName);
+        if (PRODUCT_SUPPORT_HIGH_FPS || PRODUCT_SUPPORT_CONTENT_REFRESH) {
+            if (Arrays.asList(packagesToChangePUBG).contains(packageName)){
+                if (DEBUG){
+                    Log.d(TAG, "Defining props for: " + packageName);
+                }
+                for (Map.Entry<String, Object> prop : propsToChangePUBG.entrySet()) {
+                    String key = prop.getKey();
+                    Object value = prop.getValue();
+                    setPropValue(key, value);
+                }
             }
-            for (Map.Entry<String, Object> prop : propsToChangePUBG.entrySet()) {
-                String key = prop.getKey();
-                Object value = prop.getValue();
-                setPropValue(key, value);
-            }
-        }
-        if (Arrays.asList(packagesToChangeCOD).contains(packageName)){
-            if (DEBUG){
-                Log.d(TAG, "Defining props for: " + packageName);
-            }
-            for (Map.Entry<String, Object> prop : propsToChangeCOD.entrySet()) {
-                String key = prop.getKey();
-                Object value = prop.getValue();
-                setPropValue(key, value);
+            if (Arrays.asList(packagesToChangeCOD).contains(packageName)){
+                if (DEBUG){
+                    Log.d(TAG, "Defining props for: " + packageName);
+                }
+                for (Map.Entry<String, Object> prop : propsToChangeCOD.entrySet()) {
+                    String key = prop.getKey();
+                    Object value = prop.getValue();
+                    setPropValue(key, value);
+                }
             }
         }
 
