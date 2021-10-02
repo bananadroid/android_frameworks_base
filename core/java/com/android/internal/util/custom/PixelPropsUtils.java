@@ -31,6 +31,8 @@ public class PixelPropsUtils {
 
     private static volatile boolean sIsGms = false;
     public static final String PACKAGE_GMS = "com.google.android.gms";
+    private static final Map<String, Object> propsToChangePUBG;
+    private static final Map<String, Object> propsToChangeCOD;
 
     private static final Map<String, Object> propsToChange;
     private static final Map<String, ArrayList<String>> propsToKeep;
@@ -67,6 +69,20 @@ public class PixelPropsUtils {
             "com.google.android.apps.translate"
     };
 
+    private static final String[] packagesToChangeCOD = {
+        "com.activision.callofduty.shooter"
+    };
+
+    private static final String[] packagesToChangePUBG = {
+        "com.tencent.ig",
+        "com.pubg.krmobile",
+        "com.vng.pubgmobile",
+        "com.rekoo.pubgm",
+        "com.pubg.imobile",
+        "com.pubg.newstate",
+        "com.gameloft.android.ANMP.GloftA9HM" // Asphalt 9
+    };
+
     static {
         propsToKeep = new HashMap<>();
         propsToKeep.put("com.google.android.settings.intelligence", new ArrayList<String>(Arrays.asList("FINGERPRINT")));
@@ -77,6 +93,10 @@ public class PixelPropsUtils {
         propsToChange.put("PRODUCT", "raven");
         propsToChange.put("MODEL", "Pixel 6 Pro");
         propsToChange.put("FINGERPRINT", "google/raven/raven:12/SD1A.210817.019.A4/7738411:user/release-keys");
+        propsToChangePUBG = new HashMap<>();
+        propsToChangePUBG.put("MODEL", "GM1917");
+        propsToChangeCOD = new HashMap<>();
+        propsToChangeCOD.put("MODEL", "SO-52A");
     }
 
     public static void setProps(String packageName) {
@@ -99,7 +119,29 @@ public class PixelPropsUtils {
                 setPropValue(key, value);
             }
         }
-        // Set proper indexing fingerprint
+
+        if (Arrays.asList(packagesToChangePUBG).contains(packageName)){
+            if (DEBUG){
+                Log.d(TAG, "Defining props for: " + packageName);
+            }
+            for (Map.Entry<String, Object> prop : propsToChangePUBG.entrySet()) {
+                String key = prop.getKey();
+                Object value = prop.getValue();
+                setPropValue(key, value);
+            }
+        }
+        if (Arrays.asList(packagesToChangeCOD).contains(packageName)){
+            if (DEBUG){
+                Log.d(TAG, "Defining props for: " + packageName);
+            }
+            for (Map.Entry<String, Object> prop : propsToChangeCOD.entrySet()) {
+                String key = prop.getKey();
+                Object value = prop.getValue();
+                setPropValue(key, value);
+            }
+        }
+
+       // Set proper indexing fingerprint
         if (packageName.equals("com.google.android.settings.intelligence")){
             setPropValue("FINGERPRINT", Build.DATE);
         }
