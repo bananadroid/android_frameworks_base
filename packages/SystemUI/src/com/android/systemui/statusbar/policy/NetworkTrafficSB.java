@@ -6,36 +6,43 @@ import static com.android.systemui.statusbar.StatusBarIconView.STATE_ICON;
 
 import android.content.Context;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-
 import android.view.View;
-import android.view.ViewGroup;
+
 import com.android.systemui.Dependency;
+import com.android.systemui.R;
 import com.android.systemui.plugins.DarkIconDispatcher;
+import com.android.systemui.plugins.DarkIconDispatcher.DarkReceiver;
 import com.android.systemui.statusbar.StatusIconDisplayable;
 
-public class NetworkTrafficSB extends NetworkTraffic implements StatusIconDisplayable {
+public class NetworkTrafficSB extends NetworkTraffic implements DarkReceiver, StatusIconDisplayable {
 
     public static final String SLOT = "networktraffic";
-
     private int mVisibleState = -1;
+    private boolean mTrafficVisible = false;
     private boolean mSystemIconVisible = true;
     private boolean mKeyguardShowing;
 
+    /*
+     *  @hide
+     */
     public NetworkTrafficSB(Context context) {
         this(context, null);
     }
 
+    /*
+     *  @hide
+     */
     public NetworkTrafficSB(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
+    /*
+     *  @hide
+     */
     public NetworkTrafficSB(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        setLayoutParams(new ViewGroup.LayoutParams(
-            ViewGroup.LayoutParams.WRAP_CONTENT,
-            ViewGroup.LayoutParams.MATCH_PARENT
-        ));
     }
 
     @Override
@@ -65,7 +72,7 @@ public class NetworkTrafficSB extends NetworkTraffic implements StatusIconDispla
 
     @Override
     public boolean isIconVisible() {
-        return mIsEnabled && mLocation == 0 && !mKeyguardShowing;
+        return mIsEnabled && mLocation == 0;
     }
 
     @Override
@@ -74,7 +81,7 @@ public class NetworkTrafficSB extends NetworkTraffic implements StatusIconDispla
     }
 
     @Override
-    public void setVisibleState(int state, boolean animate) {
+    public void setVisibleState(int state, boolean mIsEnabled) {
         if (state == mVisibleState || !mIsEnabled || !mAttached) {
             return;
         }
@@ -90,7 +97,14 @@ public class NetworkTrafficSB extends NetworkTraffic implements StatusIconDispla
                 mSystemIconVisible = false;
                 break;
         }
-        update();
+    }
+
+    @Override
+    protected void makeVisible() {
+        boolean show = mSystemIconVisible && !mKeyguardShowing && mLocation == 0;
+        setVisibility(show ? View.VISIBLE
+                : View.GONE);
+        mVisible = show;
     }
 
     @Override
@@ -101,26 +115,33 @@ public class NetworkTrafficSB extends NetworkTraffic implements StatusIconDispla
     }
 
     @Override
-    public void setDecorColor(int color) {}
+    public void setDecorColor(int color) {
+    }
+
+    @Override
+    protected void updateTrafficDrawable() {
+        Drawable d = getContext().getDrawable(R.drawable.stat_sys_network_traffic_spacer);
+        setCompoundDrawablesWithIntrinsicBounds(null, null, d, null);
+        setTextColor(mTintColor);
+    }
 
     public void setKeyguardShowing(boolean showing) {
         mKeyguardShowing = showing;
         if (showing) {
-            setText("");
             setVisibility(View.GONE);
+            mVisible = false;
+        } else {
+            maybeRestoreVisibility();
         }
-        maybeRestoreVisibility();
     }
 
     private void maybeRestoreVisibility() {
-        if (mSystemIconVisible && getVisibility() == View.GONE && isIconVisible() && restoreViewQuickly()) {
+        if (!mVisible && mIsEnabled && mLocation == 0 && !mKeyguardShowing &&
+                mSystemIconVisible && restoreViewQuickly()) {
             setVisibility(View.VISIBLE);
+            mVisible = true;
+            // then let the traffic handler do its checks
             update();
         }
-    }
-
-    @Override
-    boolean isDisabled() {
-        return !mIsEnabled || mLocation != 0 || !mSystemIconVisible;
     }
 }

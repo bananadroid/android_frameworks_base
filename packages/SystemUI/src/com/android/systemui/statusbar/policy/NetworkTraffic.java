@@ -53,6 +53,7 @@ public class NetworkTraffic extends TextView {
     private int mRefreshInterval = 1;
     private int mIndicatorMode = 0;
 
+    protected boolean mVisible = true;
     private ConnectivityManager mConnectivityManager;
 
     private Handler mTrafficHandler = new Handler() {
@@ -81,6 +82,7 @@ public class NetworkTraffic extends TextView {
             if (shouldHide(rxData, txData, timeDelta)) {
                 setText("");
                 setVisibility(View.GONE);
+                mVisible = false;
             } else if (shouldShowUpload(rxData, txData, timeDelta)) {
                 // Show information for uplink if it's called for
                 CharSequence output = formatOutput(timeDelta, txData, symbol);
@@ -89,7 +91,7 @@ public class NetworkTraffic extends TextView {
                 if (output != getText()) {
                     setText(output);
                 }
-                setVisibility(View.VISIBLE);
+                makeVisible();
             } else {
                 // Add information for downlink if it's called for
                 CharSequence output = formatOutput(timeDelta, rxData, symbol);
@@ -98,19 +100,14 @@ public class NetworkTraffic extends TextView {
                 if (output != getText()) {
                     setText(output);
                 }
-                setVisibility(View.VISIBLE);
+                makeVisible();
             }
 
             // Post delayed message to refresh in ~1000ms
             totalRxBytes = newTotalRxBytes;
             totalTxBytes = newTotalTxBytes;
-            mTrafficHandler.removeCallbacksAndMessages(null);
-            if (!isDisabled()) {
-                mTrafficHandler.sendEmptyMessageDelayed(0, mRefreshInterval * 1000);
-            } else {
-                setText("");
-                setVisibility(View.GONE);
-            }
+            clearHandlerCallbacks();
+            mTrafficHandler.postDelayed(mRunnable, mRefreshInterval * 1000);
         }
 
         private CharSequence formatOutput(long timeDelta, long data, String symbol) {
@@ -166,7 +163,6 @@ public class NetworkTraffic extends TextView {
         }
 
         private boolean shouldHide(long rxData, long txData, long timeDelta) {
-            if (isDisabled()) return true;
             long speedRxKB = (long)(rxData / (timeDelta / 1000f)) / KB;
             long speedTxKB = (long)(txData / (timeDelta / 1000f)) / KB;
             return !getConnectAvailable() ||
@@ -192,6 +188,13 @@ public class NetworkTraffic extends TextView {
         return getConnectAvailable() && mAutoHideThreshold == 0;
     }
 
+    protected void makeVisible() {
+        boolean show = mLocation == 1;
+        setVisibility(show ? View.VISIBLE
+                : View.GONE);
+        mVisible = show;
+    }
+
     /*
      *  @hide
      */
@@ -213,11 +216,12 @@ public class NetworkTraffic extends TextView {
         super(context, attrs, defStyle);
         final Resources resources = getResources();
         mTintColor = resources.getColor(android.R.color.white);
-        mConnectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        setMode();
         Handler mHandler = new Handler();
+        mConnectivityManager =
+                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         SettingsObserver settingsObserver = new SettingsObserver(mHandler);
         settingsObserver.observe();
-        setMode();
         update();
     }
 
@@ -228,7 +232,7 @@ public class NetworkTraffic extends TextView {
             mAttached = true;
             IntentFilter filter = new IntentFilter();
             filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-            getContext().registerReceiver(mIntentReceiver, filter, null, getHandler());
+            mContext.registerReceiver(mIntentReceiver, filter, null, getHandler());
         }
         update();
     }
@@ -236,8 +240,9 @@ public class NetworkTraffic extends TextView {
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
+        clearHandlerCallbacks();
         if (mAttached) {
-            getContext().unregisterReceiver(mIntentReceiver);
+            mContext.unregisterReceiver(mIntentReceiver);
             mAttached = false;
         }
     }
@@ -250,13 +255,20 @@ public class NetworkTraffic extends TextView {
         return new RelativeSizeSpan(0.65f);
     }
 
+    private Runnable mRunnable = new Runnable() {
+        @Override
+        public void run() {
+            mTrafficHandler.sendEmptyMessage(0);
+        }
+    };
+
     class SettingsObserver extends ContentObserver {
         SettingsObserver(Handler handler) {
             super(handler);
         }
 
         void observe() {
-            ContentResolver resolver = getContext().getContentResolver();
+            ContentResolver resolver = mContext.getContentResolver();
             resolver.registerContentObserver(Settings.System
                     .getUriFor(Settings.System.NETWORK_TRAFFIC_STATE), false,
                     this, UserHandle.USER_ALL);
@@ -280,7 +292,7 @@ public class NetworkTraffic extends TextView {
         @Override
         public void onChange(boolean selfChange) {
             setMode();
-            getHandler().post(NetworkTraffic.this::update);
+            update();
         }
     }
 
@@ -290,7 +302,7 @@ public class NetworkTraffic extends TextView {
             String action = intent.getAction();
             if (action == null) return;
             if (action.equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
-                getHandler().post(NetworkTraffic.this::update);
+                update();
             }
         }
     };
@@ -301,20 +313,22 @@ public class NetworkTraffic extends TextView {
     }
 
     protected void update() {
-        setText("");
-        setVisibility(View.GONE);
-        setSpacingAndFonts();
-        updateTrafficDrawable();
-        if (mIsEnabled && mAttached && !isDisabled()) {
-            totalRxBytes = TrafficStats.getTotalRxBytes();
-            lastUpdateTime = SystemClock.elapsedRealtime();
-            mTrafficHandler.sendEmptyMessage(1);
+        if (mIsEnabled) {
+            if (mAttached) {
+                totalRxBytes = TrafficStats.getTotalRxBytes();
+                lastUpdateTime = SystemClock.elapsedRealtime();
+                mTrafficHandler.sendEmptyMessage(1);
+            }
             return;
+        } else {
+            clearHandlerCallbacks();
         }
+        setVisibility(View.GONE);
+        mVisible = false;
     }
 
     protected void setMode() {
-        ContentResolver resolver = getContext().getContentResolver();
+        ContentResolver resolver = mContext.getContentResolver();
         mIsEnabled = Settings.System.getIntForUser(resolver,
                 Settings.System.NETWORK_TRAFFIC_STATE, 0,
                 UserHandle.USER_CURRENT) == 1;
@@ -330,29 +344,33 @@ public class NetworkTraffic extends TextView {
         mRefreshInterval = Settings.System.getIntForUser(resolver,
                 Settings.System.NETWORK_TRAFFIC_REFRESH_INTERVAL, 1,
                 UserHandle.USER_CURRENT);
+        setGravity(Gravity.CENTER);
+        setMaxLines(2);
+        setSpacingAndFonts();
+        updateTrafficDrawable();
+        setVisibility(View.GONE);
+        mVisible = false;
+    }
+
+    private void clearHandlerCallbacks() {
+        mTrafficHandler.removeCallbacks(mRunnable);
+        mTrafficHandler.removeMessages(0);
+        mTrafficHandler.removeMessages(1);
     }
 
     protected void updateTrafficDrawable() {
-        if (isDisabled()) return;
-        setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
+        setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
         setTextColor(mTintColor);
     }
 
     protected void setSpacingAndFonts() {
-        if (isDisabled()) return;
         String txtFont = getResources().getString(com.android.internal.R.string.config_headlineFontFamily);
         setTypeface(Typeface.create(txtFont, Typeface.BOLD));
         setLineSpacing(0.80f, 0.80f);
-        setGravity(Gravity.CENTER);
-        setMaxLines(2);
     }
 
     public void onDensityOrFontScaleChanged() {
         setSpacingAndFonts();
-        getHandler().post(NetworkTraffic.this::update);
-    }
-
-    boolean isDisabled() {
-        return !mIsEnabled || mLocation != 1;
+        update();
     }
 }
