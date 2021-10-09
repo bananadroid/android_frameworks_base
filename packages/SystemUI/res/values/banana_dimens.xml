@@ -63,4 +63,7 @@
 
     <!-- Expanded QS clock/date paddings -->
     <dimen name="qs_expanded_clock_date_padding_start">8dp</dimen>
+
+    <!-- Maximum vertical offset of statusbar for burn-in protection -->
+    <dimen name="status_bar_offset_max_y">4dp</dimen>
 </resources>
