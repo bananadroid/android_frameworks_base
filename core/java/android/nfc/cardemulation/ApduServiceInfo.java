@@ -531,6 +531,7 @@ public class ApduServiceInfo implements Parcelable {
     public String toString() {
         StringBuilder out = new StringBuilder("ApduService: ");
         out.append(getComponent());
+        out.append(", UID: " + mUid);
         out.append(", description: " + mDescription);
         out.append(", Static AID Groups: ");
         for (AidGroup aidGroup : mStaticAidGroups.values()) {
@@ -549,7 +550,8 @@ public class ApduServiceInfo implements Parcelable {
         if (!(o instanceof ApduServiceInfo)) return false;
         ApduServiceInfo thatService = (ApduServiceInfo) o;
 
-        return thatService.getComponent().equals(this.getComponent());
+        return thatService.getComponent().equals(this.getComponent())
+                && thatService.getUid() == this.getUid();
     }
 
     @Override
@@ -622,8 +624,9 @@ public class ApduServiceInfo implements Parcelable {
     };
 
     public void dump(FileDescriptor fd, PrintWriter pw, String[] args) {
-        pw.println("    " + getComponent() +
-                " (Description: " + getDescription() + ")");
+        pw.println("    " + getComponent()
+                + " (Description: " + getDescription() + ")"
+                + " (UID: " + getUid() + ")");
         if (mOnHost) {
             pw.println("    On Host Service");
         } else {
