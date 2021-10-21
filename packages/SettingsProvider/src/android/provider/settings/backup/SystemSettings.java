@@ -90,6 +90,7 @@ public class SystemSettings {
         Settings.System.ALARM_ALERT,
         Settings.System.NOTIFICATION_LIGHT_PULSE,
         Settings.System.MEDIA_ARTWORK_BLUR_ENABLED,
-        Settings.System.MEDIA_ARTWORK_BLUR_RADIUS
+        Settings.System.MEDIA_ARTWORK_BLUR_RADIUS,
+        Settings.System.TORCH_POWER_BUTTON_GESTURE,
     };
 }
