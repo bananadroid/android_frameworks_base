@@ -226,6 +226,11 @@ final class DefaultPermissionGrantPolicy {
         NOTIFICATION_PERMISSIONS.add(Manifest.permission.POST_NOTIFICATIONS);
     }
 
+    private static final Set<String> SUSPEND_APP_PERMISSIONS = new ArraySet<>();
+    static {
+        SUSPEND_APP_PERMISSIONS.add(Manifest.permission.SUSPEND_APPS);
+    }
+
     private static final Set<String> WALLPAPER_PERMISSIONS = new ArraySet<>();
     static {
         WALLPAPER_PERMISSIONS.add(Manifest.permission.BIND_WALLPAPER);
