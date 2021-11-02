@@ -95,7 +95,7 @@ public class PixelPropsUtils {
         propsToChange.put("DEVICE", "redfin");
         propsToChange.put("PRODUCT", "redfin");
         propsToChange.put("MODEL", "Pixel 5");
-        propsToChange.put("FINGERPRINT", "google/redfin/redfin:12/SP1A.210812.015/7679548:user/release-keys");
+        propsToChange.put("FINGERPRINT", "google/redfin/redfin:12/SP1A.211105.003/7757856:user/release-keys");
         propsToChangePUBG = new HashMap<>();
         propsToChangePUBG.put("MODEL", "GM1917");
         propsToChangeCOD = new HashMap<>();
@@ -106,7 +106,7 @@ public class PixelPropsUtils {
         propsToChangePixel6pro.put("DEVICE", "raven");
         propsToChangePixel6pro.put("PRODUCT", "raven");
         propsToChangePixel6pro.put("MODEL", "Pixel 6 Pro");
-        propsToChangePixel6pro.put("FINGERPRINT", "google/raven/raven:12/SD1A.210817.019.A4/7738411:user/release-keys");
+        propsToChangePixel6pro.put("FINGERPRINT", "google/raven/raven:12/SD1A.210817.036/7805805:user/release-keys");
     }
 
     public static void setProps(String packageName) {
