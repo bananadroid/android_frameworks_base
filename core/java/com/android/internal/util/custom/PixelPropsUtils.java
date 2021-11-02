@@ -82,7 +82,8 @@ public class PixelPropsUtils {
             "com.google.android.apps.googleassistant",
             "com.google.android.apps.maps",
             "com.google.android.apps.nexuslauncher",
-            "com.google.android.apps.translate"
+            "com.google.android.apps.translate",
+            "com.google.android.apps.security.securityhub"
     };
 
     static {
@@ -105,7 +106,7 @@ public class PixelPropsUtils {
         propsToChangePixel6pro.put("DEVICE", "raven");
         propsToChangePixel6pro.put("PRODUCT", "raven");
         propsToChangePixel6pro.put("MODEL", "Pixel 6 Pro");
-        propsToChangePixel6pro.put("FINGERPRINT", "google/raven/raven:12/SD1A.210817.019.A4/7738411:user/release-keys")
+        propsToChangePixel6pro.put("FINGERPRINT", "google/raven/raven:12/SD1A.210817.019.A4/7738411:user/release-keys");
     }
 
     public static void setProps(String packageName) {
