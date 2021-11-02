@@ -33,12 +33,29 @@ public class PixelPropsUtils {
     public static final String PACKAGE_GMS = "com.google.android.gms";
     private static final Map<String, Object> propsToChangePUBG;
     private static final Map<String, Object> propsToChangeCOD;
-
+    private static final Map<String, Object> propsToChangePixel6pro;
     private static final Map<String, Object> propsToChange;
     private static final Map<String, ArrayList<String>> propsToKeep;
     private static final String[] extraPackagesToChange = {
            "com.android.vending",
-            "com.breel.wallpapers20",
+           "com.google.android.gms"
+    };
+
+    private static final String[] packagesToChangeCOD = {
+        "com.activision.callofduty.shooter"
+    };
+
+    private static final String[] packagesToChangePUBG = {
+        "com.tencent.ig",
+        "com.pubg.krmobile",
+        "com.vng.pubgmobile",
+        "com.rekoo.pubgm",
+        "com.pubg.imobile",
+        "com.pubg.newstate",
+        "com.gameloft.android.ANMP.GloftA9HM" // Asphalt 9
+    };
+
+    private static final String[] packagesToChangePixel6pro = {
             "com.google.android.apps.customization.pixel",
             "com.google.android.apps.fitness",
             "com.google.android.apps.recorder",
@@ -64,23 +81,8 @@ public class PixelPropsUtils {
             "com.google.android.apps.wallpaper",
             "com.google.android.apps.googleassistant",
             "com.google.android.apps.maps",
-            "com.google.android.gms",
             "com.google.android.apps.nexuslauncher",
             "com.google.android.apps.translate"
-    };
-
-    private static final String[] packagesToChangeCOD = {
-        "com.activision.callofduty.shooter"
-    };
-
-    private static final String[] packagesToChangePUBG = {
-        "com.tencent.ig",
-        "com.pubg.krmobile",
-        "com.vng.pubgmobile",
-        "com.rekoo.pubgm",
-        "com.pubg.imobile",
-        "com.pubg.newstate",
-        "com.gameloft.android.ANMP.GloftA9HM" // Asphalt 9
     };
 
     static {
@@ -89,14 +91,21 @@ public class PixelPropsUtils {
         propsToChange = new HashMap<>();
         propsToChange.put("BRAND", "google");
         propsToChange.put("MANUFACTURER", "Google");
-        propsToChange.put("DEVICE", "raven");
-        propsToChange.put("PRODUCT", "raven");
-        propsToChange.put("MODEL", "Pixel 6 Pro");
-        propsToChange.put("FINGERPRINT", "google/raven/raven:12/SD1A.210817.019.A4/7738411:user/release-keys");
+        propsToChange.put("DEVICE", "redfin");
+        propsToChange.put("PRODUCT", "redfin");
+        propsToChange.put("MODEL", "Pixel 5");
+        propsToChange.put("FINGERPRINT", "google/redfin/redfin:12/SP1A.210812.015/7679548:user/release-keys");
         propsToChangePUBG = new HashMap<>();
         propsToChangePUBG.put("MODEL", "GM1917");
         propsToChangeCOD = new HashMap<>();
         propsToChangeCOD.put("MODEL", "SO-52A");
+        propsToChangePixel6pro = new HashMap<>();
+        propsToChangePixel6pro.put("BRAND", "google");
+        propsToChangePixel6pro.put("MANUFACTURER", "Google");
+        propsToChangePixel6pro.put("DEVICE", "raven");
+        propsToChangePixel6pro.put("PRODUCT", "raven");
+        propsToChangePixel6pro.put("MODEL", "Pixel 6 Pro");
+        propsToChangePixel6pro.put("FINGERPRINT", "google/raven/raven:12/SD1A.210817.019.A4/7738411:user/release-keys")
     }
 
     public static void setProps(String packageName) {
@@ -119,7 +128,16 @@ public class PixelPropsUtils {
                 setPropValue(key, value);
             }
         }
-
+        if (Arrays.asList(packagesToChangePixel6pro).contains(packageName)){
+            if (DEBUG){
+                Log.d(TAG, "Defining props for: " + packageName);
+            }
+            for (Map.Entry<String, Object> prop : propsToChangePixel6pro.entrySet()) {
+                String key = prop.getKey();
+                Object value = prop.getValue();
+                setPropValue(key, value);
+            }
+        }
         if (Arrays.asList(packagesToChangePUBG).contains(packageName)){
             if (DEBUG){
                 Log.d(TAG, "Defining props for: " + packageName);
