@@ -16,6 +16,7 @@
  */
 package com.android.internal.util.custom;
 
+import android.app.Application;
 import android.os.Build;
 import android.os.SystemProperties;
 import android.util.Log;
@@ -134,7 +135,10 @@ public class PixelPropsUtils {
             return;
         }
         if (packageName.equals(PACKAGE_GMS)) {
-            sIsGms = true;
+                final String processName = Application.getProcessName();
+                if (processName.equals("com.google.android.gms.unstable")) {
+                    sIsGms = true;
+                }
         }
         if (Arrays.asList(packagesToKeep).contains(packageName)) {
             return;
