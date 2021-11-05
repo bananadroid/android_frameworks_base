@@ -75,6 +75,7 @@ import com.android.systemui.util.settings.SecureSettings;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Executor;
 
@@ -220,10 +221,12 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
     void updateBlockedIcons() {
         mBlockedIcons.clear();
 
+        mBlockedIcons.addAll(Arrays.asList(getResources().getStringArray(
+                R.array.config_collapsed_statusbar_icon_blocklist)));
+
         if (mSecureSettings.getInt(Settings.Secure.STATUS_BAR_SHOW_VIBRATE_ICON, 0) == 0) {
             mBlockedIcons.add(getString(com.android.internal.R.string.status_bar_volume));
         }
-        mBlockedIcons.add(getString(com.android.internal.R.string.status_bar_call_strength));
 
         mMainExecutor.execute(() -> mDarkIconManager.setBlockList(mBlockedIcons));
     }
