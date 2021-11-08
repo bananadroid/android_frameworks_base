@@ -246,6 +246,8 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
+import android.content.res.ResourcesImpl;
+import android.view.DisplayInfo;
 /**
  * This manages the execution of the main thread in an
  * application process, scheduling and executing activities,
@@ -518,6 +520,8 @@ public final class ActivityThread extends ClientTransactionHandler
 
     /** A client side controller to handle process level configuration changes. */
     private ConfigurationController mConfigurationController;
+
+    private float mDssScale = 1.0f;
 
     /** Activity client record, used for bookkeeping for the real {@link Activity} instance. */
     public static final class ActivityClientRecord {
@@ -874,6 +878,8 @@ public final class ActivityThread extends ClientTransactionHandler
 
         AutofillOptions autofillOptions;
 
+        float dssScale;
+
         /**
          * Content capture options for the application - when null, it means ContentCapture is not
          * enabled for the package.
@@ -1094,6 +1100,7 @@ public final class ActivityThread extends ClientTransactionHandler
                 boolean enableBinderTracking, boolean trackAllocation,
                 boolean isRestrictedBackupMode, boolean persistent, Configuration config,
                 CompatibilityInfo compatInfo, Map services, Bundle coreSettings,
+                float dssScale,
                 String buildSerial, AutofillOptions autofillOptions,
                 ContentCaptureOptions contentCaptureOptions, long[] disabledCompatChanges,
                 SharedMemory serializedSystemFontMap) {
@@ -1143,6 +1150,7 @@ public final class ActivityThread extends ClientTransactionHandler
             data.initProfilerInfo = profilerInfo;
             data.buildSerial = buildSerial;
             data.autofillOptions = autofillOptions;
+            data.dssScale = dssScale;
             data.contentCaptureOptions = contentCaptureOptions;
             data.disabledCompatChanges = disabledCompatChanges;
             data.mSerializedSystemFontMap = serializedSystemFontMap;
@@ -6434,6 +6442,8 @@ public final class ActivityThread extends ClientTransactionHandler
         // Note when this process has started.
         Process.setStartTimes(SystemClock.elapsedRealtime(), SystemClock.uptimeMillis());
 
+        mDssScale = data.dssScale;
+
         AppCompatCallbacks.install(data.disabledCompatChanges);
         // Let libcore handle any compat changes after installing the list of compat changes.
         AppSpecializationHooks.handleCompatChangesBeforeBindingApplication();
@@ -7921,4 +7931,11 @@ public final class ActivityThread extends ClientTransactionHandler
     private native void nPurgePendingResources();
     private native void nDumpGraphicsInfo(FileDescriptor fd);
     private native void nInitZygoteChildHeapProfiling();
+
+    /**
+     * Gets scale value on appplication layer
+     */
+    public float getDssScale() {
+        return mDssScale;
+    }
 }
