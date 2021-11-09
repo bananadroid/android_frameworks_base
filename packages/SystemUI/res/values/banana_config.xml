@@ -40,4 +40,8 @@
 
     <!-- Allow devices override audio panel location to the left side -->
     <bool name="config_audioPanelOnLeftSide">false</bool>
+
+    <!-- SystemUI Google -->
+    <string name="config_systemUIFactoryComponent">org.pixelexperience.systemui.SystemUIGoogleFactory</string>
+    <string name="config_systemUIVendorServiceComponent">org.pixelexperience.systemui.GoogleServices</string>
 </resources>
