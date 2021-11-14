@@ -114,4 +114,7 @@
     <java-symbol type="string" name="config_batterymeterLandBoltPathStyleB" />
     <java-symbol type="string" name="config_batterymeterLandPowersavePathStyleB" />
     <java-symbol type="string" name="config_batterymeterLandErrorPerimeterPathStyleB" />
+
+    <!-- Whether devices suports in-display fingerprint when screen is off -->
+    <java-symbol type="bool" name="config_supportScreenOffUdfps" />
 </resources>
