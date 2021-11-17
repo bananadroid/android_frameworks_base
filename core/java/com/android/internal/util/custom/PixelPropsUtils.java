@@ -38,8 +38,7 @@ public class PixelPropsUtils {
     private static final Map<String, Object> propsToChange;
     private static final Map<String, ArrayList<String>> propsToKeep;
     private static final String[] extraPackagesToChange = {
-           "com.android.vending",
-           "com.google.android.gms"
+           "com.android.vending"
     };
 
     private static final String[] packagesToChangeCOD = {
@@ -57,34 +56,39 @@ public class PixelPropsUtils {
     };
 
     private static final String[] packagesToChangePixel6pro = {
-            "com.google.android.apps.customization.pixel",
-            "com.google.android.apps.fitness",
-            "com.google.android.apps.recorder",
-            "com.google.android.apps.subscriptions.red",
-            "com.google.android.apps.tachyon",
-            "com.google.android.apps.turboadapter",
-            "com.google.android.apps.wallpaper.pixel",
-            "com.google.android.as",
-            "com.google.android.dialer",
-            "com.google.android.deskclock",
-            "com.google.android.apps.youtube.music",
-            "com.google.android.apps.podcasts",
-            "com.google.android.apps.nbu.files",
-            "com.google.android.contacts",
-            "com.google.android.apps.messaging",
-            "com.google.android.gms.location.history",
-            "com.google.android.inputmethod.latin",
-            "com.google.android.soundpicker",
-            "com.google.pixel.dynamicwallpapers",
-            "com.google.pixel.livewallpaper",
-            "com.google.android.apps.safetyhub",
-            "com.google.android.apps.turbo",
-            "com.google.android.apps.wallpaper",
-            "com.google.android.apps.googleassistant",
-            "com.google.android.apps.maps",
-            "com.google.android.apps.nexuslauncher",
-            "com.google.android.apps.translate",
-            "com.google.android.apps.security.securityhub"
+        "com.breel.wallpapers20",
+        "com.google.android.apps.customization.pixel",
+        "com.google.android.apps.fitness",
+        "com.google.android.apps.gcs",
+        "com.google.android.apps.maps",
+        "com.google.android.apps.nexuslauncher",
+        "com.google.android.apps.messaging",
+        "com.google.android.apps.pixelmigrate",
+        "com.google.android.apps.recorder",
+        "com.google.android.apps.safetyhub",
+        "com.google.android.apps.subscriptions.red",
+        "com.google.android.apps.tachyon",
+        "com.google.android.apps.turbo",
+        "com.google.android.apps.turboadapter",
+        "com.google.android.apps.wallpaper",
+        "com.google.android.apps.wallpaper.pixel",
+        "com.google.android.apps.wellbeing",
+        "com.google.android.as",
+        "com.google.android.configupdater",
+        "com.google.android.dialer",
+        "com.google.android.ext.services",
+        "com.google.android.gms.location.history",
+        "com.google.android.googlequicksearchbox",
+        "com.google.android.gsf",
+        "com.google.android.gms",
+        "com.google.android.inputmethod.latin",
+        "com.google.android.soundpicker",
+        "com.google.intelligence.sense",
+        "com.google.android.apps.googleassistant",
+        "com.google.pixel.dynamicwallpapers",
+        "com.google.pixel.livewallpaper",
+        "com.google.android.apps.translate",
+        "com.google.android.apps.security.securityhub"
     };
 
     private static final String[] packagesToChangePixelXL = {
