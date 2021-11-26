@@ -120,6 +120,25 @@ class FooterActionsController @Inject constructor(
         }
     }
 
+    private val onLongClickListener = View.OnLongClickListener { v ->
+        // Don't do anything until views are unhidden. Don't do anything if the tap looks
+        // suspicious.
+        if (!buttonsVisible() || falsingManager.isFalseTap(FalsingManager.LOW_PENALTY)) {
+            return@OnLongClickListener false
+        }
+
+        if (v === settingsButton) {
+            if (!deviceProvisionedController.isCurrentUserSetup) {
+                // If user isn't setup just unlock the device and dump them back at SUW.
+                activityStarter.postQSRunnableDismissingKeyguard {}
+                return@OnLongClickListener false
+            }
+            startSubSettingsActivity()
+            return@OnLongClickListener true
+        }
+        return@OnLongClickListener false
+    }
+
     private fun buttonsVisible(): Boolean {
         return when (buttonsVisibleState) {
             EXPANDED -> expanded
@@ -150,6 +169,18 @@ class FooterActionsController @Inject constructor(
                 true /* dismissShade */, animationController)
     }
 
+    private fun startSubSettingsActivity() {
+        val intent = Intent()
+        intent.setClassName("com.android.settings",
+                "com.android.settings.Settings\$BananaGearActivity")
+        val animationController = settingsButtonContainer?.let {
+            ActivityLaunchAnimator.Controller.fromView(
+                    it,
+                    InteractionJankMonitor.CUJ_SHADE_APP_LAUNCH_FROM_SETTINGS_BUTTON)
+            }
+        activityStarter.startActivity(intent, true /* dismissShade */, animationController)
+    }
+
     @VisibleForTesting
     public override fun onViewAttached() {
         if (showPMLiteButton) {
@@ -159,6 +190,7 @@ class FooterActionsController @Inject constructor(
             powerMenuLite.visibility = View.GONE
         }
         settingsButton.setOnClickListener(onClickListener)
+        settingsButton.setOnLongClickListener(onLongClickListener)
         editButton.setOnClickListener(View.OnClickListener { view: View? ->
             if (falsingManager.isFalseTap(FalsingManager.LOW_PENALTY)) {
                 return@OnClickListener
