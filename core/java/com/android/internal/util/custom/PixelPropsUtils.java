@@ -39,14 +39,15 @@ public class PixelPropsUtils {
             SystemProperties.getBoolean("ro.surface_flinger.use_content_detection_for_refresh_rate", false);
     private static final Map<String, Object> propsToChangePUBG;
     private static final Map<String, Object> propsToChangeCOD;
-    private static final Map<String, Object> propsToChangePixel6pro;
+    private static final Map<String, Object> propsToChangePixel6;
+    private static final Map<String, Object> propsToChangePixel5;
     private static final Map<String, Object> propsToChangePixelXL;
-    private static final Map<String, Object> propsToChange;
     private static final Map<String, ArrayList<String>> propsToKeep;
     private static final String[] extraPackagesToChange = {
-	   "com.google.android.tts",
-           "com.google.android.googlequicksearchbox",
-           "com.google.android.apps.recorder"
+        "com.android.vending",
+        "com.breel.wallpapers20",
+        "com.snapchat.android"
+
     };
 
     private static final String[] packagesToChangeCOD = {
@@ -63,38 +64,10 @@ public class PixelPropsUtils {
         "com.gameloft.android.ANMP.GloftA9HM" // Asphalt 9
     };
 
-    private static final String[] packagesToChangePixel6pro = {
-        "com.android.vending",
-        "com.breel.wallpapers20",
-        "com.google.android.apps.customization.pixel",
-        "com.google.android.apps.fitness",
-        "com.google.android.apps.gcs",
-        "com.google.android.apps.maps",
-        "com.google.android.apps.nexuslauncher",
-        "com.google.android.apps.messaging",
-        "com.google.android.apps.pixelmigrate",
-        "com.google.android.apps.safetyhub",
-        "com.google.android.apps.subscriptions.red",
-        "com.google.android.apps.tachyon",
-        "com.google.android.apps.turbo",
-        "com.google.android.apps.turboadapter",
-        "com.google.android.apps.wallpaper",
-        "com.google.android.apps.wallpaper.pixel",
-        "com.google.android.apps.wellbeing",
-        "com.google.android.as",
-        "com.google.android.configupdater",
-        "com.google.android.dialer",
-        "com.google.android.ext.services",
-        "com.google.android.gms.location.history",
-        "com.google.android.gsf",
-        "com.google.android.gms",
-        "com.google.android.inputmethod.latin",
-        "com.google.android.soundpicker",
-        "com.google.intelligence.sense",
-        "com.google.pixel.dynamicwallpapers",
-        "com.google.pixel.livewallpaper",
-        "com.google.android.apps.translate",
-        "com.google.android.apps.security.securityhub"
+    private static final String[] packagesToChangePixel5 = {
+           "com.google.android.tts",
+           "com.google.android.googlequicksearchbox",
+           "com.google.android.apps.recorder"
     };
 
     private static final String[] packagesToChangePixelXL = {
@@ -104,24 +77,24 @@ public class PixelPropsUtils {
     static {
         propsToKeep = new HashMap<>();
         propsToKeep.put("com.google.android.settings.intelligence", new ArrayList<String>(Arrays.asList("FINGERPRINT")));
-        propsToChange = new HashMap<>();
-        propsToChange.put("BRAND", "google");
-        propsToChange.put("MANUFACTURER", "Google");
-        propsToChange.put("DEVICE", "redfin");
-        propsToChange.put("PRODUCT", "redfin");
-        propsToChange.put("MODEL", "Pixel 5");
-        propsToChange.put("FINGERPRINT", "google/redfin/redfin:12/SP1A.211105.003/7757856:user/release-keys");
+        propsToChangePixel6 = new HashMap<>();
+        propsToChangePixel6.put("BRAND", "google");
+        propsToChangePixel6.put("MANUFACTURER", "Google");
+        propsToChangePixel6.put("DEVICE", "raven");
+        propsToChangePixel6.put("PRODUCT", "raven");
+        propsToChangePixel6.put("MODEL", "Pixel 6 Pro");
+        propsToChangePixel6.put("FINGERPRINT", "google/raven/raven:12/SD1A.210817.036/7805805:user/release-keys");
         propsToChangePUBG = new HashMap<>();
         propsToChangePUBG.put("MODEL", "GM1917");
         propsToChangeCOD = new HashMap<>();
         propsToChangeCOD.put("MODEL", "SO-52A");
-        propsToChangePixel6pro = new HashMap<>();
-        propsToChangePixel6pro.put("BRAND", "google");
-        propsToChangePixel6pro.put("MANUFACTURER", "Google");
-        propsToChangePixel6pro.put("DEVICE", "raven");
-        propsToChangePixel6pro.put("PRODUCT", "raven");
-        propsToChangePixel6pro.put("MODEL", "Pixel 6 Pro");
-        propsToChangePixel6pro.put("FINGERPRINT", "google/raven/raven:12/SD1A.210817.037/7862242:user/release-keys");
+        propsToChangePixel5 = new HashMap<>();
+        propsToChangePixel5.put("BRAND", "google");
+        propsToChangePixel5.put("MANUFACTURER", "Google");
+        propsToChangePixel5.put("DEVICE", "redfin");
+        propsToChangePixel5.put("PRODUCT", "redfin");
+        propsToChangePixel5.put("MODEL", "Pixel 5");
+        propsToChangePixel5.put("FINGERPRINT", "google/redfin/redfin:12/SP1A.211105.003/7757856:user/release-keys");
         propsToChangePixelXL = new HashMap<>();
         propsToChangePixelXL.put("BRAND", "google");
         propsToChangePixelXL.put("MANUFACTURER", "Google");
@@ -132,35 +105,31 @@ public class PixelPropsUtils {
     }
 
     public static void setProps(String packageName) {
-        if (packageName == null){
+        if (packageName == null) {
             return;
         }
         if (packageName.equals(PACKAGE_GMS)) {
             sIsGms = true;
         }
-        if (packageName.startsWith("com.google.") || Arrays.asList(extraPackagesToChange).contains(packageName)){
+        if (packageName.startsWith("com.google.") || Arrays.asList(extraPackagesToChange).contains(packageName)) {
+            Map<String, Object> propsToChange = propsToChangePixel6;
+
+            if (Arrays.asList(packagesToChangePixel5).contains(packageName)) {
+                propsToChange = propsToChangePixel5;
+            }
+
             if (DEBUG) Log.d(TAG, "Defining props for: " + packageName);
             for (Map.Entry<String, Object> prop : propsToChange.entrySet()) {
                 String key = prop.getKey();
                 Object value = prop.getValue();
-                if (propsToKeep.containsKey(packageName) && propsToKeep.get(packageName).contains(key)){
+                if (propsToKeep.containsKey(packageName) && propsToKeep.get(packageName).contains(key)) {
                     if (DEBUG) Log.d(TAG, "Not defining " + key + " prop for: " + packageName);
                     continue;
                 }
                 if (DEBUG) Log.d(TAG, "Defining " + key + " prop for: " + packageName);
                 setPropValue(key, value);
+                }
             }
-        }
-        if (Arrays.asList(packagesToChangePixel6pro).contains(packageName)){
-            if (DEBUG){
-                Log.d(TAG, "Defining props for: " + packageName);
-            }
-            for (Map.Entry<String, Object> prop : propsToChangePixel6pro.entrySet()) {
-                String key = prop.getKey();
-                Object value = prop.getValue();
-                setPropValue(key, value);
-            }
-        }
         if (Arrays.asList(packagesToChangePixelXL).contains(packageName)){
             if (DEBUG){
                 Log.d(TAG, "Defining props for: " + packageName);
