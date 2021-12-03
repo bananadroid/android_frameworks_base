@@ -744,6 +744,8 @@ public final class NotificationPanelViewController implements Dumpable {
     private boolean mReTickerStatus;
     private boolean mReTickerColored;
 
+    private boolean mBlockedGesturalNavigation = false;
+
     private final Runnable mFlingCollapseRunnable = () -> fling(0, false /* expand */,
             mNextCollapseSpeedUpFactor, false /* expandBecauseOfFalsing */);
     private final Runnable mAnimateKeyguardBottomAreaInvisibleEndRunnable =
@@ -4818,6 +4820,10 @@ public final class NotificationPanelViewController implements Dumpable {
                 /* notifyForDescendants */ false,
                 mSettingsChangeObserver
         );
+    }
+
+    public void setBlockedGesturalNavigation(boolean blocked) {
+        mBlockedGesturalNavigation = blocked;
     }
 
     /** Updates notification panel-specific flags on {@link SysUiState}. */
