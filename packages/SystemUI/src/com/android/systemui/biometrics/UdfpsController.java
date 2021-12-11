@@ -49,6 +49,7 @@ import android.os.UserHandle;
 import android.os.VibrationAttributes;
 import android.os.VibrationEffect;
 import android.provider.Settings;
+import android.util.BoostFramework;
 import android.util.Log;
 import android.util.RotationUtils;
 import android.view.LayoutInflater;
@@ -186,6 +187,11 @@ public class UdfpsController implements DozeReceiver {
 
     private boolean mFrameworkDimming;
     private int[][] mBrightnessAlphaArray;
+
+    // Boostframework for UDFPS
+    private BoostFramework mPerf = null;
+    private boolean mIsPerfLockAcquired = false;
+    private static final int BOOST_DURATION_TIMEOUT = 2000;
 
     @VisibleForTesting
     public static final VibrationAttributes UDFPS_VIBRATION_ATTRIBUTES =
@@ -703,6 +709,7 @@ public class UdfpsController implements DozeReceiver {
 
         udfpsHapticsSimulator.setUdfpsController(this);
         udfpsShell.setUdfpsOverlayController(mUdfpsOverlayController);
+        mPerf = new BoostFramework();
         mUdfpsVendorCode = mContext.getResources().getInteger(R.integer.config_udfpsVendorCode);
         mSecureSettings = secureSettings;
         updateScreenOffFodState();
@@ -797,6 +804,13 @@ public class UdfpsController implements DozeReceiver {
             mOrientationListener.enable();
         } else {
             Log.v(TAG, "showUdfpsOverlay | the overlay is already showing");
+        }
+
+        if (mPerf != null && !mIsPerfLockAcquired) {
+            mPerf.perfHint(BoostFramework.VENDOR_HINT_FIRST_LAUNCH_BOOST,
+                    null,
+                    BOOST_DURATION_TIMEOUT);
+            mIsPerfLockAcquired = true;
         }
     }
 
@@ -1013,6 +1027,11 @@ public class UdfpsController implements DozeReceiver {
         }
         mIsAodInterruptActive = false;
         updateViewDimAmount(false);
+
+        if (mPerf != null && mIsPerfLockAcquired) {
+            mPerf.perfLockRelease();
+            mIsPerfLockAcquired = false;
+        }
     }
 
     private static int interpolate(int x, int xa, int xb, int ya, int yb) {
