@@ -23,7 +23,12 @@ import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.content.ComponentName;
 import android.content.res.Configuration;
+import android.database.ContentObserver;
 import android.metrics.LogMaker;
+import android.net.Uri;
+import android.os.Handler;
+import android.os.UserHandle;
+import android.provider.Settings;
 import android.view.View;
 
 import com.android.internal.annotations.VisibleForTesting;
@@ -60,7 +65,7 @@ import kotlin.jvm.functions.Function1;
  * @param <T> Type of QSPanel.
  */
 public abstract class QSPanelControllerBase<T extends QSPanel> extends ViewController<T>
-        implements Dumpable{
+        implements Dumpable {
     protected final QSTileHost mHost;
     private final QSCustomizerController mQsCustomizerController;
     private final boolean mUsingMediaPlayer;
@@ -80,6 +85,9 @@ public abstract class QSPanelControllerBase<T extends QSPanel> extends ViewContr
     private float mRevealExpansion;
 
     private final QSHost.Callback mQSHostCallback = this::setTiles;
+
+    private SettingsObserver mSettingsObserver;
+    private Handler mHandler;
 
     @VisibleForTesting
     protected final QSPanel.OnConfigurationChangedListener mOnConfigurationChangedListener =
@@ -183,6 +191,9 @@ public abstract class QSPanelControllerBase<T extends QSPanel> extends ViewContr
         }
         mRecords.clear();
         mDumpManager.unregisterDumpable(mView.getDumpableTag());
+        mHandler = new Handler();
+        mSettingsObserver = new SettingsObserver(mHandler);
+        mSettingsObserver.observe();
     }
 
     protected QSTileRevealController createTileRevealController() {
@@ -418,6 +429,38 @@ public abstract class QSPanelControllerBase<T extends QSPanel> extends ViewContr
     }
 
     void setBrightnessMirror(BrightnessMirrorController brightnessMirrorController) { }
+
+    private class SettingsObserver extends ContentObserver {
+
+        SettingsObserver(Handler handler) {
+            super(handler);
+        }
+
+        void observe() {
+            getContext().getContentResolver().registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.OMNI_QS_TILE_VERTICAL_LAYOUT),
+                    false, this, UserHandle.USER_ALL);
+            getContext().getContentResolver().registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.OMNI_QS_LAYOUT_COLUMNS),
+                    false, this, UserHandle.USER_ALL);
+            getContext().getContentResolver().registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.OMNI_QS_LAYOUT_COLUMNS_LANDSCAPE),
+                    false, this, UserHandle.USER_ALL);
+            update();
+        }
+
+        @Override
+        public void onChange(boolean selfChange, Uri uri) {
+            update();
+        }
+
+        public void update() {
+            if (mView.getTileLayout() != null) {
+                mView.getTileLayout().updateSettings();
+                setTiles();
+            }
+        }
+    }
 
     /** */
     public static final class TileRecord extends QSPanel.Record {

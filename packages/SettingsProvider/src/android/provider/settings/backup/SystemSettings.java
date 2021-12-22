@@ -92,5 +92,8 @@ public class SystemSettings {
         Settings.System.VIBRATE_ON_DISCONNECT,
         Settings.System.FLASHLIGHT_ON_CALL,
         Settings.System.VOLUME_PANEL_ON_LEFT,
+        Settings.System.OMNI_QS_TILE_VERTICAL_LAYOUT,
+        Settings.System.OMNI_QS_LAYOUT_COLUMNS_LANDSCAPE,
+        Settings.System.OMNI_QS_LAYOUT_COLUMNS,
     };
 }
