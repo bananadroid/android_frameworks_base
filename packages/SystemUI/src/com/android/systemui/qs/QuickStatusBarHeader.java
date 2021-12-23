@@ -53,6 +53,7 @@ import com.android.systemui.statusbar.phone.StatusBarIconController;
 import com.android.systemui.statusbar.phone.StatusBarIconController.TintedIconManager;
 import com.android.systemui.statusbar.phone.StatusIconContainer;
 import com.android.systemui.statusbar.policy.Clock;
+import com.android.systemui.statusbar.policy.NetworkTraffic;
 import com.android.systemui.statusbar.policy.VariableDateView;
 import com.android.systemui.util.LargeScreenUtils;
 import com.android.systemui.tuner.TunerService;
@@ -82,6 +83,8 @@ public class QuickStatusBarHeader extends FrameLayout implements TunerService.Tu
             "system:" + Settings.System.QS_SHOW_BATTERY_ESTIMATE;
     private static final String QS_WEATHER_POSITION =
             "system:" + Settings.System.QS_WEATHER_POSITION;
+    private static final String NETWORK_TRAFFIC_LOCATION =
+            "system:" + Settings.System.NETWORK_TRAFFIC_LOCATION;
 
     private boolean mExpanded;
     private boolean mQsDisabled;
@@ -147,6 +150,9 @@ public class QuickStatusBarHeader extends FrameLayout implements TunerService.Tu
     private final ActivityStarter mActivityStarter;
     private final Vibrator mVibrator;
 
+    private NetworkTraffic mNetworkTraffic;
+    private boolean mShowNetworkTraffic;
+
     public QuickStatusBarHeader(Context context, AttributeSet attrs) {
         super(context, attrs);
         mActivityStarter = Dependency.get(ActivityStarter.class);
@@ -202,6 +208,8 @@ public class QuickStatusBarHeader extends FrameLayout implements TunerService.Tu
 
         mBatteryIcon = findViewById(R.id.batteryIcon);
 
+        mNetworkTraffic = findViewById(R.id.network_traffic);
+
         Configuration config = mContext.getResources().getConfiguration();
         setDatePrivacyContainersWidth(config.orientation == Configuration.ORIENTATION_LANDSCAPE);
 
@@ -220,7 +228,8 @@ public class QuickStatusBarHeader extends FrameLayout implements TunerService.Tu
                 QS_BATTERY_LOCATION,
                 QS_SHOW_BATTERY_PERCENT,
                 QS_SHOW_BATTERY_ESTIMATE,
-                QS_WEATHER_POSITION);
+                QS_WEATHER_POSITION,
+                NETWORK_TRAFFIC_LOCATION);
     }
 
     void onAttach(TintedIconManager iconManager,
@@ -477,7 +486,8 @@ public class QuickStatusBarHeader extends FrameLayout implements TunerService.Tu
         if (showBattery) {
             mBatteryIcon.setVisibility(visibility ? View.GONE : View.VISIBLE);
         }
-        if (visibility || showBattery) {
+        mNetworkTraffic.setChipVisibility(visibility);
+        if (visibility || showBattery || mShowNetworkTraffic) {
             // Animates the icons and battery indicator from alpha 0 to 1, when the chip is visible
             mIconsAlphaAnimator = mIconsAlphaAnimatorFixed;
             mIconsAlphaAnimator.setPosition(mKeyguardExpansionFraction);
@@ -746,6 +756,11 @@ public class QuickStatusBarHeader extends FrameLayout implements TunerService.Tu
                 mQQSWeather =
                        TunerService.parseInteger(newValue, 2);
                 updateQSWeatherPosition();
+                break;
+            case NETWORK_TRAFFIC_LOCATION:
+                mShowNetworkTraffic =
+                        TunerService.parseInteger(newValue, 0) == 2;
+                setChipVisibility(mPrivacyChip.getVisibility() == View.VISIBLE);
                 break;
             default:
                 break;
