@@ -4348,10 +4348,12 @@ public class NotificationPanelViewController extends PanelViewController {
             if (inPinnedMode) {
                 mHeadsUpExistenceChangedRunnable.run();
                 updateNotificationTranslucency();
+                 mView.setBackgroundColor(Color.TRANSPARENT);
             } else {
                 setHeadsUpAnimatingAway(true);
                 mNotificationStackScrollLayoutController.runAfterAnimationFinished(
                         mHeadsUpExistenceChangedRunnable);
+                        mView.setBackgroundColor(Color.TRANSPARENT);
             }
             updateGestureExclusionRect();
             mHeadsUpPinnedMode = inPinnedMode;
