@@ -32,6 +32,7 @@ import static org.mockito.Mockito.when;
 import static org.robolectric.shadow.api.Shadow.extract;
 
 import android.annotation.UserIdInt;
+import android.app.Application;
 import android.app.ApplicationPackageManager;
 import android.app.usage.StorageStats;
 import android.app.usage.StorageStatsManager;
@@ -109,6 +110,7 @@ public class ApplicationsStateRoboTest {
     private ApplicationsState mApplicationsState;
     private Session mSession;
 
+    private Application mApplication;
 
     @Mock
     private Callbacks mCallbacks;
@@ -189,6 +191,7 @@ public class ApplicationsStateRoboTest {
         ShadowContextImpl shadowContext = Shadow.extract(
                 RuntimeEnvironment.application.getBaseContext());
         shadowContext.setSystemService(Context.STORAGE_STATS_SERVICE, mStorageStatsManager);
+        mApplication = spy(RuntimeEnvironment.application);
         StorageStats storageStats = new StorageStats();
         storageStats.codeBytes = 10;
         storageStats.cacheBytes = 30;
@@ -206,8 +209,7 @@ public class ApplicationsStateRoboTest {
             anyInt() /* flags */, anyInt() /* userId */)).thenReturn(new ParceledListSlice(infos));
 
         ApplicationsState.sInstance = null;
-        mApplicationsState =
-            ApplicationsState.getInstance(RuntimeEnvironment.application, mPackageManagerService);
+        mApplicationsState = ApplicationsState.getInstance(mApplication, mPackageManagerService);
         mApplicationsState.clearEntries();
 
         mSession = mApplicationsState.newSession(mCallbacks);
@@ -700,6 +702,23 @@ public class ApplicationsStateRoboTest {
         mApplicationsState.doResumeIfNeededLocked();
 
         verify(mApplicationsState, never()).clearEntries();
+    }
+
+    @Test
+    public void testDefaultSession_enabledAppIconCache_shouldSkipPreloadIcon() {
+        when(mApplication.getPackageName()).thenReturn("com.android.settings");
+        mSession.onResume();
+
+        addApp(HOME_PACKAGE_NAME, 1);
+        addApp(LAUNCHABLE_PACKAGE_NAME, 2);
+        mSession.rebuild(ApplicationsState.FILTER_EVERYTHING, ApplicationsState.SIZE_COMPARATOR);
+        processAllMessages();
+        verify(mCallbacks).onRebuildComplete(mAppEntriesCaptor.capture());
+
+        List<AppEntry> appEntries = mAppEntriesCaptor.getValue();
+        for (AppEntry appEntry : appEntries) {
+            assertThat(appEntry.icon).isNull();
+        }
     }
 
     private void setupDoResumeIfNeededLocked(ArrayList<ApplicationInfo> ownerApps,
