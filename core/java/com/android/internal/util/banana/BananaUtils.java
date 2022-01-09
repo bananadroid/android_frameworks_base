@@ -231,4 +231,16 @@ public class BananaUtils {
     public static int getQuickQSColumnsCount(Context context, int resourceCount) {
         return getQSColumnsCount(context, resourceCount);
     }
+
+    public static boolean getQSTileLabelHide(Context context) {
+        return Settings.System.getIntForUser(context.getContentResolver(),
+                Settings.System.OMNI_QS_TILE_LABEL_HIDE,
+                0, UserHandle.USER_CURRENT) != 0;
+    }
+
+    public static boolean getQSTileVerticalLayout(Context context, int defaultValue) {
+        return Settings.System.getIntForUser(context.getContentResolver(),
+                Settings.System.OMNI_QS_TILE_VERTICAL_LAYOUT,
+                defaultValue, UserHandle.USER_CURRENT) != 0;
+    }
 }

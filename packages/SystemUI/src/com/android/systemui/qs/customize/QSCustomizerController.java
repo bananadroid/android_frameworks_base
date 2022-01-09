@@ -70,6 +70,9 @@ public class QSCustomizerController extends ViewController<QSCustomizer> {
     private final UiEventLogger mUiEventLogger;
     private final Toolbar mToolbar;
 
+    private SettingsObserver mSettingsObserver;
+    private Handler mHandler;
+
     private final OnMenuItemClickListener mOnMenuItemClickListener = new OnMenuItemClickListener() {
         @Override
         public boolean onMenuItemClick(MenuItem item) {
