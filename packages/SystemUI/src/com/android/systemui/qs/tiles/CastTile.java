@@ -322,5 +322,5 @@ public class CastTile extends QSTileImpl<BooleanState> {
         public void onKeyguardShowingChanged() {
             refreshState();
         }
-    };
+    }
 }
