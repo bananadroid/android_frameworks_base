@@ -46,7 +46,7 @@ import com.android.systemui.statusbar.policy.LocationController.LocationChangeCa
 import javax.inject.Inject;
 
 /** Quick settings tile: Location **/
-public class LocationTile extends QSTileImpl<BooleanState> {
+public class LocationTile extends SecureQSTile<BooleanState> {
 
     private static final int BATTERY_SAVING = Settings.Secure.LOCATION_MODE_BATTERY_SAVING;
     private static final int SENSORS_ONLY = Settings.Secure.LOCATION_MODE_SENSORS_ONLY;
@@ -54,7 +54,6 @@ public class LocationTile extends QSTileImpl<BooleanState> {
     private static final int OFF = Settings.Secure.LOCATION_MODE_OFF;
 
     private final LocationController mController;
-    private final KeyguardStateController mKeyguard;
     private final Callback mCallback = new Callback();
 
     @Inject
@@ -71,11 +70,9 @@ public class LocationTile extends QSTileImpl<BooleanState> {
             KeyguardStateController keyguardStateController
     ) {
         super(host, backgroundLooper, mainHandler, falsingManager, metricsLogger,
-                statusBarStateController, activityStarter, qsLogger);
+                statusBarStateController, activityStarter, qsLogger, keyguardStateController);
         mController = locationController;
-        mKeyguard = keyguardStateController;
         mController.observe(this, mCallback);
-        mKeyguard.observe(this, mCallback);
     }
 
     @Override
@@ -89,14 +86,11 @@ public class LocationTile extends QSTileImpl<BooleanState> {
     }
 
     @Override
-    protected void handleClick(@Nullable View view) {
-        if (mKeyguard.isMethodSecure() && mKeyguard.isShowing()) {
-            mActivityStarter.postQSRunnableDismissingKeyguard(() -> {
-                mHost.openPanels();
-                switchMode();
-            });
+    protected void handleClick(@Nullable View view, boolean keyguardShowing) {
+        if (checkKeyguard(view, keyguardShowing)) {
             return;
         }
+        mHost.openPanels();
         switchMode();
     }
 
@@ -128,6 +122,8 @@ public class LocationTile extends QSTileImpl<BooleanState> {
         // Work around for bug 15916487: don't show location tile on top of lock screen. After the
         // bug is fixed, this should be reverted to only hiding it on secure lock screens:
         // state.visible = !(mKeyguard.isMethodSecure() && mKeyguard.isShowing());
+        // YAAP note: mKeyguard is removed since there is no longer use for it
+        // Use the function from SecureQSTile instead when AOSP fixes the bug above correctly 
         checkIfRestrictionEnforcedByAdminOnly(state, UserManager.DISALLOW_SHARE_LOCATION);
         if (state.disabledByPolicy == false) {
             checkIfRestrictionEnforcedByAdminOnly(state, UserManager.DISALLOW_CONFIG_LOCATION);
