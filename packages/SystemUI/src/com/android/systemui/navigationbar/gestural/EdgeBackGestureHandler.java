@@ -1391,6 +1391,9 @@ public class EdgeBackGestureHandler implements PluginListener<NavigationEdgeBack
             case 14: // Powermenu
                 BananaUtils.showPowerMenu();
                 break;
+            case 15: // Partial Screenshot
+                BananaUtils.takeScreenshot(false);
+                break;
         }
     }
 
