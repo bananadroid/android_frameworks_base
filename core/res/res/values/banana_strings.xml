@@ -72,4 +72,7 @@
     <!-- SystemUI Restart -->
     <string name="systemui_restart_title">SystemUI restart required</string>
     <string name="systemui_restart_message">For all changes to take effect, a SystemUI restart is required. Restart SystemUI now?</string>
+
+    <!-- App lock -->
+    <string name="unlock_application">Unlock <xliff:g id="label" example="Telegram">%1$s</xliff:g></string>
 </resources>
