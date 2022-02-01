@@ -256,4 +256,8 @@
     <!-- Transparent color variants -->
     <java-symbol type="color" name="system_accent_transparent_background_light" />
     <java-symbol type="color" name="system_accent_transparent_background_dark" />
+
+    <!-- App lock -->
+    <java-symbol type="string" name="unlock_application" />
+    <java-symbol type="array" name="config_appLockAllowedSystemApps" />
 </resources>
