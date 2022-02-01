@@ -7624,6 +7624,7 @@ public class PackageManagerService extends IPackageManager.Stub
             }
 
             File frameworkDir = new File(Environment.getRootDirectory(), "framework");
+            File extFrameworkDir = new File(Environment.getSystemExtDirectory(), "framework");
 
             final VersionInfo ver = mSettings.getInternalVersion();
             mIsUpgrade =
@@ -7696,6 +7697,9 @@ public class PackageManagerService extends IPackageManager.Stub
                 throw new IllegalStateException(
                         "Failed to load frameworks package; check log for warnings");
             }
+            scanDirTracedLI(extFrameworkDir, systemParseFlags,
+                    systemScanFlags | SCAN_NO_DEX | SCAN_AS_PRIVILEGED, 0,
+                    packageParser, executorService);
             for (int i = 0, size = mDirsToScanAsSystem.size(); i < size; i++) {
                 final ScanPartition partition = mDirsToScanAsSystem.get(i);
                 if (partition.getPrivAppFolder() != null) {
