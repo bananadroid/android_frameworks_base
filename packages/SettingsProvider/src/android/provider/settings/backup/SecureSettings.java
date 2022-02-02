@@ -220,5 +220,6 @@ public class SecureSettings {
         Settings.Secure.GESTURE_NAVBAR_LENGTH_MODE,
         Settings.Secure.MEDIA_CONTROLS_ALWAYS_SHOW_TIME,
         Settings.Secure.MEDIA_CONTROLS_SQUIGGLE,
+        Settings.Secure.DISABLE_SECURE_TILES_ON_LOCKSCREEN,
     };
 }
