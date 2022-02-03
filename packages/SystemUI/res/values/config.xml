@@ -105,6 +105,9 @@
         <item>accessibility_display_inversion_enabled:inversion</item>
     </string-array>
 
+    <!-- Use collapsed layout for media player in landscape QQS -->
+    <bool name="config_quickSettingsMediaLandscapeCollapsed">true</bool>
+
     <!-- Show indicator for Wifi on but not connected. -->
     <bool name="config_showWifiIndicatorWhenEnabled">false</bool>
 
