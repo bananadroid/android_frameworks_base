@@ -126,6 +126,7 @@ android_library {
         "vendor-pixelatoms-java",
         "colorkt",
         "themelib",
+        "faceunlock_framework",
     ],
     manifest: "AndroidManifest.xml",
     additional_manifests: ["SystemUIGoogle-Manifest.xml"],
