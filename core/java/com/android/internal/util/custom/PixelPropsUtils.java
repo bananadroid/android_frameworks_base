@@ -67,10 +67,14 @@ public class PixelPropsUtils {
     };
 
     private static final String[] packagesToChangePixel5 = {
-           "com.google.android.tts",
-           "com.google.android.googlequicksearchbox",
-           "com.google.android.apps.recorder",
-            "com.google.android.apps.turboadapter"
+	    "com.android.vending", 
+            "com.google.android.apps.recorder",
+	    "com.google.android.apps.turbo", 
+            "com.google.android.apps.turboadapter",
+	    "com.google.android.dialer",
+            "com.google.android.googlequicksearchbox",
+	    "com.google.android.tts",
+            "com.google.audio.hearing.visualization.accessibility.scribe"
     };
 
     private static final String[] packagesToChangePixelXL = {
