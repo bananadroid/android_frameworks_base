@@ -686,7 +686,7 @@ public class UdfpsController implements DozeReceiver {
         udfpsHapticsSimulator.setUdfpsController(this);
         mUdfpsVendorCode = mContext.getResources().getInteger(R.integer.config_udfpsVendorCode);
 
-        if (com.android.internal.util.banana.BananaUtils.isPackageInstalled(mContext, "com.banana.udfps.resources")) {
+        if (com.android.internal.util.banana.BananaUtils.isPackageInstalled(mContext, "com.banana.udfps.animations")) {
             mUdfpsAnimation = new UdfpsAnimation(mContext, mWindowManager, mSensorProps);
         }
     }

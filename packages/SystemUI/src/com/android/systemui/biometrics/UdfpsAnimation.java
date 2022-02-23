@@ -83,7 +83,7 @@ public class UdfpsAnimation extends ImageView {
         mMaxBurnInOffsetY = context.getResources()
             .getDimensionPixelSize(R.dimen.udfps_burn_in_offset_y);
 
-        mUdfpsAnimationPackage = "com.banana.udfps.resources";
+        mUdfpsAnimationPackage = "com.banana.udfps.animations";
 
         mAnimationSize = mContext.getResources().getDimensionPixelSize(R.dimen.udfps_animation_size);
         mAnimationOffset = mContext.getResources().getDimensionPixelSize(R.dimen.udfps_animation_offset);
