@@ -120,6 +120,8 @@ public class QSPanel extends LinearLayout implements Tunable {
     protected QSTileLayout mTileLayout;
     private float mSquishinessFraction = 1f;
     private final ArrayMap<View, Integer> mChildrenLayoutTop = new ArrayMap<>();
+    private ViewGroup mMediaHostView;
+    private boolean mShouldMoveMediaOnExpansion = true;
 
     public QSPanel(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -291,9 +293,15 @@ public class QSPanel extends LinearLayout implements Tunable {
         for (int i = 0; i < getChildCount(); i++) {
             View child = getChildAt(i);
             if (move) {
-                int top = mChildrenLayoutTop.get(child);
-                child.setLeftTopRightBottom(child.getLeft(), top + tileHeightOffset,
-                        child.getRight(), top + tileHeightOffset + child.getHeight());
+                int topOffset;
+                if (child == mMediaHostView && !mShouldMoveMediaOnExpansion) {
+                    topOffset = 0;
+                } else {
+                    topOffset = tileHeightOffset;
+                }
+                int top = Objects.requireNonNull(mChildrenLayoutTop.get(child));
+                child.setLeftTopRightBottom(child.getLeft(), top + topOffset,
+                        child.getRight(), top + topOffset + child.getHeight());
             }
             if (child == mTileLayout) {
                 move = true;
@@ -508,6 +516,7 @@ public class QSPanel extends LinearLayout implements Tunable {
         if (!mUsingMediaPlayer) {
             return;
         }
+        mMediaHostView = hostView;
         ViewGroup newParent = horizontal ? mHorizontalLinearLayout : this;
         ViewGroup currentParent = (ViewGroup) hostView.getParent();
         if (currentParent != newParent) {
@@ -809,6 +818,19 @@ public class QSPanel extends LinearLayout implements Tunable {
         updateMediaHostContentMargins(mediaHostView);
         updateHorizontalLinearLayoutMargins();
         updatePadding();
+    }
+
+    /**
+     * Sets whether the media container should move during the expansion of the QS Panel.
+     *
+     * As the QS Panel expands and the QS unsquish, the views below the QS tiles move to adapt to
+     * the new height of the QS tiles.
+     *
+     * In some cases this might not be wanted for media. One example is when there is a transition
+     * animation of the media container happening on split shade lock screen.
+     */
+    public void setShouldMoveMediaOnExpansion(boolean shouldMoveMediaOnExpansion) {
+        mShouldMoveMediaOnExpansion = shouldMoveMediaOnExpansion;
     }
 
     private class H extends Handler {

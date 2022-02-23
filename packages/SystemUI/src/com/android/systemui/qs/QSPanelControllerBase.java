@@ -427,6 +427,16 @@ public abstract class QSPanelControllerBase<T extends QSPanel> extends ViewContr
         return mView.getBrightnessView();
     }
 
+    /** Sets whether we are currently on lock screen. */
+    public void setIsOnKeyguard(boolean isOnKeyguard) {
+        boolean isOnSplitShadeLockscreen = mShouldUseSplitNotificationShade && isOnKeyguard;
+        // When the split shade is expanding on lockscreen, the media container transitions from the
+        // lockscreen to QS.
+        // We have to prevent the media container position from moving during the transition to have
+        // a smooth translation animation without stuttering.
+        mView.setShouldMoveMediaOnExpansion(!isOnSplitShadeLockscreen);
+    }
+
     void setBrightnessMirror(BrightnessMirrorController brightnessMirrorController) { }
 
     private class SettingsObserver extends ContentObserver {
