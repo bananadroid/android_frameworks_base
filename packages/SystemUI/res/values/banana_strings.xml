@@ -95,4 +95,10 @@
 
     <!-- Google Lens Screenshot string -->
     <string name="lensss">Lens</string>
+
+    <!-- QR QS Tile -->
+    <string name="quick_settings_qr_label">QR code</string>
+    <string name="quick_settings_qr_description">Tap to scan</string>
+    <string name="qr_code_activity_title">QR code scanner</string>
+    <string name="delete_text_history">Clear history</string>
 </resources>

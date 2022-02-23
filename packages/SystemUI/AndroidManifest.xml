@@ -829,6 +829,13 @@
             android:excludeFromRecents="true"
             android:visibleToInstantApps="true"/>
 
+        <!-- started from QRCodeTile -->
+        <activity 
+            android:name="com.android.systemui.qs.tiles.qr.ScannerActivity"
+            android:icon="@drawable/icon"
+            android:label="@string/qr_code_activity_title"
+            android:excludeFromRecents="true"/>
+
         <!-- Doze with notifications, run in main sysui process for every user  -->
         <service
             android:name=".doze.DozeService"

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/system_background_ssos">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:layout_height="wrap_content">
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_marginTop="15dp"
+            android:layout_gravity="center"
+            android:layout_height="wrap_content">
+            <View
+                android:id="@+id/rectangle_8"
+                android:layout_width="337dp"
+                android:layout_height="577dp"
+                android:layout_gravity="center"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:background="@drawable/rectangle_8" />
+            <android.widget.ListView
+                android:id="@+id/listOfHistory"
+                android:layout_width="256dp"
+                android:layout_height="482dp"
+                android:divider="@color/system_background_ssos"
+                android:layout_gravity="center" />
+        </FrameLayout>
+        <Button
+            android:id="@+id/scanBtn"
+            android:layout_width="164dp"
+            android:layout_height="57dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/extended_fa"
+            android:text="@string/quick_settings_qr_description"
+            android:textAllCaps="false" 
+            android:textColor="@android:color/system_accent1_900" />
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

@@ -127,6 +127,7 @@ android_library {
         "colorkt",
         "themelib",
         "faceunlock_framework",
+        "VendorSupport-Libs",
     ],
     manifest: "AndroidManifest.xml",
     additional_manifests: ["SystemUIGoogle-Manifest.xml"],

@@ -51,6 +51,7 @@ import com.android.systemui.qs.tiles.AODTile;
 import com.android.systemui.qs.tiles.HeadsUpTile;
 import com.android.systemui.qs.tiles.CaffeineTile;
 import com.android.systemui.util.leak.GarbageMonitor;
+import com.android.systemui.qs.tiles.QRCodeTile;
 
 import org.pixelexperience.systemui.qs.tiles.BatterySaverTileGoogle;
 import org.pixelexperience.systemui.qs.tiles.ReverseChargingTile;
@@ -99,6 +100,7 @@ public class QSFactoryImplGoogle extends QSFactoryImpl {
             Provider<CaffeineTile> caffeineTileProvider,
             Provider<HeadsUpTile> headsUpTileProvider,
             Provider<AODTile> aodTileProvider,
+            Provider<QRCodeTile> qrCodeTileProvider,
             Provider<ReverseChargingTile> reverseChargingTileProvider) {
         super(qsHostLazy,
                 customTileBuilderProvider,
@@ -131,7 +133,9 @@ public class QSFactoryImplGoogle extends QSFactoryImpl {
                 quickAccessWalletTileProvider,
                 caffeineTileProvider,
                 headsUpTileProvider,
-                aodTileProvider);
+                aodTileProvider,
+                qrCodeTileProvider);
+
         mReverseChargingTileProvider = reverseChargingTileProvider;
         mBatterySaverTileGoogleProvider = batterySaverTileGoogleProvider;
     }
