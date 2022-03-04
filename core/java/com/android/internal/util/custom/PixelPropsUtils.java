@@ -65,15 +65,8 @@ public class PixelPropsUtils {
         "com.gameloft.android.ANMP.GloftA9HM" // Asphalt 9
     };
 
-    private static final String[] packagesToChangePixel5 = {
-            "com.google.android.apps.recorder",
-	    "com.google.android.apps.turbo", 
-            "com.google.android.apps.turboadapter",
-	    "com.google.android.dialer",
-            "com.google.android.googlequicksearchbox",
-	    "com.google.android.tts",
-            "com.google.audio.hearing.visualization.accessibility.scribe",
-            "com.google.android.apps.translate"
+    private static final String[] packagesToChangePixel6 = {
+            "com.google.android.gms"
     };
 
     private static final String[] packagesToChangePixelXL = {
@@ -148,10 +141,10 @@ public class PixelPropsUtils {
         }
         if (packageName.startsWith("com.google.")
                 || Arrays.asList(extraPackagesToChange).contains(packageName)) {
-            Map<String, Object> propsToChange = propsToChangePixel6;
+            Map<String, Object> propsToChange = propsToChangePixel5;
 
-            if (Arrays.asList(packagesToChangePixel5).contains(packageName)) {
-                propsToChange = propsToChangePixel5;
+            if (Arrays.asList(packagesToChangePixel6).contains(packageName)) {
+                propsToChange = propsToChangePixel6;
             }
 
             if (DEBUG) Log.d(TAG, "Defining props for: " + packageName);
