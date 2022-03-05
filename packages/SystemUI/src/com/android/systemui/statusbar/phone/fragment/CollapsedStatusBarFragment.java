@@ -28,6 +28,7 @@ import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.annotation.SuppressLint;
 import android.app.Fragment;
+import android.content.Context;
 import android.database.ContentObserver;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -407,6 +408,10 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
 
     @Override
     public void onTuningChanged(String key, String newValue) {
+        Context context = getContext();
+        if (context == null)
+            return;
+            
         switch (key) {
             case STATUSBAR_CLOCK_CHIP:
                 mShowSBClockBg = 
@@ -416,6 +421,7 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
             default:
                 break;
          }
+
     }
 
     private void updateStatusBarClock() {
