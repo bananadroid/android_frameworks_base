@@ -39,6 +39,7 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.RemoteException;
+import android.provider.Settings;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.SparseArray;
@@ -96,10 +97,13 @@ import java.util.concurrent.Executor;
 import java.util.function.Consumer;
 
 /** */
-public class NavigationBarView extends FrameLayout implements TunerService.Tunable {
+public class NavigationBarView extends FrameLayout implements
+        TunerService.Tunable {
     final static boolean DEBUG = false;
     final static String TAG = "NavBarView";
 
+    private static final String NAVBAR_STYLE =
+            "system:" + Settings.System.NAVBAR_STYLE;
     private static final String NAVIGATION_BAR_MENU_ARROW_KEYS =
             "customsystem:" + Settings.System.NAVIGATION_BAR_MENU_ARROW_KEYS;
 
@@ -1148,6 +1152,7 @@ public class NavigationBarView extends FrameLayout implements TunerService.Tunab
         requestApplyInsets();
         reorient();
         final TunerService tunerService = Dependency.get(TunerService.class);
+        tunerService.addTunable(this, NAVBAR_STYLE);
         tunerService.addTunable(this, NAVIGATION_BAR_MENU_ARROW_KEYS);
         if (mRotationButtonController != null) {
             mRotationButtonController.registerListeners(false /* registerRotationWatcher */);
@@ -1170,7 +1175,9 @@ public class NavigationBarView extends FrameLayout implements TunerService.Tunab
 
     @Override
     public void onTuningChanged(String key, String newValue) {
-        if (NAVIGATION_BAR_MENU_ARROW_KEYS.equals(key)) {
+        if (NAVBAR_STYLE.equals(key)) {
+            reloadNavIcons();
+        } else if (NAVIGATION_BAR_MENU_ARROW_KEYS.equals(key)) {
             mShowCursorKeys = TunerService.parseIntegerSwitch(newValue, false);
             setNavigationIconHints(mNavigationIconHints);
         }
