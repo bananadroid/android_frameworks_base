@@ -406,6 +406,7 @@ class LockscreenShadeTransitionController @Inject constructor(
 
                     mediaHierarchyManager.setTransitionToFullShadeAmount(field)
                     transitionToShadeAmountCommon(field)
+                    transitionToShadeAmountKeyguard(field)
                 }
             }
         }
@@ -413,11 +414,6 @@ class LockscreenShadeTransitionController @Inject constructor(
     private fun transitionToShadeAmountCommon(dragDownAmount: Float) {
         val scrimProgress = MathUtils.saturate(dragDownAmount / scrimTransitionDistance)
         scrimController.setTransitionToFullShadeProgress(scrimProgress)
-
-        // Fade out all content only visible on the lockscreen
-        val npvcProgress =
-            MathUtils.saturate(dragDownAmount / npvcKeyguardContentAlphaTransitionDistance)
-        notificationPanelController.setKeyguardOnlyContentAlpha(1.0f - npvcProgress)
 
         if (depthControllerTransitionDistance > 0) {
             val depthProgress =
@@ -430,6 +426,22 @@ class LockscreenShadeTransitionController @Inject constructor(
 
         val statusBarProgress = MathUtils.saturate(dragDownAmount / statusBarTransitionDistance)
         statusbar.setTransitionToFullShadeProgress(statusBarProgress)
+    }
+
+    private fun transitionToShadeAmountKeyguard(dragDownAmount: Float) {
+        // Fade out all content only visible on the lockscreen
+        val keyguardAlphaProgress =
+            MathUtils.saturate(dragDownAmount / npvcKeyguardContentAlphaTransitionDistance)
+        val keyguardAlpha = 1f - keyguardAlphaProgress
+        val keyguardTranslationY = if (useSplitShade) {
+            // On split-shade, the translationY of the keyguard should stay in sync with the
+            // translation of media.
+            mediaHierarchyManager.getGuidedTransformationTranslationY()
+        } else {
+            0
+        }
+        notificationPanelController
+            .setKeyguardTransitionProgress(keyguardAlpha, keyguardTranslationY)
     }
 
     private fun setDragDownAmountAnimated(
