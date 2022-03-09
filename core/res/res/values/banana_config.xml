@@ -249,4 +249,7 @@
         <item>com.google.android.gm</item>
         <item>com.google.android.youtube</item>
     </string-array>
+
+    <!-- Screen off UDFPS -->
+    <bool name="config_supportScreenOffUdfps">false</bool>
 </resources>

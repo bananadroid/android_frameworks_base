@@ -189,4 +189,7 @@
     <!-- App lock -->
     <java-symbol type="string" name="unlock_application" />
     <java-symbol type="array" name="config_appLockAllowedSystemApps" />
+
+    <!-- Screen off UDFPS -->
+    <java-symbol type="bool" name="config_supportScreenOffUdfps" />
 </resources>
