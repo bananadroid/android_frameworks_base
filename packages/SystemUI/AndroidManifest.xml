@@ -318,6 +318,11 @@
     <!-- Network traffic monitor -->
     <uses-permission android:name="android.permission.MAINLINE_NETWORK_STACK" />
 
+    <!-- Compat framework -->
+    <uses-permission android:name="android.permission.LOG_COMPAT_CHANGE" />
+    <uses-permission android:name="android.permission.READ_COMPAT_CHANGE_CONFIG" />
+    <uses-permission android:name="android.permission.READ_DEVICE_CONFIG" />
+
     <!-- OmniJaws -->
     <uses-permission android:name="org.omnirom.omnijaws.READ_WEATHER" />
 

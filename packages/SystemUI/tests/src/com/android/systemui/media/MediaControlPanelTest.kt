@@ -98,7 +98,6 @@ public class MediaControlPanelTest : SysuiTestCase() {
     @Mock private lateinit var mediaOutputDialogFactory: MediaOutputDialogFactory
     @Mock private lateinit var mediaCarouselController: MediaCarouselController
     @Mock private lateinit var falsingManager: FalsingManager
-    @Mock private lateinit var mediaFlags: MediaFlags
     private lateinit var appIcon: ImageView
     private lateinit var albumView: ImageView
     private lateinit var titleText: TextView
@@ -144,7 +143,7 @@ public class MediaControlPanelTest : SysuiTestCase() {
 
         player = MediaControlPanel(context, bgExecutor, activityStarter, mediaViewController,
             seekBarViewModel, Lazy { mediaDataManager },
-            mediaOutputDialogFactory, mediaCarouselController, falsingManager, mediaFlags, clock)
+            mediaOutputDialogFactory, mediaCarouselController, falsingManager, clock)
         whenever(seekBarViewModel.progress).thenReturn(seekBarData)
 
         // Set up mock views for the players
@@ -212,9 +211,6 @@ public class MediaControlPanelTest : SysuiTestCase() {
                 device = device,
                 active = true,
                 resumeAction = null)
-
-        whenever(mediaFlags.areMediaSessionActionsEnabled()).thenReturn(false)
-        whenever(mediaFlags.useMediaSessionLayout()).thenReturn(false)
     }
 
     /**
@@ -292,9 +288,6 @@ public class MediaControlPanelTest : SysuiTestCase() {
 
     @Test
     fun bindSemanticActionsOldLayout() {
-        whenever(mediaFlags.areMediaSessionActionsEnabled()).thenReturn(true)
-        whenever(mediaFlags.useMediaSessionLayout()).thenReturn(false)
-
         val icon = Icon.createWithResource(context, android.R.drawable.ic_media_play)
         val semanticActions = MediaButton(
             playOrPause = MediaAction(icon, Runnable {}, "play"),
@@ -329,9 +322,6 @@ public class MediaControlPanelTest : SysuiTestCase() {
 
     @Test
     fun bindSemanticActionsNewLayout() {
-        whenever(mediaFlags.areMediaSessionActionsEnabled()).thenReturn(true)
-        whenever(mediaFlags.useMediaSessionLayout()).thenReturn(true)
-
         val icon = Icon.createWithResource(context, android.R.drawable.ic_media_play)
         val semanticActions = MediaButton(
                 playOrPause = MediaAction(icon, Runnable {}, "play"),
@@ -378,9 +368,6 @@ public class MediaControlPanelTest : SysuiTestCase() {
 
     @Test
     fun bindNotificationActionsNewLayout() {
-        whenever(mediaFlags.areMediaSessionActionsEnabled()).thenReturn(true)
-        whenever(mediaFlags.useMediaSessionLayout()).thenReturn(true)
-
         val icon = Icon.createWithResource(context, android.R.drawable.ic_media_play)
         val actions = listOf(
             MediaAction(icon, Runnable {}, "previous"),

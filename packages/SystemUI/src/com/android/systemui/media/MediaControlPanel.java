@@ -138,7 +138,6 @@ public class MediaControlPanel {
     private MediaCarouselController mMediaCarouselController;
     private final MediaOutputDialogFactory mMediaOutputDialogFactory;
     private final FalsingManager mFalsingManager;
-    private final MediaFlags mMediaFlags;
 
     // Used for swipe-to-dismiss logging.
     protected boolean mIsImpressed = false;
@@ -156,7 +155,7 @@ public class MediaControlPanel {
             SeekBarViewModel seekBarViewModel, Lazy<MediaDataManager> lazyMediaDataManager,
             MediaOutputDialogFactory mediaOutputDialogFactory,
             MediaCarouselController mediaCarouselController,
-            FalsingManager falsingManager, MediaFlags mediaFlags, SystemClock systemClock) {
+            FalsingManager falsingManager, SystemClock systemClock) {
         mContext = context;
         mBackgroundExecutor = backgroundExecutor;
         mActivityStarter = activityStarter;
@@ -166,7 +165,6 @@ public class MediaControlPanel {
         mMediaOutputDialogFactory = mediaOutputDialogFactory;
         mMediaCarouselController = mediaCarouselController;
         mFalsingManager = falsingManager;
-        mMediaFlags = mediaFlags;
         mSystemClock = systemClock;
         loadDimens();
 
@@ -497,9 +495,8 @@ public class MediaControlPanel {
         List<MediaAction> actionIcons = data.getActions();
         List<Integer> actionsWhenCollapsed = data.getActionsToShowInCompact();
 
-        // If the session actions flag is enabled, but we're still using the regular layout, use
-        // the session actions anyways
-        if (mMediaFlags.areMediaSessionActionsEnabled() && data.getSemanticActions() != null) {
+        // If we got session actions, use those instead
+        if (data.getSemanticActions() != null) {
             MediaButton semanticActions = data.getSemanticActions();
 
             actionIcons = new ArrayList<MediaAction>();
