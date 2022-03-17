@@ -146,8 +146,7 @@
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginStart="@dimen/qs_media_padding"
-        android:layout_marginEnd="@dimen/qs_media_padding"
-         />
+        android:layout_marginEnd="@dimen/qs_media_padding" />
 
     <!-- See comment in media_session_collapsed.xml for how these barriers are used -->
     <androidx.constraintlayout.widget.Barrier
@@ -185,7 +184,7 @@
     <!-- Button visibility will be controlled in code -->
     <ImageButton
         android:id="@+id/actionPrev"
-        style="@style/MediaPlayer.SessionAction"
+        style="@style/MediaPlayer.SessionAction.Secondary"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginStart="4dp"
@@ -212,7 +211,7 @@
 
     <ImageButton
         android:id="@+id/actionNext"
-        style="@style/MediaPlayer.SessionAction"
+        style="@style/MediaPlayer.SessionAction.Secondary"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginStart="0dp"
@@ -222,7 +221,7 @@
 
     <ImageButton
         android:id="@+id/action0"
-        style="@style/MediaPlayer.SessionAction"
+        style="@style/MediaPlayer.SessionAction.Secondary"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginStart="@dimen/qs_media_action_spacing"
@@ -232,7 +231,7 @@
 
     <ImageButton
         android:id="@+id/action1"
-        style="@style/MediaPlayer.SessionAction"
+        style="@style/MediaPlayer.SessionAction.Secondary"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginStart="@dimen/qs_media_action_spacing"
@@ -242,7 +241,7 @@
 
     <ImageButton
         android:id="@+id/action2"
-        style="@style/MediaPlayer.SessionAction"
+        style="@style/MediaPlayer.SessionAction.Secondary"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginStart="@dimen/qs_media_action_spacing"
@@ -252,7 +251,7 @@
 
     <ImageButton
         android:id="@+id/action3"
-        style="@style/MediaPlayer.SessionAction"
+        style="@style/MediaPlayer.SessionAction.Secondary"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginStart="@dimen/qs_media_action_spacing"
@@ -262,7 +261,7 @@
 
     <ImageButton
         android:id="@+id/action4"
-        style="@style/MediaPlayer.SessionAction"
+        style="@style/MediaPlayer.SessionAction.Secondary"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginStart="@dimen/qs_media_action_spacing"
