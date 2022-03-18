@@ -42,7 +42,7 @@ class MediaViewController @Inject constructor(
      * session-based player, or recommendation
      */
     enum class TYPE {
-        PLAYER, PLAYER_SESSION, RECOMMENDATION
+        PLAYER, RECOMMENDATION
     }
 
     companion object {
@@ -261,13 +261,11 @@ class MediaViewController @Inject constructor(
      */
     private fun setGutsViewState(viewState: TransitionViewState) {
         val controlsIds = when (type) {
-            TYPE.PLAYER -> PlayerViewHolder.controlsIds
-            TYPE.PLAYER_SESSION -> PlayerSessionViewHolder.controlsIds
+            TYPE.PLAYER -> MediaViewHolder.controlsIds
             TYPE.RECOMMENDATION -> RecommendationViewHolder.controlsIds
         }
         val gutsIds = when (type) {
-            TYPE.PLAYER -> PlayerViewHolder.gutsIds
-            TYPE.PLAYER_SESSION -> PlayerSessionViewHolder.gutsIds
+            TYPE.PLAYER -> MediaViewHolder.gutsIds
             TYPE.RECOMMENDATION -> RecommendationViewHolder.gutsIds
         }
 
@@ -475,10 +473,6 @@ class MediaViewController @Inject constructor(
         // These XML resources contain ConstraintSets that will apply to this player type's layout
         when (type) {
             TYPE.PLAYER -> {
-                collapsedLayout.load(context, R.xml.media_collapsed)
-                expandedLayout.load(context, R.xml.media_expanded)
-            }
-            TYPE.PLAYER_SESSION -> {
                 collapsedLayout.load(context, R.xml.media_session_collapsed)
                 expandedLayout.load(context, R.xml.media_session_expanded)
             }

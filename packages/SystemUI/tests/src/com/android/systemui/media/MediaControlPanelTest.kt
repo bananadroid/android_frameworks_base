@@ -86,8 +86,7 @@ public class MediaControlPanelTest : SysuiTestCase() {
     private lateinit var bgExecutor: FakeExecutor
     @Mock private lateinit var activityStarter: ActivityStarter
 
-    @Mock private lateinit var holder: PlayerViewHolder
-    @Mock private lateinit var sessionHolder: PlayerSessionViewHolder
+    @Mock private lateinit var viewHolder: MediaViewHolder
     @Mock private lateinit var view: TransitionLayout
     @Mock private lateinit var seekBarViewModel: SeekBarViewModel
     @Mock private lateinit var seekBarData: LiveData<SeekBarViewModel.Progress>
@@ -176,8 +175,7 @@ public class MediaControlPanelTest : SysuiTestCase() {
         actionPrev = ImageButton(context).also { it.setId(R.id.actionPrev) }
         actionNext = ImageButton(context).also { it.setId(R.id.actionNext) }
 
-        initPlayerHolderMocks()
-        initSessionHolderMocks()
+        initMediaViewHolderMocks()
 
         // Create media session
         val metadataBuilder = MediaMetadata.Builder().apply {
@@ -214,9 +212,9 @@ public class MediaControlPanelTest : SysuiTestCase() {
     }
 
     /**
-     * Initialize elements common to both view holders
+     * Initialize elements in media view holder
      */
-    private fun initMediaViewHolderMocks(viewHolder: MediaViewHolder) {
+    private fun initMediaViewHolderMocks() {
         whenever(viewHolder.player).thenReturn(view)
         whenever(viewHolder.appIcon).thenReturn(appIcon)
         whenever(viewHolder.albumView).thenReturn(albumView)
@@ -230,6 +228,12 @@ public class MediaControlPanelTest : SysuiTestCase() {
         whenever(viewHolder.seekBar).thenReturn(seekBar)
 
         // Action buttons
+        whenever(viewHolder.actionPlayPause).thenReturn(actionPlayPause)
+        whenever(viewHolder.getAction(R.id.actionPlayPause)).thenReturn(actionPlayPause)
+        whenever(viewHolder.actionNext).thenReturn(actionNext)
+        whenever(viewHolder.getAction(R.id.actionNext)).thenReturn(actionNext)
+        whenever(viewHolder.actionPrev).thenReturn(actionPrev)
+        whenever(viewHolder.getAction(R.id.actionPrev)).thenReturn(actionPrev)
         whenever(viewHolder.action0).thenReturn(action0)
         whenever(viewHolder.getAction(R.id.action0)).thenReturn(action0)
         whenever(viewHolder.action1).thenReturn(action1)
@@ -252,27 +256,6 @@ public class MediaControlPanelTest : SysuiTestCase() {
         whenever(viewHolder.dismissText).thenReturn(dismissText)
     }
 
-    /** Mock view holder for the notification player */
-    private fun initPlayerHolderMocks() {
-        initMediaViewHolderMocks(holder)
-
-        whenever(holder.elapsedTimeView).thenReturn(elapsedTimeView)
-        whenever(holder.totalTimeView).thenReturn(totalTimeView)
-    }
-
-    /** Mock view holder for session player */
-    private fun initSessionHolderMocks() {
-        initMediaViewHolderMocks(sessionHolder)
-
-        // Semantic action buttons
-        whenever(sessionHolder.actionPlayPause).thenReturn(actionPlayPause)
-        whenever(sessionHolder.getAction(R.id.actionPlayPause)).thenReturn(actionPlayPause)
-        whenever(sessionHolder.actionNext).thenReturn(actionNext)
-        whenever(sessionHolder.getAction(R.id.actionNext)).thenReturn(actionNext)
-        whenever(sessionHolder.actionPrev).thenReturn(actionPrev)
-        whenever(sessionHolder.getAction(R.id.actionPrev)).thenReturn(actionPrev)
-    }
-
     @After
     fun tearDown() {
         session.release()
@@ -287,41 +270,7 @@ public class MediaControlPanelTest : SysuiTestCase() {
     }
 
     @Test
-    fun bindSemanticActionsOldLayout() {
-        val icon = Icon.createWithResource(context, android.R.drawable.ic_media_play)
-        val semanticActions = MediaButton(
-            playOrPause = MediaAction(icon, Runnable {}, "play"),
-            nextOrCustom = MediaAction(icon, Runnable {}, "next"),
-            custom0 = MediaAction(icon, null, "custom 0"),
-            custom1 = MediaAction(icon, null, "custom 1")
-        )
-        val state = mediaData.copy(semanticActions = semanticActions)
-
-        player.attachPlayer(holder, MediaViewController.TYPE.PLAYER)
-        player.bindPlayer(state, PACKAGE)
-
-        verify(expandedSet).setVisibility(R.id.action0, ConstraintSet.VISIBLE)
-        assertThat(action0.contentDescription).isEqualTo("custom 0")
-        assertThat(action0.isEnabled()).isFalse()
-
-        verify(expandedSet).setVisibility(R.id.action1, ConstraintSet.INVISIBLE)
-        assertThat(action1.isEnabled()).isFalse()
-
-        verify(expandedSet).setVisibility(R.id.action2, ConstraintSet.VISIBLE)
-        assertThat(action2.isEnabled()).isTrue()
-        assertThat(action2.contentDescription).isEqualTo("play")
-
-        verify(expandedSet).setVisibility(R.id.action3, ConstraintSet.VISIBLE)
-        assertThat(action3.isEnabled()).isTrue()
-        assertThat(action3.contentDescription).isEqualTo("next")
-
-        verify(expandedSet).setVisibility(R.id.action4, ConstraintSet.VISIBLE)
-        assertThat(action4.contentDescription).isEqualTo("custom 1")
-        assertThat(action4.isEnabled()).isFalse()
-    }
-
-    @Test
-    fun bindSemanticActionsNewLayout() {
+    fun bindSemanticActions() {
         val icon = Icon.createWithResource(context, android.R.drawable.ic_media_play)
         val semanticActions = MediaButton(
                 playOrPause = MediaAction(icon, Runnable {}, "play"),
@@ -331,7 +280,7 @@ public class MediaControlPanelTest : SysuiTestCase() {
         )
         val state = mediaData.copy(semanticActions = semanticActions)
 
-        player.attachPlayer(sessionHolder, MediaViewController.TYPE.PLAYER_SESSION)
+        player.attachPlayer(viewHolder)
         player.bindPlayer(state, PACKAGE)
 
         assertThat(actionPrev.isEnabled()).isFalse()
@@ -367,7 +316,7 @@ public class MediaControlPanelTest : SysuiTestCase() {
     }
 
     @Test
-    fun bindNotificationActionsNewLayout() {
+    fun bindNotificationActions() {
         val icon = Icon.createWithResource(context, android.R.drawable.ic_media_play)
         val actions = listOf(
             MediaAction(icon, Runnable {}, "previous"),
@@ -380,7 +329,7 @@ public class MediaControlPanelTest : SysuiTestCase() {
             actionsToShowInCompact = listOf(1, 2),
             semanticActions = null)
 
-        player.attachPlayer(sessionHolder, MediaViewController.TYPE.PLAYER_SESSION)
+        player.attachPlayer(viewHolder)
         player.bindPlayer(state, PACKAGE)
 
         // Verify semantic actions are hidden
@@ -417,7 +366,7 @@ public class MediaControlPanelTest : SysuiTestCase() {
 
     @Test
     fun bindText() {
-        player.attachPlayer(holder, MediaViewController.TYPE.PLAYER)
+        player.attachPlayer(viewHolder)
         player.bindPlayer(mediaData, PACKAGE)
         assertThat(titleText.getText()).isEqualTo(TITLE)
         assertThat(artistText.getText()).isEqualTo(ARTIST)
@@ -425,7 +374,7 @@ public class MediaControlPanelTest : SysuiTestCase() {
 
     @Test
     fun bindDevice() {
-        player.attachPlayer(holder, MediaViewController.TYPE.PLAYER)
+        player.attachPlayer(viewHolder)
         player.bindPlayer(mediaData, PACKAGE)
         assertThat(seamlessText.getText()).isEqualTo(DEVICE_NAME)
         assertThat(seamless.contentDescription).isEqualTo(DEVICE_NAME)
@@ -436,7 +385,7 @@ public class MediaControlPanelTest : SysuiTestCase() {
     fun bindDisabledDevice() {
         seamless.id = 1
         val fallbackString = context.getString(R.string.media_seamless_other_device)
-        player.attachPlayer(holder, MediaViewController.TYPE.PLAYER)
+        player.attachPlayer(viewHolder)
         val state = mediaData.copy(device = disabledDevice)
         player.bindPlayer(state, PACKAGE)
         assertThat(seamless.isEnabled()).isFalse()
@@ -447,7 +396,7 @@ public class MediaControlPanelTest : SysuiTestCase() {
     @Test
     fun bindNullDevice() {
         val fallbackString = context.getResources().getString(R.string.media_seamless_other_device)
-        player.attachPlayer(holder, MediaViewController.TYPE.PLAYER)
+        player.attachPlayer(viewHolder)
         val state = mediaData.copy(device = null)
         player.bindPlayer(state, PACKAGE)
         assertThat(seamless.isEnabled()).isTrue()
@@ -457,7 +406,7 @@ public class MediaControlPanelTest : SysuiTestCase() {
 
     @Test
     fun bindDeviceResumptionPlayer() {
-        player.attachPlayer(holder, MediaViewController.TYPE.PLAYER)
+        player.attachPlayer(viewHolder)
         val state = mediaData.copy(resumption = true)
         player.bindPlayer(state, PACKAGE)
         assertThat(seamlessText.getText()).isEqualTo(DEVICE_NAME)
@@ -466,32 +415,32 @@ public class MediaControlPanelTest : SysuiTestCase() {
 
     @Test
     fun longClick_gutsClosed() {
-        player.attachPlayer(holder, MediaViewController.TYPE.PLAYER)
+        player.attachPlayer(viewHolder)
         whenever(mediaViewController.isGutsVisible).thenReturn(false)
 
         val captor = ArgumentCaptor.forClass(View.OnLongClickListener::class.java)
-        verify(holder.player).setOnLongClickListener(captor.capture())
+        verify(viewHolder.player).setOnLongClickListener(captor.capture())
 
-        captor.value.onLongClick(holder.player)
+        captor.value.onLongClick(viewHolder.player)
         verify(mediaViewController).openGuts()
     }
 
     @Test
     fun longClick_gutsOpen() {
-        player.attachPlayer(holder, MediaViewController.TYPE.PLAYER)
+        player.attachPlayer(viewHolder)
         whenever(mediaViewController.isGutsVisible).thenReturn(true)
 
         val captor = ArgumentCaptor.forClass(View.OnLongClickListener::class.java)
-        verify(holder.player).setOnLongClickListener(captor.capture())
+        verify(viewHolder.player).setOnLongClickListener(captor.capture())
 
-        captor.value.onLongClick(holder.player)
+        captor.value.onLongClick(viewHolder.player)
         verify(mediaViewController, never()).openGuts()
         verify(mediaViewController).closeGuts(false)
     }
 
     @Test
     fun cancelButtonClick_animation() {
-        player.attachPlayer(holder, MediaViewController.TYPE.PLAYER)
+        player.attachPlayer(viewHolder)
 
         cancel.callOnClick()
 
@@ -500,7 +449,7 @@ public class MediaControlPanelTest : SysuiTestCase() {
 
     @Test
     fun settingsButtonClick() {
-        player.attachPlayer(holder, MediaViewController.TYPE.PLAYER)
+        player.attachPlayer(viewHolder)
 
         settings.callOnClick()
 
@@ -513,7 +462,7 @@ public class MediaControlPanelTest : SysuiTestCase() {
     @Test
     fun dismissButtonClick() {
         val mediaKey = "key for dismissal"
-        player.attachPlayer(holder, MediaViewController.TYPE.PLAYER)
+        player.attachPlayer(viewHolder)
         val state = mediaData.copy(notificationKey = KEY)
         player.bindPlayer(state, mediaKey)
 
@@ -525,7 +474,7 @@ public class MediaControlPanelTest : SysuiTestCase() {
     @Test
     fun dismissButtonDisabled() {
         val mediaKey = "key for dismissal"
-        player.attachPlayer(holder, MediaViewController.TYPE.PLAYER)
+        player.attachPlayer(viewHolder)
         val state = mediaData.copy(isClearable = false, notificationKey = KEY)
         player.bindPlayer(state, mediaKey)
 
@@ -537,7 +486,7 @@ public class MediaControlPanelTest : SysuiTestCase() {
         val mediaKey = "key for dismissal"
         whenever(mediaDataManager.dismissMediaData(eq(mediaKey), anyLong())).thenReturn(false)
 
-        player.attachPlayer(holder, MediaViewController.TYPE.PLAYER)
+        player.attachPlayer(viewHolder)
         val state = mediaData.copy(notificationKey = KEY)
         player.bindPlayer(state, mediaKey)
 

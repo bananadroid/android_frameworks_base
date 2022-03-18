@@ -33,11 +33,4 @@ class MediaFlags @Inject constructor(private val featureFlags: FeatureFlags) {
         // Allow global override with flag
         return enabled || featureFlags.isEnabled(Flags.MEDIA_SESSION_ACTIONS)
     }
-
-    /**
-     * Check whether media controls should use the new session-based layout
-     */
-    fun useMediaSessionLayout(): Boolean {
-        return featureFlags.isEnabled(Flags.MEDIA_SESSION_LAYOUT)
-    }
 }

@@ -417,15 +417,8 @@ class MediaCarouselController @Inject constructor(
                 .elementAtOrNull(mediaCarouselScrollHandler.visibleMediaIndex)
         if (existingPlayer == null) {
             var newPlayer = mediaControlPanelFactory.get()
-            if (mediaFlags.useMediaSessionLayout()) {
-                newPlayer.attachPlayer(
-                        PlayerSessionViewHolder.create(LayoutInflater.from(context), mediaContent),
-                        MediaViewController.TYPE.PLAYER_SESSION)
-            } else {
-                newPlayer.attachPlayer(
-                        PlayerViewHolder.create(LayoutInflater.from(context), mediaContent),
-                        MediaViewController.TYPE.PLAYER)
-            }
+            newPlayer.attachPlayer(MediaViewHolder.create(
+                    LayoutInflater.from(context), mediaContent))
             newPlayer.mediaViewController.sizeChangedListener = this::updateCarouselDimensions
             val lp = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT)
@@ -542,11 +535,7 @@ class MediaCarouselController @Inject constructor(
     }
 
     private fun getForegroundColor(): Int {
-        return if (mediaFlags.useMediaSessionLayout()) {
-            context.getColor(android.R.color.system_neutral2_200)
-        } else {
-            context.getColor(android.R.color.system_accent2_900)
-        }
+        return context.getColor(android.R.color.system_neutral2_200)
     }
 
     private fun updatePageIndicator() {
