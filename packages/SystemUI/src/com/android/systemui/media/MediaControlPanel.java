@@ -36,7 +36,6 @@ import android.media.session.MediaController;
 import android.media.session.MediaSession;
 import android.media.session.PlaybackState;
 import android.os.Process;
-import android.text.Layout;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -398,9 +397,13 @@ public class MediaControlPanel {
 
     private void bindLongPressMenu(MediaData data) {
         boolean isDismissible = data.isClearable();
-        mMediaViewHolder.getLongPressText().setText(isDismissible
-                ? R.string.controls_media_close_session
-                : R.string.controls_media_active_session);
+        String dismissText;
+        if (isDismissible) {
+            dismissText = mContext.getString(R.string.controls_media_close_session, data.getApp());
+        } else {
+            dismissText = mContext.getString(R.string.controls_media_active_session);
+        }
+        mMediaViewHolder.getLongPressText().setText(dismissText);
 
         // Dismiss button
         mMediaViewHolder.getDismissText().setAlpha(isDismissible ? 1 : DISABLED_ALPHA);
@@ -532,11 +535,10 @@ public class MediaControlPanel {
 
         // Long press buttons
         mMediaViewHolder.getLongPressText().setTextColor(textColorList);
-        mMediaViewHolder.getSettingsText().setTextColor(textColorList);
-        mMediaViewHolder.getSettingsText().setBackgroundTintList(accentColorList);
+        mMediaViewHolder.getSettings().setImageTintList(accentColorList);
         mMediaViewHolder.getCancelText().setTextColor(textColorList);
         mMediaViewHolder.getCancelText().setBackgroundTintList(accentColorList);
-        mMediaViewHolder.getDismissText().setTextColor(textColorList);
+        mMediaViewHolder.getDismissText().setTextColor(surfaceColor);
         mMediaViewHolder.getDismissText().setBackgroundTintList(accentColorList);
     }
 
@@ -845,28 +847,11 @@ public class MediaControlPanel {
     }
 
     private void openGuts() {
-        ConstraintSet expandedSet = mMediaViewController.getExpandedLayout();
-        ConstraintSet collapsedSet = mMediaViewController.getCollapsedLayout();
-
-        boolean wasTruncated = false;
-        Layout l = null;
         if (mMediaViewHolder != null) {
             mMediaViewHolder.marquee(true, mMediaViewController.GUTS_ANIMATION_DURATION);
-            l = mMediaViewHolder.getSettingsText().getLayout();
         } else if (mRecommendationViewHolder != null) {
             mRecommendationViewHolder.marquee(true, mMediaViewController.GUTS_ANIMATION_DURATION);
-            l = mRecommendationViewHolder.getSettingsText().getLayout();
         }
-        if (l != null) {
-            wasTruncated = l.getEllipsisCount(0) > 0;
-        }
-        mMediaViewController.setShouldHideGutsSettings(wasTruncated);
-        if (wasTruncated) {
-            // not enough room for the settings button to show fully, let's hide it
-            expandedSet.constrainMaxWidth(R.id.settings, 0);
-            collapsedSet.constrainMaxWidth(R.id.settings, 0);
-        }
-
         mMediaViewController.openGuts();
     }
 
