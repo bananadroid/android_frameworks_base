@@ -67,7 +67,6 @@ public class PixelPropsUtils {
     };
 
     private static final String[] packagesToChangePixel5 = {
-	    "com.android.vending", 
             "com.google.android.apps.recorder",
 	    "com.google.android.apps.turbo", 
             "com.google.android.apps.turboadapter",
