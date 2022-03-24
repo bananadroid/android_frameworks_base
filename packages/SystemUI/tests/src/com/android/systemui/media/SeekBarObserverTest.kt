@@ -16,6 +16,8 @@
 
 package com.android.systemui.media
 
+import android.animation.Animator
+import android.animation.ObjectAnimator
 import android.testing.AndroidTestingRunner
 import android.testing.TestableLooper
 import android.view.View
@@ -43,6 +45,7 @@ class SeekBarObserverTest : SysuiTestCase() {
     private val enabledHeight = 2
 
     private lateinit var observer: SeekBarObserver
+    @Mock private lateinit var mockSeekbarAnimator: ObjectAnimator
     @Mock private lateinit var mockHolder: MediaViewHolder
     @Mock private lateinit var mockSquigglyProgress: SquigglyProgress
     private lateinit var seekBarView: SeekBar
@@ -64,7 +67,11 @@ class SeekBarObserverTest : SysuiTestCase() {
         totalTimeView = TextView(context)
         whenever(mockHolder.seekBar).thenReturn(seekBarView)
 
-        observer = SeekBarObserver(mockHolder)
+        observer = object : SeekBarObserver(mockHolder) {
+            override fun buildResetAnimator(targetTime: Int): Animator {
+                return mockSeekbarAnimator
+            }
+        }
     }
 
     @Test
@@ -166,5 +173,21 @@ class SeekBarObserverTest : SysuiTestCase() {
         observer.onChanged(data)
         // THEN progress drawable is not animating
         verify(mockSquigglyProgress).animate = false
+    }
+
+    @Test
+    fun seekBarJumpAnimation() {
+        val data0 = SeekBarViewModel.Progress(true, true, true, false, 4000, 120000)
+        val data1 = SeekBarViewModel.Progress(true, true, true, false, 10, 120000)
+
+        // Set initial position of progress bar
+        observer.onChanged(data0)
+        assertThat(seekBarView.progress).isEqualTo(4000)
+        assertThat(seekBarView.max).isEqualTo(120000)
+
+        // Change to second data & confirm no change to position (due to animation delay)
+        observer.onChanged(data1)
+        assertThat(seekBarView.progress).isEqualTo(4000)
+        verify(mockSeekbarAnimator).start()
     }
 }

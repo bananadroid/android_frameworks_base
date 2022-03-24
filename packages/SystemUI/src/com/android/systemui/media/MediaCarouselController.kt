@@ -513,7 +513,7 @@ class MediaCarouselController @Inject constructor(
 
     private fun recreatePlayers() {
         bgColor = getBackgroundColor()
-        pageIndicator.tintList = ColorStateList.valueOf(R.color.material_dynamic_neutral_variant80)
+        pageIndicator.tintList = ColorStateList.valueOf(R.color.people_tile_background)
 
         MediaPlayerData.mediaData().forEach { (key, data, isSsMediaRec) ->
             if (isSsMediaRec) {
