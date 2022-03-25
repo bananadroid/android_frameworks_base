@@ -679,7 +679,7 @@ class MediaDataManager(
                     mediaActionIcon,
                     runnable,
                     action.title,
-                    context.getDrawable(R.drawable.qs_media_round_button_background))
+                    null)
                 actionIcons.add(mediaAction)
             }
         }
@@ -788,7 +788,7 @@ class MediaDataManager(
                     context.getDrawable(R.drawable.ic_media_prev),
                     { controller.transportControls.skipToPrevious() },
                     context.getString(R.string.controls_media_button_prev),
-                    context.getDrawable(R.drawable.qs_media_round_button_background)
+                    null
                 )
             }
             PlaybackState.ACTION_SKIP_TO_NEXT -> {
@@ -796,7 +796,7 @@ class MediaDataManager(
                     context.getDrawable(R.drawable.ic_media_next),
                     { controller.transportControls.skipToNext() },
                     context.getString(R.string.controls_media_button_next),
-                    context.getDrawable(R.drawable.qs_media_round_button_background)
+                    null
                 )
             }
             else -> null
@@ -822,7 +822,7 @@ class MediaDataManager(
             Icon.createWithResource(packageName, it.icon).loadDrawable(context),
             { controller.transportControls.sendCustomAction(it, it.extras) },
             it.name,
-            context.getDrawable(R.drawable.ic_media_pause_container)
+            null
         )
     }
 
