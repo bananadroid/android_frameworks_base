@@ -26,4 +26,8 @@
     <dimen name="notification_panel_margin_horizontal">24dp</dimen>
 
     <dimen name="split_shade_header_height">56dp</dimen>
+
+    <!-- Roughly the same distance as media on LS to media on QS. We will translate by this value
+         when media is not showing. -->
+    <dimen name="lockscreen_shade_keyguard_transition_vertical_offset">93dp</dimen>
 </resources>
