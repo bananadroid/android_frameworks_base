@@ -93,5 +93,8 @@ public class SystemSettings {
         Settings.System.MEDIA_ARTWORK_BLUR_RADIUS,
         Settings.System.TORCH_POWER_BUTTON_GESTURE,
         Settings.System.STATUS_BAR_BRIGHTNESS_CONTROL,
+        Settings.System.QQS_SHOW_BRIGHTNESS,
+        Settings.System.SHOW_AUTO_BRIGHTNESS_BUTTON,
+        Settings.System.BRIGHTNESS_SLIDER_POSITION,
     };
 }
