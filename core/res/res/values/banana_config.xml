@@ -252,4 +252,7 @@
 
     <!-- Screen off UDFPS -->
     <bool name="config_supportScreenOffUdfps">false</bool>
+
+    <!-- Whether to allow network traffic on statusbar -->
+    <bool name="config_supportsNetworkTrafficOnStatusBar">true</bool>
 </resources>
