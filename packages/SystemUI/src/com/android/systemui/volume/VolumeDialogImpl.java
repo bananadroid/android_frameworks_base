@@ -670,6 +670,8 @@ public class VolumeDialogImpl implements VolumeDialog, Dumpable,
 
         mRoundedBorderBottom = mDialog.findViewById(R.id.rounded_border_bottom);
 
+        mRoundedBorderBottom = mDialog.findViewById(R.id.rounded_border_bottom);
+
         mExpandRowsView = mDialog.findViewById(R.id.expandable_indicator_container);
         mExpandRows = mDialog.findViewById(R.id.expandable_indicator);
 
@@ -1296,7 +1298,7 @@ public class VolumeDialogImpl implements VolumeDialog, Dumpable,
     }
 
     private void initSettingsH(int lockTaskModeState) {
-        if (mRoundedBorderBottom != null){
+        if (mRoundedBorderBottom != null) {
             mRoundedBorderBottom.setVisibility(!mDeviceProvisionedController.isCurrentUserSetup() ||
                     mActivityManager.getLockTaskModeState() != LOCK_TASK_MODE_NONE
                     ? VISIBLE : GONE);
