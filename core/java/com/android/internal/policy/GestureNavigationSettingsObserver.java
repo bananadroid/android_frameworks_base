@@ -71,6 +71,9 @@ public class GestureNavigationSettingsObserver extends ContentObserver {
                 DeviceConfig.NAMESPACE_SYSTEMUI,
                 runnable -> mMainHandler.post(runnable),
                 mOnPropertiesChangedListener);
+        r.registerContentObserver(
+                Settings.System.getUriFor(Settings.System.NAVIGATION_BAR_IME_SPACE),
+                false, this, UserHandle.USER_ALL);
     }
 
     public void unregister() {
