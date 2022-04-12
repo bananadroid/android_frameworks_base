@@ -27,6 +27,12 @@
     <dimen name="notification_panel_margin_horizontal">24dp</dimen>
 
     <dimen name="split_shade_header_height">56dp</dimen>
+    <dimen name="qs_content_horizontal_padding">40dp</dimen>
+    <dimen name="qs_horizontal_margin">40dp</dimen>
+    <!-- in split shade qs_tiles_page_horizontal_margin should be equal of qs_horizontal_margin/2,
+         otherwise full space between two pages is qs_horizontal_margin*2, and that makes tiles page
+         not appear immediately after user swipes to the side -->
+    <dimen name="qs_tiles_page_horizontal_margin">20dp</dimen>
 
     <!-- Roughly the same distance as media on LS to media on QS. We will translate by this value
          when media is not showing. -->
