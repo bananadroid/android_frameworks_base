@@ -62,9 +62,6 @@
     <string name="keyguard_indication_vooc_charging_time"><xliff:g id="percentage">%2$s</xliff:g> • VOOC Charging (<xliff:g id="charging_time_left" example="4 hours and 2 minutes">%1$s</xliff:g> until full)</string>
     <string name="keyguard_plugged_in_vooc_charging"><xliff:g id="percentage">%s</xliff:g> • VOOC Charging</string>
 
-    <!-- Statusbar tuner -->
-    <string name="statusbar_items_title">Statusbar icons</string>
-
     <!-- Name of the VPN status bar icon. -->
     <string name="status_bar_vpn">VPN</string>
 
@@ -149,6 +146,7 @@
 
     <!-- Name of the call strength status bar icon. -->
     <string name="status_bar_call_strength">Call strength</string>
+    <string name="status_bar_data_saver">Data saver</string>
 
     <!-- Name of the clock in status bar [CHAR LIMIT=30] -->
     <string name="clock">Clock</string>
