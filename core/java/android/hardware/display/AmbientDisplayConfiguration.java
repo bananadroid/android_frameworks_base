@@ -76,6 +76,7 @@ public class AmbientDisplayConfiguration {
                 || pulseOnCustomDozeEventEnabled(user)
                 || alwaysOnEnabled(user)
                 || isAmbientTickerEnabled(user)
+                || isAlertSliderPulseEnabled(user)
                 || wakeLockScreenGestureEnabled(user)
                 || wakeDisplayGestureEnabled(user)
                 || pickupGestureEnabled(user)
@@ -112,6 +113,11 @@ public class AmbientDisplayConfiguration {
                 && pulseOnNotificationAvailable();
     }
 	
+    /** @hide */
+    public boolean isAlertSliderPulseEnabled(int user) {
+        return boolSettingDefaultOn(Settings.System.ALERT_SLIDER_PULSE, user);
+    }
+
     /** @hide */
     public boolean pickupGestureEnabled(int user) {
         return boolSettingDefaultOff(Settings.Secure.DOZE_PICK_UP_GESTURE, user)
