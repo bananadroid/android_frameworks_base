@@ -20,9 +20,12 @@ import android.animation.Animator
 import android.animation.AnimatorSet
 import org.mockito.Mockito.`when` as whenever
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.drawable.Animatable2
 import android.graphics.drawable.AnimatedVectorDrawable
+import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.RippleDrawable
 import android.graphics.drawable.TransitionDrawable
@@ -107,7 +110,7 @@ public class MediaControlPanelTest : SysuiTestCase() {
     @Mock private lateinit var mediaCarouselController: MediaCarouselController
     @Mock private lateinit var falsingManager: FalsingManager
     private lateinit var appIcon: ImageView
-    private lateinit var albumView: ImageView
+    @Mock private lateinit var albumView: ImageView
     private lateinit var titleText: TextView
     private lateinit var artistText: TextView
     private lateinit var seamless: ViewGroup
@@ -157,7 +160,6 @@ public class MediaControlPanelTest : SysuiTestCase() {
 
         // Set up mock views for the players
         appIcon = ImageView(context)
-        albumView = ImageView(context)
         titleText = TextView(context)
         artistText = TextView(context)
         seamless = FrameLayout(context)
