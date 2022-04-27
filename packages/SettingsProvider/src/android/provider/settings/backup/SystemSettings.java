@@ -96,5 +96,7 @@ public class SystemSettings {
         Settings.System.QQS_SHOW_BRIGHTNESS,
         Settings.System.SHOW_AUTO_BRIGHTNESS_BUTTON,
         Settings.System.BRIGHTNESS_SLIDER_POSITION,
+        Settings.System.QS_TILE_LABEL_HIDE,
+        Settings.System.QS_TILE_VERTICAL_LAYOUT,
     };
 }

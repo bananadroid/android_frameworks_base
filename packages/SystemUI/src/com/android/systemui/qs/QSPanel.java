@@ -748,6 +748,8 @@ public class QSPanel extends LinearLayout {
         default void setExpansion(float expansion, float proposedTranslation) {}
 
         int getNumVisibleTiles();
+
+        void updateSettings();
     }
 
     interface OnConfigurationChangedListener {
