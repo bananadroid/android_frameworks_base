@@ -203,8 +203,8 @@ public abstract class QSPanelControllerBase<T extends QSPanel> extends ViewContr
     protected void onViewAttached() {
         mView.updateBrightnessView(isSliderAtTop());
         registerObserver(Settings.System.BRIGHTNESS_SLIDER_POSITION);
-        registerObserver(Settings.System.QS_TILE_LABEL_HIDE, UserHandle.USER_CURRENT);
-        registerObserver(Settings.System.QS_TILE_VERTICAL_LAYOUT, UserHandle.USER_CURRENT);
+        registerObserver(Settings.System.QS_TILE_LABEL_HIDE);
+        registerObserver(Settings.System.QS_TILE_VERTICAL_LAYOUT);
         mQsTileRevealController = createTileRevealController();
         if (mQsTileRevealController != null) {
             mQsTileRevealController.setExpansion(mRevealExpansion);
@@ -222,12 +222,8 @@ public abstract class QSPanelControllerBase<T extends QSPanel> extends ViewContr
     }
 
     protected void registerObserver(String key) {
-        registerObserver(key, UserHandle.USER_ALL);
-    }
-
-    private void registerObserver(String key, int user) {
         mSystemSettings.registerContentObserverForUser(
-            key, mSettingsObserver, user);
+            key, mSettingsObserver, UserHandle.USER_ALL);
     }
 
     @Override
