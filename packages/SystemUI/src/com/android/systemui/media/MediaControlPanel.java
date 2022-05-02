@@ -44,6 +44,7 @@ import android.os.Process;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Pair;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -569,7 +570,13 @@ public class MediaControlPanel {
                         albumView.setImageDrawable(artwork);
                     } else {
                         TransitionDrawable transitionDrawable = new TransitionDrawable(
-                                new Drawable[] { mPrevArtwork, artwork });
+                                new Drawable[]{mPrevArtwork, artwork});
+
+                        scaleTransitionDrawableLayer(transitionDrawable, 0, width, height);
+                        scaleTransitionDrawableLayer(transitionDrawable, 1, width, height);
+                        transitionDrawable.setLayerGravity(0, Gravity.CENTER);
+                        transitionDrawable.setLayerGravity(1, Gravity.CENTER);
+
                         albumView.setImageDrawable(transitionDrawable);
                         transitionDrawable.startTransition(333);
                     }
@@ -600,6 +607,30 @@ public class MediaControlPanel {
                 }
             });
         });
+    }
+
+    private void scaleTransitionDrawableLayer(TransitionDrawable transitionDrawable, int layer,
+            int targetWidth, int targetHeight) {
+        Drawable drawable = transitionDrawable.getDrawable(layer);
+        if (drawable == null) {
+            return;
+        }
+
+        int width = drawable.getIntrinsicWidth();
+        int height = drawable.getIntrinsicHeight();
+        if (width == 0 || height == 0 || targetWidth == 0 || targetHeight == 0) {
+            return;
+        }
+
+        float scale;
+        if ((width / (float) height) > (targetWidth / (float) targetHeight)) {
+            // Drawable is wider than target view, scale to match height
+            scale = targetHeight / (float) height;
+        } else {
+            // Drawable is taller than target view, scale to match width
+            scale = targetWidth / (float) width;
+        }
+        transitionDrawable.setLayerSize(layer, (int) (scale * width), (int) (scale * height));
     }
 
     private void bindActionButtons(MediaData data) {
