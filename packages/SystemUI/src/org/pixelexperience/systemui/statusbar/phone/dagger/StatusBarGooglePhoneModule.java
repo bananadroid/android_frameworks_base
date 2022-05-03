@@ -111,7 +111,6 @@ import com.android.systemui.statusbar.policy.BurnInProtectionController;
 import com.android.systemui.statusbar.policy.ConfigurationController;
 import com.android.systemui.statusbar.policy.DeviceProvisionedController;
 import com.android.systemui.statusbar.policy.ExtensionController;
-import com.android.systemui.statusbar.policy.FlashlightController;
 import com.android.systemui.statusbar.policy.KeyguardStateController;
 import com.android.systemui.statusbar.policy.UserInfoControllerImpl;
 import com.android.systemui.statusbar.policy.UserSwitcherController;
@@ -211,7 +210,6 @@ public interface StatusBarGooglePhoneModule {
             PluginManager pluginManager,
             Optional<LegacySplitScreen> splitScreenOptional,
             LightsOutNotifController lightsOutNotifController,
-            FlashlightController flashlightController,
             StatusBarNotificationActivityStarter.Builder
                     statusBarNotificationActivityStarterBuilder,
             ShadeController shadeController,
@@ -231,6 +229,7 @@ public interface StatusBarGooglePhoneModule {
             StatusBarTouchableRegionManager statusBarTouchableRegionManager,
             NotificationIconAreaController notificationIconAreaController,
             BrightnessSliderController.Factory brightnessSliderFactory,
+            WiredChargingRippleController chargingRippleAnimationController,
             WallpaperController wallpaperController,
             OngoingCallController ongoingCallController,
             SystemStatusAnimationScheduler animationScheduler,
@@ -249,7 +248,6 @@ public interface StatusBarGooglePhoneModule {
             TunerService tunerService,
             DumpManager dumpManager,
             ActivityLaunchAnimator activityLaunchAnimator,
-            WiredChargingRippleController wiredChargingRippleController,
             BurnInProtectionController burnInProtectionController,
             SmartSpaceController smartSpaceController,
             WallpaperNotifier wallpaperNotifier,
@@ -270,16 +268,16 @@ public interface StatusBarGooglePhoneModule {
                 dozeParameters, scrimController, lockscreenWallpaperLazy, lockscreenGestureLogger, biometricUnlockControllerLazy,
                 dozeServiceHost, powerManager, screenPinningRequest, dozeScrimController, volumeComponent, commandQueue,
                 collapsedStatusBarFragmentLogger, statusBarComponentFactory, pluginManager, splitScreenOptional,
-                lightsOutNotifController, flashlightController, statusBarNotificationActivityStarterBuilder, shadeController, statusBarKeyguardViewManager,
+                lightsOutNotifController, statusBarNotificationActivityStarterBuilder, shadeController, statusBarKeyguardViewManager,
                 viewMediatorCallback, initController, timeTickHandler, pluginDependencyProvider, keyguardDismissUtil,
                 extensionController, userInfoControllerImpl, operatorNameViewControllerFactory, phoneStatusBarPolicy,
                 keyguardIndicationController, demoModeController, notificationShadeDepthControllerLazy,
-                statusBarTouchableRegionManager, notificationIconAreaController, brightnessSliderFactory, wallpaperController,
-                ongoingCallController, animationScheduler, locationPublisher, statusBarIconController,
+                statusBarTouchableRegionManager, notificationIconAreaController, brightnessSliderFactory, chargingRippleAnimationController,
+                wallpaperController, ongoingCallController, animationScheduler, locationPublisher, statusBarIconController,
                 statusBarHideIconsForBouncerManager, lockscreenShadeTransitionController, featureFlags,
                 keyguardUnlockAnimationController, mainHandler, delayableExecutor, messageRouter, wallpaperManager,
                 unlockedScreenOffAnimationController, startingSurfaceOptional, tunerService, dumpManager, activityLaunchAnimator,
-                wiredChargingRippleController, burnInProtectionController, smartSpaceController, wallpaperNotifier, reverseChargingViewController,
+                burnInProtectionController, smartSpaceController, wallpaperNotifier, reverseChargingViewController,
                 notificationVoiceReplyClient);
     }
 }
