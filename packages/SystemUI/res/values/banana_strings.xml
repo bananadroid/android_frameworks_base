@@ -119,7 +119,7 @@
     <string name="accessibility_quick_settings_fpsinfo_on">FPS Info on</string>
 
     <!-- FPS view text placeholder -->
-    <string name="fps_text_placeholder">FPS: <xliff:g id="fps" example="90">%1$d</xliff:g></string>
+    <string name="fps_text_placeholder"><xliff:g id="fps" example="90">%1$d</xliff:g></string>
 
     <!-- Bluetooth dialog -->
     <string name="turn_on_bluetooth">Use Bluetooth</string>
