@@ -18,4 +18,13 @@
 
     <!-- Default line spacing multiplier between hours and minutes of the keyguard clock -->
     <item name="keyguard_clock_line_spacing_scale" type="dimen" format="float">.7</item>
+
+    <!-- the padding on the start of the statusbar -->
+    <dimen name="status_bar_padding_start">2dp</dimen>
+
+    <!-- the padding on the end of the statusbar -->
+    <dimen name="status_bar_padding_end">2dp</dimen>
+
+    <!-- the padding on the top of the statusbar (usually 0) -->
+    <dimen name="status_bar_padding_top">0dp</dimen>
 </resources>
