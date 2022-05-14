@@ -146,12 +146,13 @@ class MediaCarouselController @Inject constructor(
         }
     private val configListener = object : ConfigurationController.ConfigurationListener {
         override fun onDensityOrFontScaleChanged() {
-            recreatePlayers()
+            // System font changes should only happen when UMO is offscreen or a flicker may occur
+            updatePlayers(recreateMedia = true)
             inflateSettingsButton()
         }
 
         override fun onThemeChanged() {
-            recreatePlayers()
+            updatePlayers(recreateMedia = false)
             inflateSettingsButton()
         }
 
@@ -161,7 +162,7 @@ class MediaCarouselController @Inject constructor(
         }
 
         override fun onUiModeChanged() {
-            recreatePlayers()
+            updatePlayers(recreateMedia = false)
             inflateSettingsButton()
         }
     }
@@ -511,9 +512,11 @@ class MediaCarouselController @Inject constructor(
         }
     }
 
-    private fun recreatePlayers() {
-        bgColor = getBackgroundColor()
-        pageIndicator.tintList = ColorStateList.valueOf(R.color.people_tile_background)
+    private fun updatePlayers(recreateMedia: Boolean) {
+    	bgColor = getBackgroundColor()
+        pageIndicator.tintList = ColorStateList.valueOf(
+            context.getColor(R.color.media_paging_indicator)
+        )
 
         MediaPlayerData.mediaData().forEach { (key, data, isSsMediaRec) ->
             if (isSsMediaRec) {
@@ -524,7 +527,9 @@ class MediaCarouselController @Inject constructor(
                             it.targetId, it, MediaPlayerData.shouldPrioritizeSs)
                 }
             } else {
-                removePlayer(key, dismissMediaData = false, dismissRecommendation = false)
+                if (recreateMedia) {
+                    removePlayer(key, dismissMediaData = false, dismissRecommendation = false)
+                }
                 addOrUpdatePlayer(key = key, oldKey = null, data = data)
             }
         }

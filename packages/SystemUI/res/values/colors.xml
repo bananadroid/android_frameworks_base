@@ -178,6 +178,7 @@
 
     <!-- media -->
     <color name="media_seamless_border">?android:attr/colorAccent</color>
+    <color name="media_paging_indicator">@android:color/system_neutral1_50</color>
 
     <!-- controls -->
     <color name="control_primary_text">#E6FFFFFF</color>
