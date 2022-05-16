@@ -363,14 +363,14 @@ android_media_AudioEffect_native_setup(JNIEnv *env, jobject thiz, jobject weak_t
         goto setup_failure;
     }
 
-    nId = (jint *) env->GetPrimitiveArrayCritical(jId, NULL);
+    nId = env->GetIntArrayElements(jId, nullptr /* isCopy */);
     if (nId == NULL) {
         ALOGE("setup: Error retrieving id pointer");
         lStatus = AUDIOEFFECT_ERROR_BAD_VALUE;
         goto setup_failure;
     }
     nId[0] = lpAudioEffect->id();
-    env->ReleasePrimitiveArrayCritical(jId, nId, 0);
+    env->ReleaseIntArrayElements(jId, nId, 0 /* mode */);
     nId = NULL;
 
     if (typeStr) {
@@ -409,7 +409,7 @@ android_media_AudioEffect_native_setup(JNIEnv *env, jobject thiz, jobject weak_t
 setup_failure:
 
     if (nId != NULL) {
-        env->ReleasePrimitiveArrayCritical(jId, nId, 0);
+        env->ReleaseIntArrayElements(jId, nId, 0 /* mode */);
     }
 
     if (lpJniStorage) {
@@ -530,14 +530,14 @@ static jint android_media_AudioEffect_native_setParameter(JNIEnv *env,
     }
 
     // get the pointer for the param from the java array
-    lpParam = (jbyte *) env->GetPrimitiveArrayCritical(pJavaParam, NULL);
+    lpParam = env->GetByteArrayElements(pJavaParam, nullptr /* isCopy */);
     if (lpParam == NULL) {
         ALOGE("setParameter: Error retrieving param pointer");
         goto setParameter_Exit;
     }
 
     // get the pointer for the value from the java array
-    lpValue = (jbyte *) env->GetPrimitiveArrayCritical(pJavaValue, NULL);
+    lpValue = env->GetByteArrayElements(pJavaValue, nullptr /* isCopy */);
     if (lpValue == NULL) {
         ALOGE("setParameter: Error retrieving value pointer");
         goto setParameter_Exit;
@@ -560,10 +560,10 @@ static jint android_media_AudioEffect_native_setParameter(JNIEnv *env,
 setParameter_Exit:
 
     if (lpParam != NULL) {
-        env->ReleasePrimitiveArrayCritical(pJavaParam, lpParam, 0);
+        env->ReleaseByteArrayElements(pJavaParam, lpParam, 0 /* mode */);
     }
     if (lpValue != NULL) {
-        env->ReleasePrimitiveArrayCritical(pJavaValue, lpValue, 0);
+        env->ReleaseByteArrayElements(pJavaValue, lpValue, 0 /* mode */);
     }
     return AudioEffectJni::translateNativeErrorToJava(lStatus);
 }
@@ -591,14 +591,14 @@ android_media_AudioEffect_native_getParameter(JNIEnv *env,
     }
 
     // get the pointer for the param from the java array
-    lpParam = (jbyte *) env->GetPrimitiveArrayCritical(pJavaParam, NULL);
+    lpParam = env->GetByteArrayElements(pJavaParam, nullptr /* isCopy */);
     if (lpParam == NULL) {
         ALOGE("getParameter: Error retrieving param pointer");
         goto getParameter_Exit;
     }
 
     // get the pointer for the value from the java array
-    lpValue = (jbyte *) env->GetPrimitiveArrayCritical(pJavaValue, NULL);
+    lpValue = env->GetByteArrayElements(pJavaValue, nullptr /* isCopy */);
     if (lpValue == NULL) {
         ALOGE("getParameter: Error retrieving value pointer");
         goto getParameter_Exit;
@@ -624,10 +624,10 @@ android_media_AudioEffect_native_getParameter(JNIEnv *env,
 getParameter_Exit:
 
     if (lpParam != NULL) {
-        env->ReleasePrimitiveArrayCritical(pJavaParam, lpParam, 0);
+        env->ReleaseByteArrayElements(pJavaParam, lpParam, 0 /* mode */);
     }
     if (lpValue != NULL) {
-        env->ReleasePrimitiveArrayCritical(pJavaValue, lpValue, 0);
+        env->ReleaseByteArrayElements(pJavaValue, lpValue, 0 /* mode */);
     }
 
     if (lStatus == NO_ERROR) {
@@ -656,7 +656,7 @@ static jint android_media_AudioEffect_native_command(JNIEnv *env, jobject thiz,
 
     // get the pointer for the command from the java array
     if (cmdSize != 0) {
-        pCmdData = (jbyte *) env->GetPrimitiveArrayCritical(jCmdData, NULL);
+        pCmdData = env->GetByteArrayElements(jCmdData, nullptr /* isCopy */);
         if (pCmdData == NULL) {
             ALOGE("setParameter: Error retrieving command pointer");
             goto command_Exit;
@@ -665,7 +665,7 @@ static jint android_media_AudioEffect_native_command(JNIEnv *env, jobject thiz,
 
     // get the pointer for the reply from the java array
     if (replySize != 0 && jReplyData != NULL) {
-        pReplyData = (jbyte *) env->GetPrimitiveArrayCritical(jReplyData, NULL);
+        pReplyData = env->GetByteArrayElements(jReplyData, nullptr /* isCopy */);
         if (pReplyData == NULL) {
             ALOGE("setParameter: Error retrieving reply pointer");
             goto command_Exit;
@@ -682,10 +682,10 @@ static jint android_media_AudioEffect_native_command(JNIEnv *env, jobject thiz,
 command_Exit:
 
     if (pCmdData != NULL) {
-        env->ReleasePrimitiveArrayCritical(jCmdData, pCmdData, 0);
+        env->ReleaseByteArrayElements(jCmdData, pCmdData, 0 /* mode */);
     }
     if (pReplyData != NULL) {
-        env->ReleasePrimitiveArrayCritical(jReplyData, pReplyData, 0);
+        env->ReleaseByteArrayElements(jReplyData, pReplyData, 0 /* mode */);
     }
 
     if (lStatus == NO_ERROR) {
