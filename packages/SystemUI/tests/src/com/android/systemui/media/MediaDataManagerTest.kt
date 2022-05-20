@@ -33,6 +33,7 @@ import com.android.systemui.util.time.FakeSystemClock
 import com.google.common.truth.Truth.assertThat
 import org.junit.After
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -468,6 +469,7 @@ class MediaDataManagerTest : SysuiTestCase() {
                 .onSmartspaceMediaDataLoaded(anyObject(), anyObject(), anyBoolean(), anyBoolean())
     }
 
+    @Ignore("b/233283726")
     @Test
     fun testOnSmartspaceMediaDataLoaded_hasNoneMediaTarget_callsRemoveListener() {
         smartspaceMediaDataProvider.onTargetsAvailable(listOf(mediaSmartspaceTarget))
