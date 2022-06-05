@@ -97,9 +97,7 @@ public class SystemSettings {
         Settings.System.OMNI_QS_LAYOUT_COLUMNS,
         Settings.System.OMNI_QS_TILE_LABEL_HIDE,
         Settings.System.STATUS_BAR_LOGO,
-        Settings.System.STATUS_BAR_LOGO_COLOR,
         Settings.System.STATUS_BAR_LOGO_POSITION,
         Settings.System.STATUS_BAR_LOGO_STYLE,
-        Settings.System.STATUS_BAR_LOGO_COLOR_ACCENT,
     };
 }

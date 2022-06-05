@@ -5957,12 +5957,6 @@ public final class Settings {
         public static final String STATUS_BAR_LOGO = "status_bar_logo";
 
         /**
-         * Statusbar logo color setting
-         * @hide
-         */
-        public static final String STATUS_BAR_LOGO_COLOR = "status_bar_logo_color";
-
-        /**
          * Position of Status bar logo
          * 0 - Left (default)
          * 1 - Right
@@ -5975,12 +5969,6 @@ public final class Settings {
          * @hide
          */
         public static final String STATUS_BAR_LOGO_STYLE = "status_bar_logo_style";
-
-        /**
-         * Statusbar logo accent color setting
-         * @hide
-         */
-        public static final String STATUS_BAR_LOGO_COLOR_ACCENT = "status_bar_logo_color_accent";
 
         /**
          * Keys we no longer back up under the current schema, but want to continue to
@@ -6155,10 +6143,8 @@ public final class Settings {
             PRIVATE_SETTINGS.add(POCKET_JUDGE);
             PRIVATE_SETTINGS.add(FORCE_FULLSCREEN_CUTOUT_APPS);
             PRIVATE_SETTINGS.add(STATUS_BAR_LOGO);
-            PRIVATE_SETTINGS.add(STATUS_BAR_LOGO_COLOR);
             PRIVATE_SETTINGS.add(STATUS_BAR_LOGO_POSITION);
             PRIVATE_SETTINGS.add(STATUS_BAR_LOGO_STYLE);
-            PRIVATE_SETTINGS.add(STATUS_BAR_LOGO_COLOR_ACCENT);
         }
 
         /**
