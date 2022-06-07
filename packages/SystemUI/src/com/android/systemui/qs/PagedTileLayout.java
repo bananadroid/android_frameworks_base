@@ -500,6 +500,13 @@ public class PagedTileLayout extends ViewPager implements QSTileLayout {
     }
 
     @Override
+    public int getMaxTiles() {
+        if (mPages.size() == 0) return TileLayout.DEFAULT_TILES_COUNT;
+        TileLayout currentPage = mPages.get(getCurrentPageNumber());
+        return currentPage.getMaxTiles();
+    }
+
+    @Override
     public void updateSettings() {
         for (int i = 0; i < mPages.size(); i++) {
             mPages.get(i).updateSettings();

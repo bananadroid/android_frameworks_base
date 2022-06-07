@@ -232,6 +232,18 @@ public class BananaUtils {
         return getQSColumnsCount(context, resourceCount);
     }
 
+    public static int getQuickQSMaxTilesCount(Context context, int resourceCount) {
+        final int QS_COLUMNS_MIN = 2;
+        final int QQS_TILES_DEFAULT = 4;
+        final Resources res = context.getResources();
+        int value = getQSColumnsCount(context, resourceCount);
+        if (res.getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT && value == QS_COLUMNS_MIN) {
+            // make sure that for the default qs layout (2 columns) the user should get 4 tiles in the QuickQSbar  
+            return QQS_TILES_DEFAULT;
+        }
+        return value;
+    }
+
     public static boolean getQSTileLabelHide(Context context) {
         return Settings.System.getIntForUser(context.getContentResolver(),
                 Settings.System.OMNI_QS_TILE_LABEL_HIDE,

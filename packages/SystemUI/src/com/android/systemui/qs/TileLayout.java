@@ -22,6 +22,7 @@ import java.util.ArrayList;
 public class TileLayout extends ViewGroup implements QSTileLayout {
 
     public static final int NO_MAX_COLUMNS = 100;
+    public static final int DEFAULT_TILES_COUNT = 4;
 
     private static final String TAG = "TileLayout";
 
@@ -303,6 +304,12 @@ public class TileLayout extends ViewGroup implements QSTileLayout {
     public int getResourceColumns() {
         int resourceColumns = Math.max(2, getResources().getInteger(R.integer.quick_settings_num_columns));
         return BananaUtils.getQSColumnsCount(mContext, resourceColumns);
+    }
+
+    @Override
+    public int getMaxTiles() {
+        int columns = getResources().getInteger(R.integer.quick_qs_panel_max_tiles);
+        return BananaUtils.getQuickQSMaxTilesCount(mContext, columns);
     }
 
     @Override

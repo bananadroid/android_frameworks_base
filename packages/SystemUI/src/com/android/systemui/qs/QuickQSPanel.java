@@ -37,7 +37,7 @@ public class QuickQSPanel extends QSPanel {
     private static final String TAG = "QuickQSPanel";
     // A fallback value for max tiles number when setting via Tuner (parseNumTiles)
     public static final int TUNER_MAX_TILES_FALLBACK = 6;
-    public static final int DEFAULT_MIN_TILES = 4;
+    public static final int DEFAULT_MIN_TILES = 2;
 
     private boolean mDisabledByPolicy;
     private int mMaxTiles;
@@ -254,8 +254,14 @@ public class QuickQSPanel extends QSPanel {
         }
 
         @Override
+        public int getMaxTiles() {
+            int columns = getResources().getInteger(R.integer.quick_qs_panel_max_tiles);
+            return BananaUtils.getQuickQSMaxTilesCount(mContext, columns);
+        }
+
+        @Override
         public void updateSettings() {
-            mQSPanel.setMaxTiles(getResourceColumns());
+            mQSPanel.setMaxTiles(getMaxTiles());
             super.updateSettings();
         }
     }
