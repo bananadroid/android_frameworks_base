@@ -6685,6 +6685,14 @@ public final class Settings {
         public static final String VOLBTN_MUSIC_CONTROLS = "volbtn_music_controls";
 
         /**
+         * Gesture navbar IME space.
+         * Supported modes: 0 for normal length, 1 for narrow and 2 for hidden.
+         * Default 0.
+         * @hide
+         */
+        public static final String NAVIGATION_BAR_IME_SPACE = "navigation_bar_ime_space";
+
+        /**
          * Whether to show material Dismiss All Button for notifications
          * @hide
          */
@@ -6863,6 +6871,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(ABOUT_PHONE_HEADER);
             PRIVATE_SETTINGS.add(HEADS_UP_STOPLIST_VALUES);
             PRIVATE_SETTINGS.add(HEADS_UP_BLACKLIST_VALUES);
+            PRIVATE_SETTINGS.add(NAVIGATION_BAR_IME_SPACE);
         }
 
         /**
