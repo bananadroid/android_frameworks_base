@@ -93,5 +93,6 @@ public class SystemSettings {
         Settings.System.QQS_LAYOUT,
         Settings.System.ENABLE_FLOATING_ROTATION_BUTTON,
         Settings.System.LOCK_HIDE_STATUS_BAR,
+        Settings.System.NAVIGATION_BAR_IME_SPACE,
     };
 }
