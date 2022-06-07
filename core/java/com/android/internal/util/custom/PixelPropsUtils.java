@@ -72,7 +72,8 @@ public class PixelPropsUtils {
 	    "com.google.android.dialer",
             "com.google.android.googlequicksearchbox",
 	    "com.google.android.tts",
-            "com.google.audio.hearing.visualization.accessibility.scribe"
+            "com.google.audio.hearing.visualization.accessibility.scribe",
+            "com.google.android.apps.translate"
     };
 
     private static final String[] packagesToChangePixelXL = {
