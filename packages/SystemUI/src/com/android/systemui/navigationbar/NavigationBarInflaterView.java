@@ -18,11 +18,14 @@ package com.android.systemui.navigationbar;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.WindowManagerPolicyConstants.NAV_BAR_MODE_3BUTTON;
+import static android.view.WindowManagerPolicyConstants.NAV_BAR_MODE_GESTURAL;
+import static android.view.WindowManagerPolicyConstants.NAV_BAR_MODE_GESTURAL_OVERLAY;
 
 import android.annotation.Nullable;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.om.IOverlayManager;
+import android.content.om.OverlayInfo;
 import android.content.res.Configuration;
 import android.graphics.drawable.Icon;
 import android.os.RemoteException;
@@ -94,6 +97,8 @@ public class NavigationBarInflaterView extends FrameLayout
     private static final String ABSOLUTE_VERTICAL_CENTERED_SUFFIX = "C";
 
     private static final String OVERLAY_NAVIGATION_FULL_SCREEN = "com.custom.overlay.systemui.navbar.gestural";
+    private static final String KEY_NAVIGATION_SPACE =
+            "system:" + Settings.System.NAVIGATION_BAR_IME_SPACE;
 
     protected LayoutInflater mLayoutInflater;
     protected LayoutInflater mLandscapeInflater;
@@ -117,6 +122,7 @@ public class NavigationBarInflaterView extends FrameLayout
 
     private int mHomeHandleWidthMode = 1;
     private boolean mInverseLayout;
+    private boolean mIsAttachedToWindow;
 
     public NavigationBarInflaterView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -192,10 +198,13 @@ public class NavigationBarInflaterView extends FrameLayout
         super.onAttachedToWindow();
         Dependency.get(TunerService.class).addTunable(this, NAVBAR_INVERSE_LAYOUT);
         Dependency.get(TunerService.class).addTunable(this, NAVBAR_LAYOUT_VIEWS);
+        Dependency.get(TunerService.class).addTunable(this, KEY_NAVIGATION_SPACE);
+        mIsAttachedToWindow = true;
     }
 
     @Override
     protected void onDetachedFromWindow() {
+        mIsAttachedToWindow = false;
         Dependency.get(NavigationModeController.class).removeListener(this);
         Dependency.get(TunerService.class).removeTunable(this);
         super.onDetachedFromWindow();
@@ -209,6 +218,28 @@ public class NavigationBarInflaterView extends FrameLayout
         } else if (NAVBAR_LAYOUT_VIEWS.equals(key)) {
             mNavBarLayout = (String) newValue;
             onLikelyDefaultLayoutChange(true);
+        } else if (mIsAttachedToWindow &&
+                mNavBarMode == NAV_BAR_MODE_GESTURAL && KEY_NAVIGATION_SPACE.equals(key)) {
+            int state = TunerService.parseInteger(newValue, 0);
+            String overlay = NAV_BAR_MODE_GESTURAL_OVERLAY;
+            switch (state) {
+                case 1:  // narrow
+                    overlay += "_narrow_back";
+                    break;
+                case 2:  // hidden
+                    overlay += "_wide_back";
+            }
+
+            try {
+                int userId = ActivityManager.getCurrentUser();
+                IOverlayManager om = IOverlayManager.Stub.asInterface(
+                        ServiceManager.getService(Context.OVERLAY_SERVICE));
+                OverlayInfo info = om.getOverlayInfo(overlay, userId);
+
+                if (info != null && !info.isEnabled())
+                    om.setEnabledExclusiveInCategory(overlay, userId);
+            } catch (Exception e) {
+            }
         }
     }
 
