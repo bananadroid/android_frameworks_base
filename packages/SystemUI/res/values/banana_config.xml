@@ -121,4 +121,8 @@
          Possible values: 3, 3.1, 3.2, 4, 4.1, 4.2
     -->
     <string name="config_screenRecorderAVCProfileLevel" translatable="false">4.2</string>
+
+    <!-- Body font family -->
+    <string name="config_bodyFontFamily">@*android:string/config_bodyFontFamily</string>
+
 </resources>
