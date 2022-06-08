@@ -22,4 +22,8 @@
 
     <!-- Doze: does the long press sensor need a proximity check? -->
     <bool name="doze_long_press_proximity_check">false</bool>
+
+    <!-- Body font family -->
+    <string name="config_bodyFontFamily">@*android:string/config_bodyFontFamily</string>
+
 </resources>
