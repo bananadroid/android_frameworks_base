@@ -282,6 +282,8 @@ public class StatusBar extends SystemUI implements
             "system:" + Settings.System.LESS_BORING_HEADS_UP;
     private static final String RETICKER_STATUS =
             "system:" + Settings.System.RETICKER_STATUS;
+    private static final String QS_TRANSPARENCY =
+            "system:" + Settings.System.QS_TRANSPARENCY;
 
     private static final String BANNER_ACTION_CANCEL =
             "com.android.systemui.statusbar.banner_action_cancel";
@@ -961,6 +963,7 @@ public class StatusBar extends SystemUI implements
 
         mTunerService.addTunable(this, LESS_BORING_HEADS_UP);
         mTunerService.addTunable(this, RETICKER_STATUS);
+        mTunerService.addTunable(this, QS_TRANSPARENCY);
 
         mWindowManager = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
         mDreamManager = IDreamManager.Stub.asInterface(
@@ -4272,6 +4275,10 @@ public class StatusBar extends SystemUI implements
                 boolean reTicker = 
                         TunerService.parseIntegerSwitch(newValue, false);
                 mNotificationInterruptStateProvider.setUseReticker(reTicker);
+                break;
+            case QS_TRANSPARENCY:
+                mScrimController.setCustomScrimAlpha(
+                        TunerService.parseInteger(newValue, 100));
                 break;
             default:
                 break;
