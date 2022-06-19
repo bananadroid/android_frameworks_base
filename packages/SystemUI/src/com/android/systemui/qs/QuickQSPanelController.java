@@ -40,6 +40,7 @@ import com.android.systemui.qs.dagger.QSScope;
 import com.android.systemui.qs.logging.QSLogger;
 import com.android.systemui.settings.brightness.BrightnessMirrorHandler;
 import com.android.systemui.statusbar.policy.BrightnessMirrorController;
+import com.android.systemui.tuner.TunerService;
 import com.android.systemui.util.leak.RotationUtils;
 import com.android.systemui.util.settings.SystemSettings;
 
@@ -56,6 +57,7 @@ public class QuickQSPanelController extends QSPanelControllerBase<QuickQSPanel> 
 
     private final QuickQSBrightnessController mBrightnessController;
     private final BrightnessMirrorHandler mBrightnessMirrorHandler;
+    private final TunerService mTunerService;
 
     private final Provider<Boolean> mUsingCollapsedLandscapeMediaProvider;
 
@@ -70,6 +72,7 @@ public class QuickQSPanelController extends QSPanelControllerBase<QuickQSPanel> 
                     Provider<Boolean> usingCollapsedLandscapeMediaProvider,
             MetricsLogger metricsLogger, UiEventLogger uiEventLogger, QSLogger qsLogger,
             DumpManager dumpManager,
+            TunerService tunerService,
             QuickQSBrightnessController quickQSBrightnessController,
             @Main Handler mainHandler,
             SystemSettings systemSettings
@@ -79,6 +82,7 @@ public class QuickQSPanelController extends QSPanelControllerBase<QuickQSPanel> 
         mBrightnessController = quickQSBrightnessController;
         mBrightnessMirrorHandler = new BrightnessMirrorHandler(mBrightnessController);
         mUsingCollapsedLandscapeMediaProvider = usingCollapsedLandscapeMediaProvider;
+        mTunerService = tunerService;
     }
 
     @Override
@@ -138,6 +142,11 @@ public class QuickQSPanelController extends QSPanelControllerBase<QuickQSPanel> 
     @Override
     protected void onViewAttached() {
         super.onViewAttached();
+
+        mTunerService.addTunable(mView, QSPanel.QS_TILE_ANIMATION_STYLE);
+        mTunerService.addTunable(mView, QSPanel.QS_TILE_ANIMATION_DURATION);
+        mTunerService.addTunable(mView, QSPanel.QS_TILE_ANIMATION_INTERPOLATOR);
+
         mView.addOnConfigurationChangedListener(mOnConfigurationChangedListener);
         mBrightnessMirrorHandler.onQsPanelAttached();
         updateSliderVisibility();
@@ -147,6 +156,7 @@ public class QuickQSPanelController extends QSPanelControllerBase<QuickQSPanel> 
     @Override
     protected void onViewDetached() {
         super.onViewDetached();
+        mTunerService.removeTunable(mView);
         mBrightnessMirrorHandler.onQsPanelDettached();
     }
 

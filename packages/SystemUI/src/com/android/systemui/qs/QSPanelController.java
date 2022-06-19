@@ -45,6 +45,7 @@ import com.android.systemui.settings.brightness.BrightnessMirrorHandler;
 import com.android.systemui.settings.brightness.BrightnessSliderController;
 import com.android.systemui.statusbar.phone.StatusBarKeyguardViewManager;
 import com.android.systemui.statusbar.policy.BrightnessMirrorController;
+import com.android.systemui.tuner.TunerService;
 import com.android.systemui.util.settings.SystemSettings;
 
 import javax.inject.Inject;
@@ -56,6 +57,7 @@ import javax.inject.Named;
 @QSScope
 public class QSPanelController extends QSPanelControllerBase<QSPanel> {
 
+    private final TunerService mTunerService;
     private final QSCustomizerController mQsCustomizerController;
     private final QSTileRevealController.Factory mQsTileRevealControllerFactory;
     private final FalsingManager mFalsingManager;
@@ -75,7 +77,7 @@ public class QSPanelController extends QSPanelControllerBase<QSPanel> {
     };
 
     @Inject
-    QSPanelController(QSPanel view,
+    QSPanelController(QSPanel view, TunerService tunerService,
             QSTileHost qstileHost, QSCustomizerController qsCustomizerController,
             @Named(QS_USING_MEDIA_PLAYER) boolean usingMediaPlayer,
             @Named(QS_PANEL) MediaHost mediaHost,
@@ -89,6 +91,7 @@ public class QSPanelController extends QSPanelControllerBase<QSPanel> {
             @Main Handler mainHandler, SystemSettings systemSettings) {
         super(view, qstileHost, qsCustomizerController, usingMediaPlayer, mediaHost,
                 metricsLogger, uiEventLogger, qsLogger, dumpManager, mainHandler, systemSettings);
+        mTunerService = tunerService;
         mQsCustomizerController = qsCustomizerController;
         mQsTileRevealControllerFactory = qsTileRevealControllerFactory;
         mFalsingManager = falsingManager;
@@ -119,6 +122,10 @@ public class QSPanelController extends QSPanelControllerBase<QSPanel> {
 
         updateMediaDisappearParameters();
 
+        mTunerService.addTunable(mView, QSPanel.QS_TILE_ANIMATION_STYLE);
+        mTunerService.addTunable(mView, QSPanel.QS_TILE_ANIMATION_DURATION);
+        mTunerService.addTunable(mView, QSPanel.QS_TILE_ANIMATION_INTERPOLATOR);
+
         mView.updateResources();
         if (mView.isListening()) {
             refreshAllTiles();
@@ -138,6 +145,7 @@ public class QSPanelController extends QSPanelControllerBase<QSPanel> {
 
     @Override
     protected void onViewDetached() {
+        mTunerService.removeTunable(mView);
         mBrightnessMirrorHandler.onQsPanelDettached();
         super.onViewDetached();
     }
