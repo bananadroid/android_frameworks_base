@@ -2621,6 +2621,7 @@ public class OomAdjuster {
         }
     }
 
+    @GuardedBy("mProcLock")
     void onWakefulnessChanged(int wakefulness) {
         mCachedAppOptimizer.onWakefulnessChanged(wakefulness);
     }
