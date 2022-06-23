@@ -774,13 +774,15 @@ public class QSPanel extends LinearLayout implements Tunable {
             switchAllContentToParent(newParent, mTileLayout);
             reAttachMediaHost(mediaHostView, horizontal);
             if (needsDynamicRowsAndColumns()) {
-                int value = 1;
-                // Force the display of at least 2 rows if the QS layout is 2 columns
-                if (mTileLayout.getResourceColumns() == 2) {
-                    value = 2;
+            	boolean isPortrait = mContext.getResources().getConfiguration().orientation
+                == Configuration.ORIENTATION_PORTRAIT;
+                // even though there is already an exisiting horizontal check, lets make sure that 2 rows is only forced on portrait
+                if (isPortrait && mTileLayout.getResourceColumnsPortrait() == 2) {
+                    mTileLayout.setMinRows(horizontal ? 2 : 1);
+                } else {
+                   mTileLayout.setMinRows(horizontal ? 1 : 1);
                 }
-                mTileLayout.setMinRows(horizontal ? value : 1);
-                mTileLayout.setMaxColumns(horizontal ? mTileLayout.getResourceColumns() / 2 : mTileLayout.getResourceColumns());
+                mTileLayout.setMaxColumns(horizontal ? mTileLayout.getResourceColumnsPortrait() : mTileLayout.getResourceColumnsLand());
             }
             updateMargins(mediaHostView);
             if (mHorizontalLinearLayout == null) return;
@@ -875,9 +877,9 @@ public class QSPanel extends LinearLayout implements Tunable {
 
         int getNumVisibleTiles();
 
-        int getResourceColumns();
+        int getResourceColumnsPortrait();
 
-        int getMaxTiles();
+        int getResourceColumnsLand();
 
         void updateSettings();
     }

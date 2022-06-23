@@ -20,6 +20,8 @@ import static com.android.systemui.media.dagger.MediaModule.QUICK_QS_PANEL;
 import static com.android.systemui.qs.dagger.QSFragmentModule.QQS_FOOTER;
 import static com.android.systemui.qs.dagger.QSFragmentModule.QS_USING_MEDIA_PLAYER;
 
+import android.content.res.Configuration;
+
 import com.android.internal.logging.MetricsLogger;
 import com.android.internal.logging.UiEventLogger;
 import com.android.internal.util.banana.BananaUtils;
@@ -45,7 +47,13 @@ public class QuickQSPanelController extends QSPanelControllerBase<QuickQSPanel> 
     private final QSPanel.OnConfigurationChangedListener mOnConfigurationChangedListener =
             newConfig -> {
                 int newMaxTiles = getResources().getInteger(R.integer.quick_qs_panel_max_tiles);
-                newMaxTiles = BananaUtils.getQuickQSColumnsCount(getContext(), newMaxTiles);
+                boolean isPortrait = getResources().getConfiguration().orientation
+                	== Configuration.ORIENTATION_PORTRAIT;
+                if (isPortrait) {
+                    newMaxTiles = BananaUtils.getQuickQSColumnsPortrait(getContext(), newMaxTiles);
+                } else {
+                    newMaxTiles = BananaUtils.getQuickQSColumnsLandscape(getContext(), newMaxTiles);
+                }
                 if (newMaxTiles != mView.getNumQuickTiles()) {
                     setMaxTiles(newMaxTiles);
                 }

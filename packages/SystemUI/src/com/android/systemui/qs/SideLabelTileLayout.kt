@@ -31,10 +31,6 @@ open class SideLabelTileLayout(
         }
     }
 
-    override fun getMaxTiles(): Int {
-        return maxTiles()
-    }
-
     override fun isFull(): Boolean {
         return mRecords.size >= maxTiles()
     }
