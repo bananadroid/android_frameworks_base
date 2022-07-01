@@ -46,4 +46,7 @@
 
     <!-- The number of rows in the QuickSettings -->
     <integer name="quick_settings_max_rows_custom">4</integer>
+
+    <!-- Charging info current divider, if needed -->
+    <integer name="config_currentInfoDivider" translatable="false">1000</integer>
 </resources>
