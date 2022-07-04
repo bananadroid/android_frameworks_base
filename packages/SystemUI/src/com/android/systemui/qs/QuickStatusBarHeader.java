@@ -204,6 +204,7 @@ public class QuickStatusBarHeader extends FrameLayout implements TunerService.Tu
         mNetworkTraffic = findViewById(R.id.network_traffic);
 
         mBatteryRemainingIcon.setOnClickListener(this);
+        mBatteryRemainingIcon.mQS = true;
 
         Configuration config = mContext.getResources().getConfiguration();
         setDatePrivacyContainersWidth(config.orientation == Configuration.ORIENTATION_LANDSCAPE);

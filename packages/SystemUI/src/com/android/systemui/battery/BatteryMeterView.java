@@ -111,6 +111,8 @@ public class BatteryMeterView extends LinearLayout implements DarkReceiver {
 
     private BatteryEstimateFetcher mBatteryEstimateFetcher;
 
+    public boolean mQS = false;
+
     public BatteryMeterView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
