@@ -128,10 +128,10 @@ public class QSPanel extends LinearLayout implements Tunable {
                 R.dimen.quick_settings_bottom_margin_media);
         mMediaTopMargin = getResources().getDimensionPixelSize(
                 R.dimen.qs_tile_margin_vertical);
-	mMaxColumnsPortrait = Math.max(2, getResources().getInteger(R.integer.quick_qs_panel_num_columns));
-	mMaxColumnsPortrait = BananaUtils.getQuickQSColumnsPortrait(context, mMaxColumnsPortrait);
-	mMaxColumnsLandscape = Math.max(4, getResources().getInteger(R.integer.quick_qs_panel_num_columns_landscape));
-	mMaxColumnsLandscape = BananaUtils.getQuickQSColumnsLandscape(context, mMaxColumnsLandscape);
+        mMaxColumnsPortrait = Math.max(2, getResources().getInteger(R.integer.quick_qs_panel_num_columns));
+        mMaxColumnsPortrait = BananaUtils.getQuickQSColumnsPortrait(context, mMaxColumnsPortrait);
+        mMaxColumnsLandscape = Math.max(5, getResources().getInteger(R.integer.quick_qs_panel_num_columns_landscape));
+        mMaxColumnsLandscape = BananaUtils.getQuickQSColumnsLandscape(context, mMaxColumnsLandscape);
         mContext = context;
 
         setOrientation(VERTICAL);
@@ -789,10 +789,10 @@ public class QSPanel extends LinearLayout implements Tunable {
             switchAllContentToParent(newParent, mTileLayout);
             reAttachMediaHost(mediaHostView, horizontal);
             if (needsDynamicRowsAndColumns()) {
-            	boolean isPortrait = mContext.getResources().getConfiguration().orientation
-                == Configuration.ORIENTATION_PORTRAIT;
+            	boolean isLandscape = mContext.getResources().getConfiguration().orientation
+                == Configuration.ORIENTATION_LANDSCAPE;
                 // even though there is already an exisiting horizontal check, lets make sure that 2 rows is only forced on portrait
-                if (isPortrait && mTileLayout.getResourceColumnsPortrait() == 2) {
+                if (!isLandscape && mTileLayout.getResourceColumnsPortrait() == 2) {
                     mTileLayout.setMinRows(horizontal ? 2 : 1);
                 } else {
                    mTileLayout.setMinRows(horizontal ? 1 : 1);
