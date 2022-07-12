@@ -6189,6 +6189,15 @@ public final class Settings {
         public static final String STATUSBAR_BATTERY_BAR_BLEND_COLOR_REVERSE =
                 "statusbar_battery_bar_blend_color_reverse";
 
+	/**
+          * Enable disable CustomUI
+          *   0 = disabled
+          *   1 = enabled
+          * @author vjspranav
+          * @hide
+          */
+         public static final String CUSTOM_UI_TOGGLE = "custom_ui_toggle";
+
         /**
          * reTicker Status
          * @hide
@@ -6708,6 +6717,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(HIGH_TOUCH_POLLING_RATE_ENABLE);
             PRIVATE_SETTINGS.add(BUTTON_BACKLIGHT_ONLY_WHEN_PRESSED);
             PRIVATE_SETTINGS.add(LOCK_HIDE_STATUS_BAR);
+            PRIVATE_SETTINGS.add(CUSTOM_UI_TOGGLE);
         }
 
         /**
