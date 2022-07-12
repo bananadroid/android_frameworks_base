@@ -6337,6 +6337,15 @@ public final class Settings {
         */
         public static final String QS_FOOTER_WARNINGS = "qs_footer_warnings";
 
+	/**
+          * Enable disable CustomUI
+          *   0 = disabled
+          *   1 = enabled
+          * @author vjspranav
+          * @hide
+          */
+         public static final String CUSTOM_UI_TOGGLE = "custom_ui_toggle";
+
         /**
          * reTicker Status
          * @hide
@@ -6786,6 +6795,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(CAMERA_SLEEP_ON_RELEASE);
             PRIVATE_SETTINGS.add(CAMERA_LAUNCH);
             PRIVATE_SETTINGS.add(LOCK_HIDE_STATUS_BAR);
+            PRIVATE_SETTINGS.add(CUSTOM_UI_TOGGLE);
         }
 
         /**
