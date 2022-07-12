@@ -10,4 +10,7 @@
     <string name="screen_zoom_summary_smallest">Smallest</string>
 
     <string name="status_deep_sleep">(Deep sleep: %1$d%2$s)</string>
+
+    <!-- [CHAR LIMIT=25] Manage applications, text for when an application is hidden. -->
+    <string name="hidden">Hidden</string>
 </resources>
