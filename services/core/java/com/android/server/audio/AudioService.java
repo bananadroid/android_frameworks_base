@@ -376,6 +376,7 @@ public class AudioService extends IAudioService.Stub
     private static final int MSG_FOLD_UPDATE = 49;
     private static final int MSG_RESET_SPATIALIZER = 50;
     private static final int MSG_NO_LOG_FOR_PLAYER_I = 51;
+    private static final int MSG_SET_BLUETOOTH_SCO_VOLUME = 52;
 
     // start of messages handled under wakelock
     //   these messages can only be queued, i.e. sent with queueMsgUnderWakeLock(),
@@ -8805,6 +8806,10 @@ public class AudioService extends IAudioService.Stub
                     onReinitVolumes((String) msg.obj);
                     break;
 
+                case MSG_SET_BLUETOOTH_SCO_VOLUME:
+                    onSetBluetoothScoVolume();
+                    break;
+
                 case MSG_UPDATE_A11Y_SERVICE_UIDS:
                     onUpdateAccessibilityServiceUids();
                     break;
@@ -8941,6 +8946,33 @@ public class AudioService extends IAudioService.Stub
                 mSurroundModeChanged = true;
             } else {
                 mSurroundModeChanged = false;
+            }
+        }
+    }
+
+    public void postSetBluetoothScoVolume() {
+        if (isInCommunication()) {
+            mAudioHandler.removeMessages(MSG_SET_BLUETOOTH_SCO_VOLUME);
+            sendMsg(mAudioHandler,
+                    MSG_SET_BLUETOOTH_SCO_VOLUME,
+                    SENDMSG_QUEUE,
+                    0/*arg1*/,
+                    0/*arg2*/,
+                    null,
+                    SET_BLUETOOTH_SCO_VOLUME_PERIOD_MS /*delay*/);
+        }
+    }
+
+    private void onSetBluetoothScoVolume() {
+        synchronized (VolumeStreamState.class) {
+            int streamTypeAlias = mStreamVolumeAlias[AudioSystem.STREAM_BLUETOOTH_SCO];
+            VolumeStreamState streamState = mStreamStates[streamTypeAlias];
+            final int device = getDeviceForStream(streamTypeAlias);
+            if (AudioSystem.DEVICE_OUT_ALL_SCO_SET.contains(device)) {
+                int scoIndex = streamState.getIndex(device)/10;
+                streamState.mVolumeChanged.putExtra(AudioManager.EXTRA_VOLUME_STREAM_VALUE,
+                        scoIndex);
+                sendBroadcastToAll(streamState.mVolumeChanged);
             }
         }
     }
@@ -10067,6 +10099,7 @@ public class AudioService extends IAudioService.Stub
     private static final int SAFE_VOLUME_CONFIGURE_TIMEOUT_MS = 30000;  // 30s after boot completed
     // check playback or record activity every 6 seconds for UIDs owning mode IN_COMMUNICATION
     private static final int CHECK_MODE_FOR_UID_PERIOD_MS = 6000;
+    private static final int SET_BLUETOOTH_SCO_VOLUME_PERIOD_MS = 200;
 
     private static final String ACTION_CHECK_MUSIC_ACTIVE =
             AudioService.class.getSimpleName() + ".CHECK_MUSIC_ACTIVE";
