@@ -349,6 +349,19 @@ public class NotificationShadeWindowControllerImpl implements NotificationShadeW
                     (long) mLpChanged.preferredMaxDisplayRefreshRate);
         }
 
+        if (mAODMaxRefreshRate > 0) {
+            if (state.mDozing) {
+                // limit on AOD & ambient if we have that set
+                // overrides set max keyguard rate
+                mLpChanged.preferredMaxDisplayRefreshRate = mAODMaxRefreshRate;
+            } else if (!wasKeyguardRateSet) {
+                // un-limit when out, but only if max keyguard rate wasn't set
+                mLpChanged.preferredMaxDisplayRefreshRate = 0;
+            }
+            Trace.setCounter("display_max_refresh_rate",
+                        (long) mLpChanged.preferredMaxDisplayRefreshRate);
+        }
+
         if (state.mBouncerShowing && !isDebuggable()) {
             mLpChanged.flags |= LayoutParams.FLAG_SECURE;
         } else {
