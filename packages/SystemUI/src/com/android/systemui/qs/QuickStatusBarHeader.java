@@ -198,7 +198,6 @@ public class QuickStatusBarHeader extends FrameLayout implements TunerService.Tu
         // QS will always show the estimate, and BatteryMeterView handles the case where
         // it's unavailable or charging
         mBatteryRemainingIcon.setPercentShowMode(BatteryMeterView.MODE_ESTIMATE);
-        mBatteryRemainingIcon.setOnClickListener(this);
 
         mIconsAlphaAnimatorFixed = new TouchAnimator.Builder()
                 .addFloat(mIconContainer, "alpha", 0, 1)
@@ -280,9 +279,6 @@ public class QuickStatusBarHeader extends FrameLayout implements TunerService.Tu
             builder.appendPath(Long.toString(System.currentTimeMillis()));
             Intent todayIntent = new Intent(Intent.ACTION_VIEW, builder.build());
             mActivityStarter.postStartActivityDismissingKeyguard(todayIntent, 0);
-        } else if (v == mBatteryRemainingIcon) {
-            mActivityStarter.postStartActivityDismissingKeyguard(new Intent(
-                    Intent.ACTION_POWER_USAGE_SUMMARY),0);
         }
     }
 
@@ -478,16 +474,14 @@ public class QuickStatusBarHeader extends FrameLayout implements TunerService.Tu
         mNetworkTraffic.setChipVisibility(visibility);
         if (visibility || mShowNetworkTraffic) {
             // Animates the icons and battery indicator from alpha 0 to 1, when the chip is visible
-            mBatteryRemainingIcon.setOnClickListener(null);
-            mBatteryRemainingIcon.setClickable(false);
             mIconsAlphaAnimator = mIconsAlphaAnimatorFixed;
             mIconsAlphaAnimator.setPosition(mKeyguardExpansionFraction);
         } else {
             mIconsAlphaAnimator = null;
             mIconContainer.setAlpha(1);
             mBatteryRemainingIcon.setAlpha(1);
-            mBatteryRemainingIcon.setOnClickListener(this);
         }
+
     }
 
     class SettingsObserver extends ContentObserver {
