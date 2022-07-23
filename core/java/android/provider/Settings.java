@@ -5464,12 +5464,6 @@ public final class Settings {
         public static final String POCKET_JUDGE = "pocket_judge";
 
         /**
-         * Whether to show battery estimates in QS
-         * @hide
-         */
-        public static final String QS_SHOW_BATTERY_ESTIMATE = "qs_show_battery_estimate";
-
-        /**
          * @hide
          */
         public static final String SCREENSHOT_SHUTTER_SOUND = "screenshot_shutter_sound";
