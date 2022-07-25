@@ -18,6 +18,8 @@ cc_defaults {
         "-Werror",
         "-Wunused",
         "-Wunreachable-code",
+
+	"-O3",
     ],
 
     shared_libs: [
