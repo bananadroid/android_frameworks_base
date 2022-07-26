@@ -6029,6 +6029,11 @@ public final class Settings {
         public static final String OMNI_QS_TILE_LABEL_HIDE = "qs_tile_label_hide";
 
         /**
+         * @hide
+         */
+        public static final String SECONDARY_COLOR_CLOCK = "use_secondary_color_clock";
+
+        /**
          * These are all public system settings
          *
          * @hide
