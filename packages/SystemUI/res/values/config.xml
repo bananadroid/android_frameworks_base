@@ -74,7 +74,7 @@
 
     <!-- The default tiles to display in QuickSettings -->
     <string name="quick_settings_tiles_default" translatable="false">
-        wifi,cell,bt,flashlight,airplane,hotspot,location,sound
+        wifi,cell,bt,flashlight,airplane,hotspot,location,sound,night,reduce_brightness,qr_code,rotation,nfc,screenshot,screenrecord,volume_panel
     </string>
 
     <!-- The minimum number of tiles to display in QuickSettings -->
