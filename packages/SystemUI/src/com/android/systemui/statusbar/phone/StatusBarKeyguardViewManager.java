@@ -74,8 +74,6 @@ import com.android.systemui.statusbar.policy.KeyguardStateController;
 import com.android.systemui.R;
 
 import java.io.PrintWriter;
-import java.lang.StackTraceElement;
-import java.lang.Thread;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -126,18 +124,9 @@ public class StatusBarKeyguardViewManager implements RemoteInputController.Callb
     private final BouncerExpansionCallback mExpansionCallback = new BouncerExpansionCallback() {
         @Override
         public void onFullyShown() {
-            boolean shouldWakeup = true;
-            for (StackTraceElement e : Thread.currentThread().getStackTrace()) {
-                if ("handleShow".equals(e.getMethodName())) {
-                    shouldWakeup = false;
-                    break;
-                }
-            }
             updateStates();
-            if (shouldWakeup) {
-                mStatusBar.wakeUpIfDozing(SystemClock.uptimeMillis(),
-                        mStatusBar.getBouncerContainer(), "BOUNCER_VISIBLE");
-            }
+            mStatusBar.wakeUpIfDozing(SystemClock.uptimeMillis(),
+                    mStatusBar.getBouncerContainer(), "BOUNCER_VISIBLE");
             onKeyguardBouncerFullyShownChanged(true);
             showFaceRecognizingMessage();
         }
