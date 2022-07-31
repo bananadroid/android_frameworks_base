@@ -34,8 +34,6 @@ public class PixelPropsUtils {
 
     private static volatile boolean sIsGms = false;
     public static final String PACKAGE_GMS = "com.google.android.gms";
-    private static final Map<String, Object> propsToChangePUBG;
-    private static final Map<String, Object> propsToChangeCOD;
     private static final Map<String, Object> propsToChangePixel6;
     private static final Map<String, Object> propsToChangePixel5;
     private static final Map<String, Object> propsToChangePixelXL;
@@ -45,20 +43,6 @@ public class PixelPropsUtils {
         "com.android.vending",
         "com.breel.wallpapers20"
 
-    };
-
-    private static final String[] packagesToChangeCOD = {
-        "com.activision.callofduty.shooter"
-    };
-
-    private static final String[] packagesToChangePUBG = {
-        "com.tencent.ig",
-        "com.pubg.krmobile",
-        "com.vng.pubgmobile",
-        "com.rekoo.pubgm",
-        "com.pubg.imobile",
-        "com.pubg.newstate",
-        "com.gameloft.android.ANMP.GloftA9HM" // Asphalt 9
     };
 
     private static final String[] packagesToChangePixel6 = {
@@ -105,10 +89,6 @@ public class PixelPropsUtils {
         propsToChangePixel6.put("PRODUCT", "raven");
         propsToChangePixel6.put("MODEL", "Pixel 6 Pro");
         propsToChangePixel6.put("FINGERPRINT", "google/raven/raven:12/SQ3A.220705.003/8671607:user/release-keys");
-        propsToChangePUBG = new HashMap<>();
-        propsToChangePUBG.put("MODEL", "GM1917");
-        propsToChangeCOD = new HashMap<>();
-        propsToChangeCOD.put("MODEL", "SO-52A");
         propsToChangePixel5 = new HashMap<>();
         propsToChangePixel5.put("BRAND", "google");
         propsToChangePixel5.put("MANUFACTURER", "Google");
@@ -163,26 +143,6 @@ public class PixelPropsUtils {
                 Log.d(TAG, "Defining props for: " + packageName);
             }
             for (Map.Entry<String, Object> prop : propsToChangePixelXL.entrySet()) {
-                String key = prop.getKey();
-                Object value = prop.getValue();
-                setPropValue(key, value);
-            }
-        }
-        if (Arrays.asList(packagesToChangePUBG).contains(packageName)){
-            if (DEBUG){
-                Log.d(TAG, "Defining props for: " + packageName);
-            }
-            for (Map.Entry<String, Object> prop : propsToChangePUBG.entrySet()) {
-                String key = prop.getKey();
-                Object value = prop.getValue();
-                setPropValue(key, value);
-            }
-        }
-        if (Arrays.asList(packagesToChangeCOD).contains(packageName)){
-            if (DEBUG){
-                Log.d(TAG, "Defining props for: " + packageName);
-            }
-            for (Map.Entry<String, Object> prop : propsToChangeCOD.entrySet()) {
                 String key = prop.getKey();
                 Object value = prop.getValue();
                 setPropValue(key, value);
