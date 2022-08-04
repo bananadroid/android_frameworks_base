@@ -631,11 +631,6 @@ class AppErrors {
                 return;
             }
 
-            // Add paste content for Hastebin option
-            data.paste = "time: " + timeMillis + "\n" +
-            "msg: " + longMsg + "\n" +
-            "stacktrace: " + stackTrace;
-          
             final Message msg = Message.obtain();
             msg.what = ActivityManagerService.SHOW_ERROR_UI_MSG;
 

@@ -17,13 +17,8 @@
 package com.android.server.am;
 
 import static android.app.ActivityTaskManager.INVALID_TASK_ID;
-import com.android.internal.util.HastebinUtils;
-import com.android.internal.util.HastebinUtils.UploadResultCallback;
 
-import android.content.ClipboardManager;
-import android.content.ClipData;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
@@ -31,25 +26,19 @@ import android.os.Handler;
 import android.os.Message;
 import android.provider.Settings;
 import android.text.BidiFormatter;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 final class AppErrorDialog extends BaseErrorDialog implements View.OnClickListener {
-
-    private static final String TAG = "AppErrorDialog";
 
     private final ActivityManagerService mService;
     private final ActivityManagerGlobalLock mProcLock;
     private final AppErrorResult mResult;
     private final ProcessRecord mProc;
     private final boolean mIsRestartable;
-    private String mPaste;
-    private final String mPackageName;
 
     static int CANT_SHOW = -1;
     static int BACKGROUND_USER = -2;
@@ -78,7 +67,6 @@ final class AppErrorDialog extends BaseErrorDialog implements View.OnClickListen
         mIsRestartable = (data.taskId != INVALID_TASK_ID || data.isRestartableForService)
                 && Settings.Global.getInt(context.getContentResolver(),
                 Settings.Global.SHOW_RESTART_IN_CRASH_DIALOG, 0) != 0;
-        mPaste = data.paste;
         BidiFormatter bidi = BidiFormatter.getInstance();
 
         CharSequence name;
@@ -96,9 +84,6 @@ final class AppErrorDialog extends BaseErrorDialog implements View.OnClickListen
                             : com.android.internal.R.string.aerr_process,
                     bidi.unicodeWrap(name.toString())));
         }
-
-        // Store crashing package name
-        mPackageName = mProc.processName;
 
         setCancelable(true);
         setCancelMessage(mHandler.obtainMessage(CANCEL));
@@ -134,15 +119,10 @@ final class AppErrorDialog extends BaseErrorDialog implements View.OnClickListen
         final TextView report = findViewById(com.android.internal.R.id.aerr_report);
         report.setOnClickListener(this);
         report.setVisibility(hasReceiver ? View.VISIBLE : View.GONE);
-        final TextView copy = findViewById(com.android.internal.R.id.aerr_copy);
-        copy.setOnClickListener(this);
         final TextView close = findViewById(com.android.internal.R.id.aerr_close);
         close.setOnClickListener(this);
         final TextView appInfo = findViewById(com.android.internal.R.id.aerr_app_info);
         appInfo.setOnClickListener(this);
-        final TextView disable = findViewById(com.android.internal.R.id.aerr_disable);
-        disable.setOnClickListener(this);
-        disable.setVisibility(!isAosp(mPackageName) ? View.VISIBLE : View.GONE);
 
         boolean showMute = !Build.IS_USER && Settings.Global.getInt(context.getContentResolver(),
                 Settings.Global.DEVELOPMENT_SETTINGS_ENABLED, 0) != 0
@@ -194,10 +174,6 @@ final class AppErrorDialog extends BaseErrorDialog implements View.OnClickListen
             case com.android.internal.R.id.aerr_report:
                 mHandler.obtainMessage(FORCE_QUIT_AND_REPORT).sendToTarget();
                 break;
-            case com.android.internal.R.id.aerr_copy:
-                postToHastebinAndCopyURL();
-                mHandler.obtainMessage(FORCE_QUIT).sendToTarget();
-                break;
             case com.android.internal.R.id.aerr_close:
                 mHandler.obtainMessage(FORCE_QUIT).sendToTarget();
                 break;
@@ -207,45 +183,9 @@ final class AppErrorDialog extends BaseErrorDialog implements View.OnClickListen
             case com.android.internal.R.id.aerr_mute:
                 mHandler.obtainMessage(MUTE).sendToTarget();
                 break;
-            case com.android.internal.R.id.aerr_disable:
-                disablePackage();
-                mHandler.obtainMessage(FORCE_QUIT).sendToTarget();
-                break;
             default:
                 break;
         }
-    }
-
-    private void postToHastebinAndCopyURL() {
-        // Post to Hastebin
-        HastebinUtils.upload(mPaste, new UploadResultCallback() {
-            public void onSuccess(String url) {
-                // Copy to clipboard
-                ClipboardManager clipboard = (ClipboardManager) getContext().getSystemService(Context.CLIPBOARD_SERVICE);
-                clipboard.setPrimaryClip(ClipData.newPlainText("Log URL", url));
-
-                // Show toast
-                Toast.makeText(getContext(), com.android.internal.R.string.url_copy_success, Toast.LENGTH_LONG).show();
-            }
-
-            public void onFail(String message, Exception e) {
-                Toast.makeText(getContext(), com.android.internal.R.string.url_copy_failed, Toast.LENGTH_LONG).show();
-                Log.e(TAG, message, e);
-            }
-        });
-    }
-
-    // Helper that disables a crashing package
-    private void disablePackage() {
-        if(mPackageName != null) {
-            PackageManager pm = getContext().getPackageManager();
-            pm.setApplicationEnabledSetting(mPackageName, PackageManager.COMPONENT_ENABLED_STATE_DISABLED_USER, 0);
-        }
-    }
-
-    // Check if that's an AOSP app or Google's
-    private boolean isAosp(String mPackageName) {
-        return mPackageName.contains("com.android") || mPackageName.contains("com.google");
     }
 
     static class Data {
@@ -254,6 +194,5 @@ final class AppErrorDialog extends BaseErrorDialog implements View.OnClickListen
         boolean repeating;
         ProcessRecord proc;
         boolean isRestartableForService;
-        String paste;
     }
 }
