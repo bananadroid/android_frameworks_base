@@ -67,6 +67,7 @@ open class QSTileViewImpl @JvmOverloads constructor(
         private const val SECONDARY_LABEL_NAME = "secondaryLabel"
         private const val CHEVRON_NAME = "chevron"
         const val UNAVAILABLE_ALPHA = 0.3f
+        const val TILE_ALPHA = 0.2f
         @VisibleForTesting
         internal const val TILE_STATE_RES_PREFIX = "tile_states_"
     }
@@ -89,6 +90,14 @@ open class QSTileViewImpl @JvmOverloads constructor(
             android.R.attr.colorAccent)
     private val colorInactive = Utils.getColorAttrDefaultColor(context, R.attr.offStateColor)
     private val colorUnavailable = Utils.applyAlpha(UNAVAILABLE_ALPHA, colorInactive)
+
+    private var colorActiveStyle = Utils.applyAlpha(TILE_ALPHA, Utils.getColorAttrDefaultColor(context,
+            android.R.attr.colorAccent))
+    private val colorInactiveStyle = resources.getColor(R.color.qs_translucent_bg)
+    private val colorLabelActiveStyle =
+            Utils.getColorAttrDefaultColor(context, com.android.internal.R.attr.colorAccent)
+    private val colorSecondaryLabelActiveStyle =
+            Utils.getColorAttrDefaultColor(context, com.android.internal.R.attr.colorAccent)
 
     private val colorLabelActive =
             Utils.getColorAttrDefaultColor(context, android.R.attr.textColorPrimaryInverse)
@@ -615,7 +624,21 @@ open class QSTileViewImpl @JvmOverloads constructor(
         return locInScreen.get(1) >= -height
     }
 
+    private fun isQSStyleEnabled(): Boolean = Settings.System.getIntForUser(context.contentResolver, 
+    Settings.System.QS_TILE_STYLE, 0,  UserHandle.USER_CURRENT) != 0
+
     private fun getBackgroundColorForState(state: Int): Int {
+    	return if (isQSStyleEnabled()) {
+        return when (state) {
+            Tile.STATE_ACTIVE -> colorActiveStyle
+            Tile.STATE_INACTIVE -> colorInactiveStyle
+            Tile.STATE_UNAVAILABLE -> colorUnavailable
+            else -> {
+                Log.e(TAG, "Invalid state $state")
+                0
+            }
+          }
+       } else {
         return when (state) {
             Tile.STATE_ACTIVE -> colorActive
             Tile.STATE_INACTIVE -> colorInactive
@@ -624,10 +647,22 @@ open class QSTileViewImpl @JvmOverloads constructor(
                 Log.e(TAG, "Invalid state $state")
                 0
             }
-        }
+          }
+      }
     }
 
     private fun getLabelColorForState(state: Int): Int {
+    	return if (isQSStyleEnabled()) {
+        return when (state) {
+            Tile.STATE_ACTIVE -> colorLabelActiveStyle
+            Tile.STATE_INACTIVE -> colorLabelInactive
+            Tile.STATE_UNAVAILABLE -> colorLabelUnavailable
+            else -> {
+                Log.e(TAG, "Invalid state $state")
+                0
+            }
+        }
+       } else {
         return when (state) {
             Tile.STATE_ACTIVE -> colorLabelActive
             Tile.STATE_INACTIVE -> colorLabelInactive
@@ -637,9 +672,21 @@ open class QSTileViewImpl @JvmOverloads constructor(
                 0
             }
         }
+      }   
     }
 
     private fun getSecondaryLabelColorForState(state: Int): Int {
+    	return if (isQSStyleEnabled()) {
+        return when (state) {
+            Tile.STATE_ACTIVE -> colorSecondaryLabelActiveStyle
+            Tile.STATE_INACTIVE -> colorSecondaryLabelInactive
+            Tile.STATE_UNAVAILABLE -> colorSecondaryLabelUnavailable
+            else -> {
+                Log.e(TAG, "Invalid state $state")
+                0
+            }
+        }
+       } else {
         return when (state) {
             Tile.STATE_ACTIVE -> colorSecondaryLabelActive
             Tile.STATE_INACTIVE -> colorSecondaryLabelInactive
@@ -649,6 +696,7 @@ open class QSTileViewImpl @JvmOverloads constructor(
                 0
             }
         }
+      }
     }
 
     private fun getChevronColorForState(state: Int): Int = getSecondaryLabelColorForState(state)

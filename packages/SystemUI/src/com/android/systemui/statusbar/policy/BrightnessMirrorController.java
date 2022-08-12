@@ -196,12 +196,25 @@ public class BrightnessMirrorController
         }
         // enable the brightness icon
         mIcon = (ImageView) mBrightnessMirror.findViewById(R.id.brightness_icon);
+
         boolean automatic = Settings.System.getIntForUser(mContext.getContentResolver(),
                 Settings.System.SCREEN_BRIGHTNESS_MODE,
                 Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL,
                 UserHandle.USER_CURRENT) != Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL;
+        boolean isQSStyleEnabled = Settings.System.getIntForUser(mBrightnessMirror.getContext().getContentResolver(),
+                Settings.System.QS_TILE_STYLE, 0, UserHandle.USER_CURRENT) != 0;
+        if (isQSStyleEnabled) {
+        mIcon.setImageResource(automatic
+                ? com.android.systemui.R.drawable.ic_qs_brightness_auto_on_new_custom
+                : com.android.systemui.R.drawable.ic_qs_brightness_auto_off_new_custom);
+	mIcon.setBackgroundResource(automatic
+                ? com.android.systemui.R.drawable.bg_qs_brightness_auto_on_custom
+                : com.android.systemui.R.drawable.bg_qs_brightness_auto_off_custom);
+        mIcon.setVisibility(View.VISIBLE);
+        } else {
         mIcon.setImageResource(automatic ?
                 com.android.systemui.R.drawable.ic_qs_brightness_auto_on_new :
                 com.android.systemui.R.drawable.ic_qs_brightness_auto_off_new);
+        }
     }
 }
