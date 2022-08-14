@@ -7305,6 +7305,12 @@ public final class Settings {
         public static final String DOZE_TRIGGER_DOUBLETAP = "doze_trigger_doubletap";
 
         /**
+         * Max visible notification icons in the Statusbar
+         * @hide
+         */
+        public static final String MAX_VISIBLE_NOTIFICATION_ICONS = "max_visible_notification_icons";
+
+        /**
          * @hide
          */
         public static final String LOCK_HIDE_STATUS_BAR = "lockscreen_hide_status_bar";
@@ -7547,6 +7553,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(CUSTOM_UI_TOGGLE);
             PRIVATE_SETTINGS.add(ABOUT_PHONE_HEADER);
             PRIVATE_SETTINGS.add(LOCK_HIDE_STATUS_BAR);
+            PRIVATE_SETTINGS.add(MAX_VISIBLE_NOTIFICATION_ICONS);
         }
 
         /**
