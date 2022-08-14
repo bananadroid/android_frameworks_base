@@ -98,6 +98,7 @@ public class SystemSettings {
         Settings.System.QQS_LAYOUT,
         Settings.System.LOCK_HIDE_STATUS_BAR,
         Settings.System.NAVIGATION_BAR_IME_SPACE,
-        Settings.System.QS_PANEL_STYLE
+        Settings.System.QS_PANEL_STYLE,
+        Settings.System.MAX_VISIBLE_NOTIFICATION_ICONS,
     };
 }
