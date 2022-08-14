@@ -69,6 +69,7 @@ import android.os.PowerManager;
 import android.os.Process;
 import android.os.PowerManagerInternal;
 import android.os.Trace;
+import android.os.UserHandle;
 import android.os.UserManager;
 import android.os.VibrationEffect;
 import android.provider.Settings;
