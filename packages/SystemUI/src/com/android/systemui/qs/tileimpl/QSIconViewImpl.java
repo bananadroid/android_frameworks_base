@@ -273,7 +273,7 @@ public class QSIconViewImpl extends QSIconView {
                return mWhiteTint;
              } else {
               return Utils.getColorAttrDefaultColor(context,
-                    com.android.internal.R.attr.textColorOnAccent);
+                    com.android.internal.R.attr.textColorPrimaryInverse);
              }
         } else {
             Log.e("QSIconView", "Invalid state " + state);
