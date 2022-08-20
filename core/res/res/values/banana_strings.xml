@@ -82,4 +82,7 @@
    <!-- Settings Restart -->
    <string name="settings_restart_title">Settings restart required</string>
    <string name="settings_restart_message">For all changes to take effect, a Settings app restart is required. Restart Settings app now?</string>
+
+    <!-- Parallel space badge -->
+    <string name="parallel_space_badge_label">%1$s</string>
 </resources>
