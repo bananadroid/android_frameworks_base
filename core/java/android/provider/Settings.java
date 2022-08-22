@@ -5607,56 +5607,6 @@ public final class Settings {
         public static final String LOCKSCREEN_BATTERY_INFO = "lockscreen_battery_info";
 
         /**
-         * Where to show network traffic indicator
-         * @hide
-         */
-        public static final String NETWORK_TRAFFIC_LOCATION = "network_traffic_location";
-
-        /**
-         * What to show in the network traffic indicator
-         * @hide
-         */
-        public static final String NETWORK_TRAFFIC_MODE = "network_traffic_mode";
-
-        /**
-         * Network traffic measurement units (default is kBs)
-         * @hide
-         */
-
-        public static final String NETWORK_TRAFFIC_UNITS = "network_traffic_units";
-
-        /**
-         * Network traffic inactivity threshold (default is 1 kBs)
-         * @hide
-         */
-
-        public static final String NETWORK_TRAFFIC_AUTOHIDE = "network_traffic_autohide";
-
-        /**
-         * Network traffic inactivity threshold (default is 1 kBs)
-         * @hide
-         */
-        public static final String NETWORK_TRAFFIC_AUTOHIDE_THRESHOLD = "network_traffic_autohide_threshold";
-
-        /**
-         * Specify refresh duration for network traffic indicator
-         * @hide
-         */
-        public static final String NETWORK_TRAFFIC_REFRESH_INTERVAL = "network_traffic_refresh_interval";
-
-        /**
-         * Whether to disable showing arrows for network traffic indicator
-         * @hide
-         */
-        public static final String NETWORK_TRAFFIC_HIDEARROW = "network_traffic_hidearrow";
-
-        /**
-         * What size to show for network traffic indicator in statusbar
-         * @hide
-         */
-        public static final String NETWORK_TRAFFIC_FONT_SIZE = "network_traffic_font_size";
-
-        /**
          * Whether to show the clock in the right or left position or show it in the center
          * 0: show the clock in the right position (LTR)
          * 1: show the clock in the center

@@ -22,17 +22,13 @@ import static com.android.systemui.battery.BatteryMeterView.BATTERY_STYLE_FULL_C
 import static com.android.systemui.battery.BatteryMeterView.BATTERY_STYLE_RLANDSCAPE;
 import static com.android.systemui.battery.BatteryMeterView.BATTERY_STYLE_LANDSCAPE;
 
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.database.ContentObserver;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.net.Uri;
-import android.os.Handler;
-import android.os.UserHandle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.provider.AlarmClock;
@@ -62,7 +58,6 @@ import com.android.systemui.statusbar.phone.StatusBarIconController;
 import com.android.systemui.statusbar.phone.StatusBarIconController.TintedIconManager;
 import com.android.systemui.statusbar.phone.StatusIconContainer;
 import com.android.systemui.statusbar.policy.Clock;
-import com.android.systemui.statusbar.policy.NetworkTraffic;
 import com.android.systemui.statusbar.policy.VariableDateView;
 import com.android.systemui.tuner.TunerService;
 
@@ -149,18 +144,12 @@ public class QuickStatusBarHeader extends FrameLayout implements TunerService.Tu
     private final ActivityStarter mActivityStarter;
     private final Vibrator mVibrator;
 
-    private NetworkTraffic mNetworkTraffic;
-    private boolean mShowNetworkTraffic;
-
     private int mStatusBarBatteryStyle, mQSBatteryStyle;
 
     public QuickStatusBarHeader(Context context, AttributeSet attrs) {
         super(context, attrs);
         mActivityStarter = Dependency.get(ActivityStarter.class);
         mVibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-        Handler mHandler = new Handler();
-        SettingsObserver settingsObserver = new SettingsObserver(mHandler);
-        settingsObserver.observe();
     }
 
     /**
@@ -201,7 +190,6 @@ public class QuickStatusBarHeader extends FrameLayout implements TunerService.Tu
         mDatePrivacySeparator = findViewById(R.id.space);
         // Tint for the battery icons are handled in setupHost()
         mBatteryRemainingIcon = findViewById(R.id.batteryRemainingIcon);
-        mNetworkTraffic = findViewById(R.id.network_traffic);
 
         mBatteryRemainingIcon.setOnClickListener(this);
         mBatteryRemainingIcon.mQS = true;
@@ -493,8 +481,7 @@ public class QuickStatusBarHeader extends FrameLayout implements TunerService.Tu
     }
 
     void setChipVisibility(boolean visibility) {
-        mNetworkTraffic.setChipVisibility(visibility);
-        if (visibility || mShowNetworkTraffic) {
+        if (visibility) {
             // Animates the icons and battery indicator from alpha 0 to 1, when the chip is visible
             mIconsAlphaAnimator = mIconsAlphaAnimatorFixed;
             mIconsAlphaAnimator.setPosition(mKeyguardExpansionFraction);
@@ -504,34 +491,6 @@ public class QuickStatusBarHeader extends FrameLayout implements TunerService.Tu
             mIconContainer.setAlpha(1);
             mBatteryRemainingIcon.setAlpha(1);
             mBatteryRemainingIcon.setClickable(true);
-        }
-    }
-
-    class SettingsObserver extends ContentObserver {
-        SettingsObserver(Handler handler) {
-            super(handler);
-        }
-
-        void observe() {
-            ContentResolver resolver = mContext.getContentResolver();
-            resolver.registerContentObserver(Settings.System
-                    .getUriFor(Settings.System.NETWORK_TRAFFIC_LOCATION),
-                    false, this, UserHandle.USER_ALL);
-        }
-
-        /*
-         *  @hide
-         */
-        @Override
-        public void onChange(boolean selfChange, Uri uri) {
-            if (uri.equals(Settings.System.getUriFor(
-                    Settings.System.NETWORK_TRAFFIC_LOCATION))) {
-                mShowNetworkTraffic = Settings.System.
-                        getIntForUser(mContext.getContentResolver(),
-                        Settings.System.NETWORK_TRAFFIC_LOCATION, 0,
-                        UserHandle.USER_CURRENT) == 2;
-                setChipVisibility(mPrivacyChip.getVisibility() == View.VISIBLE);
-            }
         }
     }
 
