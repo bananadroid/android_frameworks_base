@@ -192,14 +192,6 @@ class MediaHost constructor(
                 }
             }
 
-        override var squishFraction: Float = 1.0f
-            set(value) {
-                if (!value.equals(field)) {
-                    field = value
-                    changedListener?.invoke()
-                }
-            }
-
         override var showsOnlyActiveMedia: Boolean = false
             set(value) {
                 if (!value.equals(field)) {
@@ -250,7 +242,6 @@ class MediaHost constructor(
         override fun copy(): MediaHostState {
             val mediaHostState = MediaHostStateHolder()
             mediaHostState.expansion = expansion
-            mediaHostState.squishFraction = squishFraction
             mediaHostState.showsOnlyActiveMedia = showsOnlyActiveMedia
             mediaHostState.measurementInput = measurementInput?.copy()
             mediaHostState.visible = visible
@@ -267,9 +258,6 @@ class MediaHost constructor(
                 return false
             }
             if (expansion != other.expansion) {
-                return false
-            }
-            if (squishFraction != other.squishFraction) {
                 return false
             }
             if (showsOnlyActiveMedia != other.showsOnlyActiveMedia) {
@@ -290,7 +278,6 @@ class MediaHost constructor(
         override fun hashCode(): Int {
             var result = measurementInput?.hashCode() ?: 0
             result = 31 * result + expansion.hashCode()
-            result = 31 * result + squishFraction.hashCode()
             result = 31 * result + falsingProtectionNeeded.hashCode()
             result = 31 * result + showsOnlyActiveMedia.hashCode()
             result = 31 * result + if (visible) 1 else 2
@@ -329,11 +316,6 @@ interface MediaHostState {
      * [EXPANDED] for fully expanded (up to 5 actions).
      */
     var expansion: Float
-
-    /**
-     * Fraction of the height animation.
-     */
-    var squishFraction: Float
 
     /**
      * Is this host only showing active media or is it showing all of them including resumption?
