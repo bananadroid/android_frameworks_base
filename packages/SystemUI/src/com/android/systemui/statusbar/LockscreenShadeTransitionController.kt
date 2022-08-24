@@ -449,6 +449,12 @@ class LockscreenShadeTransitionController @Inject constructor(
         scrimController.setTransitionToFullShadeProgress(scrimProgress, notificationsScrimProgress)
     }
 
+   /**
+     * The drag progress of the quick settings drag down amount
+     */
+    var qSDragProgress = 0f
+        private set
+
     private fun transitionToShadeAmountCommon(dragDownAmount: Float) {
         if (depthControllerTransitionDistance > 0) {
             val depthProgress =
