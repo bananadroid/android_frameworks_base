@@ -111,6 +111,7 @@ import com.android.systemui.statusbar.policy.BurnInProtectionController;
 import com.android.systemui.statusbar.policy.ConfigurationController;
 import com.android.systemui.statusbar.policy.DeviceProvisionedController;
 import com.android.systemui.statusbar.policy.ExtensionController;
+import com.android.systemui.statusbar.policy.FlashlightController;
 import com.android.systemui.statusbar.policy.KeyguardStateController;
 import com.android.systemui.statusbar.policy.UserInfoControllerImpl;
 import com.android.systemui.statusbar.policy.UserSwitcherController;
@@ -210,6 +211,7 @@ public interface StatusBarGooglePhoneModule {
             PluginManager pluginManager,
             Optional<LegacySplitScreen> splitScreenOptional,
             LightsOutNotifController lightsOutNotifController,
+            FlashlightController flashlightController,
             StatusBarNotificationActivityStarter.Builder
                     statusBarNotificationActivityStarterBuilder,
             ShadeController shadeController,
@@ -268,7 +270,7 @@ public interface StatusBarGooglePhoneModule {
                 dozeParameters, scrimController, lockscreenWallpaperLazy, lockscreenGestureLogger, biometricUnlockControllerLazy,
                 dozeServiceHost, powerManager, screenPinningRequest, dozeScrimController, volumeComponent, commandQueue,
                 collapsedStatusBarFragmentLogger, statusBarComponentFactory, pluginManager, splitScreenOptional,
-                lightsOutNotifController, statusBarNotificationActivityStarterBuilder, shadeController, statusBarKeyguardViewManager,
+                lightsOutNotifController, flashlightController, statusBarNotificationActivityStarterBuilder, shadeController, statusBarKeyguardViewManager,
                 viewMediatorCallback, initController, timeTickHandler, pluginDependencyProvider, keyguardDismissUtil,
                 extensionController, userInfoControllerImpl, operatorNameViewControllerFactory, phoneStatusBarPolicy,
                 keyguardIndicationController, demoModeController, notificationShadeDepthControllerLazy,
