@@ -360,6 +360,10 @@ public class MediaControlPanel {
                         R.string.controls_media_playing_item_description,
                         data.getSong(), data.getArtist(), data.getApp()));
 
+        // AlbumView uses a hardware layer so that clipping of the foreground is handled
+        // with clipping the album art. Otherwise album art shows through at the edges.
+        mMediaViewHolder.getAlbumView().setLayerType(View.LAYER_TYPE_HARDWARE, null);
+
         // Song name
         TextView titleText = mMediaViewHolder.getTitleText();
         titleText.setText(data.getSong());
@@ -585,12 +589,11 @@ public class MediaControlPanel {
                         true);
 
             // Scale artwork to fit background
-            int width = mMediaViewHolder.getPlayer().getWidth();
-            int height = mMediaViewHolder.getPlayer().getHeight();
+            int width = mMediaViewHolder.getAlbumView().getMeasuredWidth();
+            int height = mMediaViewHolder.getAlbumView().getMeasuredHeight();
             Drawable artwork = getScaledBackground(data.getArtwork(), width, height);
             albumView.setPadding(0, 0, 0, 0);
             albumView.setImageDrawable(artwork);
-            albumView.setClipToOutline(true);
         } else {
             // If there's no artwork, use colors from the app icon
             try {
