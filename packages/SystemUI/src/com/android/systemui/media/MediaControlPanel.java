@@ -65,6 +65,7 @@ import com.android.systemui.R;
 import com.android.systemui.animation.ActivityLaunchAnimator;
 import com.android.systemui.animation.GhostedViewLaunchAnimatorController;
 import com.android.systemui.animation.Interpolators;
+import com.android.systemui.broadcast.BroadcastSender;
 import com.android.systemui.dagger.qualifiers.Background;
 import com.android.systemui.dagger.qualifiers.Main;
 import com.android.systemui.media.dialog.MediaOutputDialogFactory;
@@ -129,6 +130,7 @@ public class MediaControlPanel {
     protected final Executor mBackgroundExecutor;
     protected final Executor mMainExecutor;
     private final ActivityStarter mActivityStarter;
+    private final BroadcastSender mBroadcastSender;
 
     private Context mContext;
     private MediaViewHolder mMediaViewHolder;
@@ -169,6 +171,7 @@ public class MediaControlPanel {
             @Background Executor backgroundExecutor,
             @Main Executor mainExecutor,
             ActivityStarter activityStarter, 
+            BroadcastSender broadcastSender,
             MediaViewController mediaViewController,
             SeekBarViewModel seekBarViewModel, 
             Lazy<MediaDataManager> lazyMediaDataManager,
@@ -180,6 +183,7 @@ public class MediaControlPanel {
         mBackgroundExecutor = backgroundExecutor;
         mMainExecutor = mainExecutor;
         mActivityStarter = activityStarter;
+        mBroadcastSender = broadcastSender;
         mSeekBarViewModel = seekBarViewModel;
         mMediaViewController = mediaViewController;
         mMediaDataManagerLazy = lazyMediaDataManager;
@@ -963,7 +967,7 @@ public class MediaControlPanel {
                 // Dismiss the card Smartspace data through Smartspace trampoline activity.
                 mContext.startActivity(dismissIntent);
             } else {
-                mContext.sendBroadcast(dismissIntent);
+                mBroadcastSender.sendBroadcast(dismissIntent);
             }
         });
 
