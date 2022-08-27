@@ -442,6 +442,13 @@ public class MediaControlPanel {
         }
         deviceName.setText(deviceString);
         seamlessView.setContentDescription(deviceString);
+        seamlessView.setOnClickListener(
+                v -> {
+                    if (!mFalsingManager.isFalseTap(FalsingManager.LOW_PENALTY)) {
+                        mMediaOutputDialogFactory.create(data.getPackageName(), true,
+                                mMediaViewHolder.getSeamlessButton());
+                    }
+                });
     }
 
     private void bindLongPressMenu(MediaData data) {
