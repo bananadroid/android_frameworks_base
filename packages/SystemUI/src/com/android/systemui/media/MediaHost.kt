@@ -61,8 +61,7 @@ class MediaHost constructor(
             oldKey: String?,
             data: MediaData,
             immediately: Boolean,
-            receivedSmartspaceCardLatency: Int,
-            isSsReactivated: Boolean
+            receivedSmartspaceCardLatency: Int
         ) {
             if (immediately) {
                 updateViewVisibility()
@@ -72,7 +71,8 @@ class MediaHost constructor(
         override fun onSmartspaceMediaDataLoaded(
             key: String,
             data: SmartspaceMediaData,
-            shouldPrioritize: Boolean
+            shouldPrioritize: Boolean,
+            isSsReactivated: Boolean
         ) {
             updateViewVisibility()
         }
@@ -162,9 +162,9 @@ class MediaHost constructor(
 
     private fun updateViewVisibility() {
         state.visible = if (showsOnlyActiveMedia) {
-            mediaDataManager.hasActiveMediaOrRecommendation()
+            mediaDataManager.hasActiveMedia()
         } else {
-            mediaDataManager.hasAnyMediaOrRecommendation()
+            mediaDataManager.hasAnyMedia()
         }
         val newVisibility = if (visible) View.VISIBLE else View.GONE
         if (newVisibility != hostView.visibility) {

@@ -68,8 +68,7 @@ class MediaDeviceManager @Inject constructor(
         oldKey: String?,
         data: MediaData,
         immediately: Boolean,
-        receivedSmartspaceCardLatency: Int,
-        isSsReactivated: Boolean
+        receivedSmartspaceCardLatency: Int
     ) {
         if (oldKey != null && oldKey != key) {
             val oldEntry = entries.remove(oldKey)

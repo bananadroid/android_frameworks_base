@@ -96,8 +96,7 @@ class MediaSessionBasedFilter @Inject constructor(
         oldKey: String?,
         data: MediaData,
         immediately: Boolean,
-        receivedSmartspaceCardLatency: Int,
-        isSsReactivated: Boolean
+        receivedSmartspaceCardLatency: Int
     ) {
         backgroundExecutor.execute {
             data.token?.let {
@@ -144,7 +143,8 @@ class MediaSessionBasedFilter @Inject constructor(
     override fun onSmartspaceMediaDataLoaded(
         key: String,
         data: SmartspaceMediaData,
-        shouldPrioritize: Boolean
+        shouldPrioritize: Boolean,
+        isSsReactivated: Boolean
     ) {
         backgroundExecutor.execute {
             dispatchSmartspaceMediaDataLoaded(key, data)
