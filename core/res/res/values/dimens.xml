@@ -996,11 +996,4 @@
     <dimen name="secondary_rounded_corner_radius_adjustment">0px</dimen>
     <dimen name="secondary_rounded_corner_radius_top_adjustment">0px</dimen>
     <dimen name="secondary_rounded_corner_radius_bottom_adjustment">0px</dimen>
-
-    <!-- For QS Style -->
-    <dimen name="custom_rounded_slider_track_inset">0dp</dimen>
-    <dimen name="custom_rounded_slider_track_width">48dp</dimen>
-    <dimen name="custom_rounded_slider_height">48dp</dimen>
-    <dimen name="custom_rounded_slider_corner_radius">24dp</dimen>
-    <dimen name="custom_rounded_slider_icon_size">20dp</dimen>
 </resources>
