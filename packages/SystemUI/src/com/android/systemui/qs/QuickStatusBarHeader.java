@@ -72,6 +72,8 @@ public class QuickStatusBarHeader extends FrameLayout implements TunerService.Tu
             "system:" + Settings.System.QS_SHOW_BATTERY_PERCENT;
     private static final String QS_SHOW_BATTERY_ESTIMATE =
             "system:" + Settings.System.QS_SHOW_BATTERY_ESTIMATE;
+    private static final String QS_WEATHER_POSITION =
+            "system:" + Settings.System.QS_WEATHER_POSITION;
 
     private boolean mExpanded;
     private boolean mQsDisabled;
@@ -109,6 +111,8 @@ public class QuickStatusBarHeader extends FrameLayout implements TunerService.Tu
     private BatteryMeterView mBatteryIcon;
     private StatusIconContainer mIconContainer;
     private View mPrivacyChip;
+    
+    private int mQQSWeather;
 
     @Nullable
     private TintedIconManager mTintedIconManager;
@@ -193,7 +197,8 @@ public class QuickStatusBarHeader extends FrameLayout implements TunerService.Tu
                 QS_BATTERY_STYLE,
                 QS_BATTERY_LOCATION,
                 QS_SHOW_BATTERY_PERCENT,
-                QS_SHOW_BATTERY_ESTIMATE);
+                QS_SHOW_BATTERY_ESTIMATE,
+                QS_WEATHER_POSITION);
     }
 
     void onAttach(TintedIconManager iconManager,
@@ -609,6 +614,19 @@ public class QuickStatusBarHeader extends FrameLayout implements TunerService.Tu
         return mBatteryIcon;
     }
 
+    private void updateQSWeatherPosition() {
+        if (mQQSWeather == 0) {
+            mQsWeatherHeaderView.setVisibility(View.GONE);
+            mQsWeatherView.setVisibility(View.VISIBLE);
+        } else if (mQQSWeather == 1) {
+            mQsWeatherHeaderView.setVisibility(View.VISIBLE);
+            mQsWeatherView.setVisibility(View.GONE);
+        } else {
+            mQsWeatherHeaderView.setVisibility(View.VISIBLE);
+            mQsWeatherView.setVisibility(View.VISIBLE);
+        }
+    }
+
     @Override
     public void onTuningChanged(String key, String newValue) {
         switch (key) {
@@ -657,6 +675,11 @@ public class QuickStatusBarHeader extends FrameLayout implements TunerService.Tu
                 mBatteryIcon.setBatteryEstimate(
                         TunerService.parseInteger(newValue, 0));
                 setChipVisibility(mPrivacyChip.getVisibility() == View.VISIBLE);
+                break;
+            case QS_WEATHER_POSITION:
+                mQQSWeather =
+                       TunerService.parseInteger(newValue, 2);
+                updateQSWeatherPosition();
                 break;
             default:
                 break;
