@@ -1058,9 +1058,18 @@ public final class NotificationPanelViewController extends PanelViewController {
         addTrackingHeadsUpListener(mNotificationStackScrollLayoutController::setTrackingHeadsUp);
         mKeyguardBottomArea = mView.findViewById(R.id.keyguard_bottom_area);
 
-        mReTickerComeback = mView.findViewById(R.id.ticker_comeback);
-        mReTickerComebackIcon = mView.findViewById(R.id.ticker_comeback_icon);
-        mReTickerContentTV = mView.findViewById(R.id.ticker_content);
+        boolean newRetickerAnimation = Settings.System.getInt(mView.getContext().getContentResolver(),
+                        Settings.System.NEW_RETICKER_ANIMATION, 0) == 1;
+
+        if(newRetickerAnimation) {
+            mReTickerComeback = mView.findViewById(R.id.ticker_comeback_new);
+            mReTickerComebackIcon = mView.findViewById(R.id.ticker_comeback_icon_new);
+            mReTickerContentTV = mView.findViewById(R.id.ticker_content_new);
+        } else {
+            mReTickerComeback = mView.findViewById(R.id.ticker_comeback);
+            mReTickerComebackIcon = mView.findViewById(R.id.ticker_comeback_icon);
+            mReTickerContentTV = mView.findViewById(R.id.ticker_content);
+        }
         mNotificationStackScroller = mView.findViewById(R.id.notification_stack_scroller);
 
         initBottomArea();
@@ -5208,6 +5217,8 @@ public final class NotificationPanelViewController extends PanelViewController {
     /* reTicker */
 
     public void reTickerView(boolean visibility) {
+        boolean newRetickerAnimation = Settings.System.getInt(mView.getContext().getContentResolver(),
+                Settings.System.NEW_RETICKER_ANIMATION, 0) == 1;
         if (!mReTickerStatus) return;
         if (visibility && mReTickerComeback.getVisibility() == View.VISIBLE) {
             reTickerDismissal();
@@ -5255,7 +5266,11 @@ public final class NotificationPanelViewController extends PanelViewController {
             mReTickerContentTV.setText(mergedContentText);
             mReTickerContentTV.setTextAppearance(mView.getContext(), R.style.TextAppearance_Notifications_reTicker);
             mReTickerContentTV.setSelected(true);
-            RetickerAnimations.doBounceAnimationIn(mReTickerComeback);
+            if(newRetickerAnimation) {
+                RetickerAnimations.revealAnimation(mReTickerComeback);
+            } else {
+                RetickerAnimations.doBounceAnimationIn(mReTickerComeback);
+            }
             if (reTickerIntent != null) {
                 mReTickerComeback.setOnClickListener(v -> {
                     final GameSpaceManager gameSpace = mCentralSurfaces.getGameSpaceManager();
@@ -5265,8 +5280,13 @@ public final class NotificationPanelViewController extends PanelViewController {
                         } catch (PendingIntent.CanceledException e) {
                         }
                     }
-                    RetickerAnimations.doBounceAnimationOut(mReTickerComeback, mNotificationStackScroller);
-                    reTickerViewVisibility();
+                    if(newRetickerAnimation) {
+                        RetickerAnimations.revealAnimationHide(mReTickerComeback, mNotificationStackScroller);
+                        reTickerViewVisibility();
+                    } else {
+                        RetickerAnimations.doBounceAnimationOut(mReTickerComeback, mNotificationStackScroller);
+                        reTickerViewVisibility();
+                    }
                 });
             }
         } else {
@@ -5289,7 +5309,13 @@ public final class NotificationPanelViewController extends PanelViewController {
     }
 
     public void reTickerDismissal() {
-        RetickerAnimations.doBounceAnimationOut(mReTickerComeback, mNotificationStackScroller);
+        boolean newRetickerAnimation = Settings.System.getInt(mView.getContext().getContentResolver(),
+                Settings.System.NEW_RETICKER_ANIMATION, 0) == 1;
+        if(newRetickerAnimation) {
+            RetickerAnimations.revealAnimationHide(mReTickerComeback, mNotificationStackScroller);
+        } else {
+            RetickerAnimations.doBounceAnimationOut(mReTickerComeback, mNotificationStackScroller);
+        }
         mReTickerComeback.getViewTreeObserver().removeOnComputeInternalInsetsListener(mInsetsListener);
     }
 
