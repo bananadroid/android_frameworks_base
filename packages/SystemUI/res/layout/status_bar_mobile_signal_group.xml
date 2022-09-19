@@ -92,6 +92,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/status_bar_mobile_type_height"
                 android:src="@drawable/stat_sys_roaming"
+            	android:paddingEnd="1dp"
                 android:visibility="gone"
                 android:scaleType="fitStart"
                 android:layout_gravity="start|top" />
