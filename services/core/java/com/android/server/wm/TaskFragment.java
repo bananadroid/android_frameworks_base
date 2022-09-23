@@ -1755,7 +1755,7 @@ class TaskFragment extends WindowContainer<WindowContainer> {
                 ProtoLog.v(WM_DEBUG_STATES, "Executing finish of activity: %s", prev);
                 prev = prev.completeFinishing(false /* updateVisibility */,
                         "completePausedLocked");
-            } else if (prev.hasProcess()) {
+            } else if (prev.attachedToProcess()) {
                 ProtoLog.v(WM_DEBUG_STATES, "Enqueue pending stop if needed: %s "
                                 + "wasStopping=%b visibleRequested=%b",  prev,  wasStopping,
                         prev.isVisibleRequested());
