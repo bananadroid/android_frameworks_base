@@ -208,10 +208,11 @@ public class UdfpsKeyguardView extends UdfpsAnimationView {
             return;
         }
 
+
         final int defaultPaddingPx =
                 getResources().getDimensionPixelSize(R.dimen.lock_icon_padding);
         final int padding = (int) (defaultPaddingPx * mScaleFactor);
-        mLockScreenFp.setPadding(padding, padding, padding, padding);
+        mLockScreenFp.setPadding(0, 0, 0, 0);
         mAodFp.setPadding(padding, padding, padding, padding);
     }
 
