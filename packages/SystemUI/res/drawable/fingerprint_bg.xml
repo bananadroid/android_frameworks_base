@@ -17,10 +17,9 @@
     xmlns:androidprv="http://schemas.android.com/apk/prv/res/android"
     android:shape="oval">
 
-    <solid
-      android:color="@*android:color/transparent"/>
-
-    <size
-        android:width="64dp"
-        android:height="64dp"/>
+    <solid android:color="@color/transparent"/>
+    
+    <size 
+      android:height="@dimen/keyguard_affordance_fixed_height" 
+      android:width="@dimen/keyguard_affordance_fixed_width"/>
 </shape>
