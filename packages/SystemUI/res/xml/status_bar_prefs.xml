@@ -68,7 +68,7 @@
     <com.android.systemui.tuner.StatusBarSwitch
         android:icon="@drawable/ic_statusbar_vibrate"
         android:key="volume"
-        android:title="@*android:string/volume_unknown" />
+        android:title="@string/volume_ringer_status_vibrate" />
 
     <com.android.systemui.tuner.StatusBarSwitch
         android:icon="@drawable/ic_statusbar_wifi"
