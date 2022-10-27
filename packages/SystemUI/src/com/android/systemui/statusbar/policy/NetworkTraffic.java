@@ -157,6 +157,8 @@ public class NetworkTraffic extends TextView implements TunerService.Tunable {
             tunerService.addTunable(this, NETWORK_TRAFFIC_REFRESH_INTERVAL);
             tunerService.addTunable(this, NETWORK_TRAFFIC_HIDEARROW);
 
+            setGravity(Gravity.END|Gravity.CENTER_VERTICAL);
+
             mConnectionAvailable = mConnectivityManager.getActiveNetworkInfo() != null;
 
             IntentFilter filter = new IntentFilter();
@@ -408,11 +410,6 @@ public class NetworkTraffic extends TextView implements TunerService.Tunable {
             case NETWORK_TRAFFIC_HIDEARROW:
                 mHideArrows =
                         TunerService.parseIntegerSwitch(newValue, false);
-                if (!mHideArrows) {
-                    setGravity(Gravity.END|Gravity.CENTER_VERTICAL);
-                } else {
-                    setGravity(Gravity.CENTER);
-                }
                 setTrafficDrawable();
                 break;
             default:
