@@ -12253,7 +12253,12 @@ public final class Settings {
          * @hide
          */
         public static final String PULSE_SMOOTHING_ENABLED = "pulse_smoothing_enabled";
-
+       
+        /**
+         * @hide
+         */
+        public static final String ENABLE_COMBINED_SIGNAL_ICONS = "enable_combined_signal_icons";
+ 
         /**
          * Select from different navigation bar layouts
          * @hide
