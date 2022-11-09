@@ -538,6 +538,18 @@ public class ThemeOverlayController extends CoreStartable implements Dumpable {
                 },
                 UserHandle.USER_ALL);
 
+        mSecureSettings.registerContentObserverForUser(
+                Settings.Secure.getUriFor(Settings.Secure.ENABLE_COMBINED_SIGNAL_ICONS),
+                false,
+                new ContentObserver(mBgHandler) {
+                    @Override
+                    public void onChange(boolean selfChange, Collection<Uri> collection, int flags,
+                            int userId) {
+                        restartSystemUI();
+                    }
+                },
+                UserHandle.USER_ALL);
+
         mUserTracker.addCallback(mUserTrackerCallback, mMainExecutor);
 
         mConfigurationController.addCallback(mConfigurationListener);
@@ -588,6 +600,10 @@ public class ThemeOverlayController extends CoreStartable implements Dumpable {
                 }
             }
         });
+    }
+
+    private void restartSystemUI() {
+        android.os.Process.killProcess(android.os.Process.myPid());
     }
 
     protected void reevaluateSystemTheme(boolean forceReload) {
