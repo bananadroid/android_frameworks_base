@@ -59,7 +59,7 @@ object Flags {
         )
 
     @JvmField
-    val COMBINED_STATUS_BAR_SIGNAL_ICONS = unreleasedFlag(601, "combined_status_bar_signal_icons", teamfood = false)
+    val COMBINED_STATUS_BAR_SIGNAL_ICONS = sysPropBooleanFlag(601, "persist.sys.enable.combined_signal_icons", default = false)
 
     // TODO(b/254512517): Tracking Bug
     val FSI_REQUIRES_KEYGUARD = unreleasedFlag(110, "fsi_requires_keyguard", teamfood = true)
