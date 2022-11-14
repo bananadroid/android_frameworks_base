@@ -41,6 +41,7 @@ cc_defaults {
     cpp_std: "experimental",
 
     cflags: [
+    	"-O3",
         "-DEGL_EGLEXT_PROTOTYPES",
         "-DGL_GLEXT_PROTOTYPES",
         "-DATRACE_TAG=ATRACE_TAG_VIEW",
@@ -152,6 +153,7 @@ cc_defaults {
         "-fno-omit-frame-pointer",
         "-marm",
         "-mapcs",
+        "-O3",
     ],
 }
 
@@ -238,6 +240,7 @@ cc_defaults {
         "-Wno-error=deprecated-declarations",
         "-Wunused",
         "-Wunreachable-code",
+        "-O3",
     ],
 
     cppflags: ["-Wno-conversion-null"],
@@ -288,6 +291,7 @@ cc_library_headers {
 cc_defaults {
     name: "android_graphics_jni",
     cflags: [
+    	"-O3",
         "-Wno-unused-parameter",
         "-Wno-non-virtual-dtor",
         "-Wno-maybe-uninitialized",
@@ -588,7 +592,7 @@ cc_defaults {
             ],
 
             // Allow implicit fallthroughs in HardwareBitmapUploader.cpp until they are fixed.
-            cflags: ["-Wno-implicit-fallthrough"],
+            cflags: ["-Wno-implicit-fallthrough", "-O3"],
         },
         host: {
             srcs: [
