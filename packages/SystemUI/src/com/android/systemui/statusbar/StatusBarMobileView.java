@@ -187,6 +187,8 @@ public class StatusBarMobileView extends FrameLayout implements DarkReceiver,
         mMobileDrawable.setLevel(mState.strengthId);
         boolean showRoamingSpace = false;
         if (mState.typeId > 0) {
+                mMobileType.setScaleX(getContext().getResources().getConfiguration().fontScale);
+                mMobileType.setScaleY(getContext().getResources().getConfiguration().fontScale);
             if (mOldStyleType) {
                 showOldStyle(mState);
                 showRoamingSpace = true;
@@ -243,6 +245,8 @@ public class StatusBarMobileView extends FrameLayout implements DarkReceiver,
         if (mState.typeId != state.typeId) {
             needsLayout |= state.typeId == 0 || mState.typeId == 0;
             if (state.typeId != 0) {
+                mMobileType.setScaleX(getContext().getResources().getConfiguration().fontScale);
+                mMobileType.setScaleY(getContext().getResources().getConfiguration().fontScale);
                 if (mOldStyleType) {
                     showOldStyle(state);
                     showRoamingSpace = true;
