@@ -631,6 +631,7 @@ public class CentralSurfacesImpl implements CoreStartable, CentralSurfaces, Tune
         }
     }
 
+    private Handler mMainHandler;
     private final DelayableExecutor mMainExecutor;
 
     private int mInteractingWindows;
@@ -826,6 +827,7 @@ public class CentralSurfacesImpl implements CoreStartable, CentralSurfaces, Tune
             LockscreenShadeTransitionController lockscreenShadeTransitionController,
             FeatureFlags featureFlags,
             KeyguardUnlockAnimationController keyguardUnlockAnimationController,
+            @Main Handler mainHandler,
             @Main DelayableExecutor delayableExecutor,
             @Main MessageRouter messageRouter,
             WallpaperManager wallpaperManager,
@@ -934,6 +936,7 @@ public class CentralSurfacesImpl implements CoreStartable, CentralSurfaces, Tune
         mFeatureFlags = featureFlags;
         mIsShortcutListSearchEnabled = featureFlags.isEnabled(Flags.SHORTCUT_LIST_SEARCH_LAYOUT);
         mKeyguardUnlockAnimationController = keyguardUnlockAnimationController;
+        mMainHandler = mainHandler;
         mMainExecutor = delayableExecutor;
         mMessageRouter = messageRouter;
         mWallpaperManager = wallpaperManager;
