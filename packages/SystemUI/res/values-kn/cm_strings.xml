@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright (c) 2015, The CyanogenMod Project
+ * Copyright (c) 2017-2021 The LineageOS Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="global_action_restart_system">ವ್ಯವಸ್ಥೆ</string>
+    <string name="global_action_restart_recovery">ಮರುಚೇತರಿಕೆ</string>
+    <string name="global_action_restart_bootloader">Bootloader</string>
+    <string name="global_action_restart_download">ಇಳಿಸು</string>
+    <string name="global_action_restart_progress">ಪುನರಾರಂಭವಾಗುತ್ತಿದೆ\u2026</string>
+    <string name="global_action_restart_recovery_progress">Restarting ರೀತಿಗೆ ಪುನರಾರಂಭವಾಗುತ್ತಿದೆ</string>
+    <string name="global_action_restart_bootloader_progress">Bootloader ರೀತಿಗೆ ಪುನರಾರಂಭವಾಗುತ್ತಿದೆ\u2026</string>
+    <string name="global_action_restart_download_progress">Download ರೀತಿಗೆ ಪುನರಾರಂಭವಾಗುತ್ತಿದೆ\u2026</string>
+    <string name="quick_settings_caffeine_label">ಕ್ಯಾಫೀನ್</string>
+    <string name="accessibility_quick_settings_caffeine_off">ಕ್ಯಾಫೀನ್ ಆಫ್.</string>
+    <string name="accessibility_quick_settings_caffeine_on">ಕ್ಯಾಫೀನ್ ಒನ್.</string>
+</resources>
