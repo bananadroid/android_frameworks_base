@@ -79,4 +79,8 @@
     <!-- SystemUI Restart -->
     <string name="systemui_restart_title">SystemUI restart required</string>
     <string name="systemui_restart_message">For all changes to take effect, a SystemUI restart is required. Restart SystemUI now?</string>
+
+    <!-- Settings Restart -->
+    <string name="settings_restart_title">Settings restart required</string>
+    <string name="settings_restart_message">For all changes to take effect, a Settings app restart is required. Restart Settings app now?</string>
 </resources>
