@@ -5555,6 +5555,18 @@ public final class Settings {
          */
 
         /**
+         * Whether to enable artwork blur
+         * @hide
+         */
+        public static final String MEDIA_ARTWORK_BLUR_ENABLED = "media_artwork_blur_enabled";
+
+        /**
+         * Adjust blur radius for background media
+         * @hide
+         */
+        public static final String MEDIA_ARTWORK_BLUR_RADIUS = "media_artwork_blur_radius";
+
+        /**
          * Keys we no longer back up under the current schema, but want to continue to
          * process when restoring historical backup datasets.
          *

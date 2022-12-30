@@ -42,6 +42,8 @@ import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.Icon;
 import android.graphics.drawable.LayerDrawable;
 import android.graphics.drawable.TransitionDrawable;
+import android.graphics.RenderEffect;
+import android.graphics.Shader;
 import android.media.session.MediaController;
 import android.media.session.MediaSession;
 import android.media.session.PlaybackState;
@@ -197,6 +199,8 @@ public class MediaControlPanel {
     private boolean mShowBroadcastDialogButton = false;
     private String mSwitchBroadcastApp;
 
+    private ArtworkSettings mArtworkSettings = new ArtworkSettings();
+
     /**
      * Initialize a new control panel
      *
@@ -321,6 +325,10 @@ public class MediaControlPanel {
         }
         this.mIsSeekBarEnabled = isSeekBarEnabled;
         updateSeekBarVisibility();
+    }
+
+    protected void updateArtworkSettings(ArtworkSettings artworkSettings) {
+        mArtworkSettings = artworkSettings;
     }
 
     /**
@@ -750,6 +758,15 @@ public class MediaControlPanel {
                 if (updateBackground || colorSchemeChanged
                         || (!mIsArtworkBound && isArtworkBound)) {
                     if (mPrevArtwork == null) {
+                    	   if (mArtworkSettings.getBlurEnabled()) {
+                    		   albumView.setRenderEffect(
+                        		RenderEffect.createBlurEffect(
+                            		mArtworkSettings.getBlurRadius(),
+                            		mArtworkSettings.getBlurRadius(),
+                            	   Shader.TileMode.CLAMP
+                        	)
+                    	    );
+               	 }
                         albumView.setImageDrawable(artwork);
                     } else {
                         // Since we throw away the last transition, this'll pop if you backgrounds
