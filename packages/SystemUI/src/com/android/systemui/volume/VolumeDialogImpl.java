@@ -1393,6 +1393,7 @@ public class VolumeDialogImpl implements VolumeDialog, Dumpable,
                 mAppVolumeIcon.setImageTintList(null);
                 mAppVolumeIcon.setScaleType(ImageView.ScaleType.FIT_CENTER);
                 mAppVolumeIcon.setImageDrawable(icon);
+                mAppVolumeIcon.setPadding(mRingerRowsPadding, mRingerRowsPadding, mRingerRowsPadding, mRingerRowsPadding);
             }
         }
     }
