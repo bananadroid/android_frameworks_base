@@ -1058,18 +1058,9 @@ public final class NotificationPanelViewController extends PanelViewController {
         addTrackingHeadsUpListener(mNotificationStackScrollLayoutController::setTrackingHeadsUp);
         mKeyguardBottomArea = mView.findViewById(R.id.keyguard_bottom_area);
 
-        boolean newRetickerAnimation = Settings.System.getInt(mView.getContext().getContentResolver(),
-                        Settings.System.NEW_RETICKER_ANIMATION, 0) == 1;
-
-        if(newRetickerAnimation) {
-            mReTickerComeback = mView.findViewById(R.id.ticker_comeback_new);
-            mReTickerComebackIcon = mView.findViewById(R.id.ticker_comeback_icon_new);
-            mReTickerContentTV = mView.findViewById(R.id.ticker_content_new);
-        } else {
-            mReTickerComeback = mView.findViewById(R.id.ticker_comeback);
-            mReTickerComebackIcon = mView.findViewById(R.id.ticker_comeback_icon);
-            mReTickerContentTV = mView.findViewById(R.id.ticker_content);
-        }
+        mReTickerComeback = mView.findViewById(R.id.ticker_comeback);
+        mReTickerComebackIcon = mView.findViewById(R.id.ticker_comeback_icon);
+        mReTickerContentTV = mView.findViewById(R.id.ticker_content);
         mNotificationStackScroller = mView.findViewById(R.id.notification_stack_scroller);
 
         initBottomArea();
