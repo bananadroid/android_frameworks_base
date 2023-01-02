@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.animation.AnimatorListenerAdapter;
 import android.view.ViewAnimationUtils;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.BounceInterpolator;
 import android.view.View;
 
@@ -55,10 +56,11 @@ public class RetickerAnimations {
         float finalRadius = (float) Math.hypot(cx, cy);
 
         Animator anim = ViewAnimationUtils.createCircularReveal(targetView, cx, cy, 0f, finalRadius);
+        anim.setInterpolator(new AccelerateDecelerateInterpolator());
         anim.setDuration(500);
 
-        targetView.setVisibility(View.VISIBLE);
         anim.start();
+        targetView.setVisibility(View.VISIBLE);
     }
 
     public static void revealAnimationHide(View targetView, View notificationStackScroller) {
@@ -68,7 +70,9 @@ public class RetickerAnimations {
         float initialRadius = (float) Math.hypot(cx, cy);
 
         Animator anim = ViewAnimationUtils.createCircularReveal(targetView, cx, cy, initialRadius, 0f);
+        anim.setInterpolator(new AccelerateDecelerateInterpolator());
         anim.setDuration(350);
+        anim.start();
         anim.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
@@ -77,7 +81,6 @@ public class RetickerAnimations {
                 mIsAnimatingTicker = false;
             }
         });
-        anim.start();
     }
 
     public static boolean isTickerAnimating() {
