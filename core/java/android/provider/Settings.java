@@ -13633,6 +13633,12 @@ public final class Settings {
         public static final String FACE_UNLOCK_METHOD = "face_unlock_method";
 
         /**
+         * Whether to trigger doze for new notifications
+         * @hide
+         */
+        public static final String DOZE_FOR_NOTIFICATIONS = "doze_for_notifications";
+
+        /**
          * Whether to show ambient instead of waking for the tap gesture
          * @hide
          */
