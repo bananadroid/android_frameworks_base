@@ -39,8 +39,6 @@ import android.pocket.IPocketCallback;
 import android.pocket.PocketConstants;
 import android.pocket.PocketManager;
 import android.provider.Settings.System;
-import android.telephony.TelephonyCallback;
-import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Slog;
@@ -129,15 +127,13 @@ public class PocketService extends SystemService implements IBinder.DeathRecipie
      */
     private static final float POCKET_LIGHT_MAX_THRESHOLD = 3.0f;
 
-    private final ArrayList<IPocketCallback> mCallbacks = new ArrayList<>();
-    private TelephonyManager mTelephonyManager;
+    private final ArrayList<IPocketCallback> mCallbacks= new ArrayList<>();
 
     private Context mContext;
     private boolean mEnabled;
     private boolean mSystemReady;
     private boolean mSystemBooted;
     private boolean mInteractive;
-    private boolean mIsOnCall;
     private boolean mPending;
     private PocketHandler mHandler;
     private PocketObserver mObserver;
@@ -193,25 +189,11 @@ public class PocketService extends SystemService implements IBinder.DeathRecipie
         }
         mVendorSensor = getSensor(mSensorManager, mVendorPocketSensor);
         mSupportedByDevice = mContext.getResources().getBoolean(
-                com.android.internal.R.bool.config_pocketModeSupported);
+                                 com.android.internal.R.bool.config_pocketModeSupported);
         mObserver = new PocketObserver(mHandler);
         if (mSupportedByDevice){
             mObserver.onChange(true);
             mObserver.register();
-        }
-
-        final boolean disableOnCall = mContext.getResources().getBoolean(
-                com.android.internal.R.bool.config_pocketJudgeDisableOnCall);
-        if (disableOnCall && mSupportedByDevice) {
-            mTelephonyManager = (TelephonyManager)
-                context.getSystemService(Context.TELEPHONY_SERVICE);
-            if (mSupportedByDevice){
-                mTelephonyManager.registerTelephonyCallback(
-                    TelephonyManager.INCLUDE_LOCATION_DATA_NONE,
-                    context.getMainExecutor(),
-                    mOnCallStateListener
-                );
-            }
         }
     }
 
@@ -245,18 +227,6 @@ public class PocketService extends SystemService implements IBinder.DeathRecipie
             }
         }
 
-    }
-
-    final TelephonyCallback mOnCallStateListener = new OnCallStateListener();
-    private class OnCallStateListener extends TelephonyCallback
-            implements TelephonyCallback.CallStateListener {
-        @Override
-        public void onCallStateChanged(int state) {
-            final boolean call = state != TelephonyManager.CALL_STATE_IDLE;
-            final boolean changed = call != mIsOnCall;
-            mIsOnCall = call;
-            if (changed) update();
-        }
     }
 
     private class PocketHandler extends Handler {
@@ -363,8 +333,6 @@ public class PocketService extends SystemService implements IBinder.DeathRecipie
         }
         unregisterSensorListeners();
         mObserver.unregister();
-        if (mTelephonyManager != null)
-            mTelephonyManager.unregisterTelephonyCallback(mOnCallStateListener);
     }
 
     private final class PocketServiceWrapper extends IPocketService.Stub {
@@ -525,8 +493,8 @@ public class PocketService extends SystemService implements IBinder.DeathRecipie
         if (!mSupportedByDevice){
             return;
         }
-        if (!mEnabled || mInteractive || mIsOnCall) {
-            if (mEnabled && isDeviceInPocket() && !mIsOnCall) {
+        if (!mEnabled || mInteractive) {
+            if (mEnabled && isDeviceInPocket()) {
                 // if device is judged to be in pocket while switching
                 // to interactive state, we need to keep monitoring.
                 return;
@@ -535,7 +503,6 @@ public class PocketService extends SystemService implements IBinder.DeathRecipie
         } else {
             mHandler.removeMessages(PocketHandler.MSG_UNREGISTER_TIMEOUT);
             registerSensorListeners();
-            handleDispatchCallbacks();
         }
     }
 
