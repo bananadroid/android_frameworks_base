@@ -1723,17 +1723,7 @@ public final class MandatoryStreamCombination {
                 }
 
                 if (isUltraHighResolution) {
-                    Size [] outputSizes = sm.getOutputSizes(formatChosen);
-                    Size [] highResolutionOutputSizes =
-                            sm.getHighResolutionOutputSizes(formatChosen);
-                    Size maxBurstSize = getMaxSizeOrNull(outputSizes);
-                    Size maxHighResolutionSize = getMaxSizeOrNull(highResolutionOutputSizes);
-                    Size chosenMaxSize =
-                            maxBurstSize != null ? maxBurstSize : maxHighResolutionSize;
-                    if (maxBurstSize != null && maxHighResolutionSize != null) {
-                        chosenMaxSize = getMaxSize(maxBurstSize, maxHighResolutionSize);
-                    }
-                    sizes.add(chosenMaxSize);
+                    sizes.add(getMaxSize(sm.getOutputSizes(formatChosen)));
                 } else {
                     if (formatChosen == ImageFormat.RAW_SENSOR) {
                         // RAW_SENSOR always has MAXIMUM threshold.
@@ -2133,21 +2123,6 @@ public final class MandatoryStreamCombination {
             }
 
             return sz;
-        }
-
-        /**
-         * Get the largest size by area.
-         *
-         * @param sizes an array of sizes
-         *
-         * @return Largest Size or null if sizes was null or had 0 elements
-         */
-        public static @Nullable Size getMaxSizeOrNull(Size... sizes) {
-            if (sizes == null || sizes.length == 0) {
-                return null;
-            }
-
-            return getMaxSize(sizes);
         }
 
         /**
