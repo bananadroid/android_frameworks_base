@@ -264,6 +264,9 @@
     <string name="config_smartChargingSuspendValue" translatable="false">0</string>
     <string name="config_smartChargingResumeValue" translatable="false">1</string>
 
+    <!-- The list of package IDs that are allowed to skip camera high frame rate checks. -->
+    <string-array name="config_cameraHFRPrivAppList" translatable="false" />
+
     <!-- Array containing custom error messages from vendor. -->
     <string-array name="face_error_vendor" translatable="false">
         <item>@string/face_unlock_disabled_idle</item>
