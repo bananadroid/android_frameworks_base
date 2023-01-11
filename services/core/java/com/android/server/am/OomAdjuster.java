@@ -2045,8 +2045,11 @@ public class OomAdjuster {
                     ProcessRecord client = cr.binding.client;
                     final ProcessStateRecord cstate = client.mState;
                     if (computeClients) {
-                        computeOomAdjLSP(client, cycleReEval ? cstate.getCurRawAdj() : cachedAdj, topApp, doingAll, now,
-                                cycleReEval, true);
+                        if (!app.info.packageName.equals(client.info.packageName)) {
+                            computeOomAdjLSP(client, cycleReEval ? cstate.getCurRawAdj() : ProcessList.UNKNOWN_ADJ, topApp, doingAll, now, cycleReEval, true);
+                        } else {
+                            computeOomAdjLSP(client, cycleReEval ? cstate.getCurRawAdj() : cachedAdj, topApp, doingAll, now, cycleReEval, true);
+                        }
                     } else {
                         cstate.setCurRawAdj(cstate.getCurAdj());
                         cstate.setCurRawProcState(cstate.getCurProcState());
@@ -2361,7 +2364,11 @@ public class OomAdjuster {
                     continue;
                 }
                 if (computeClients) {
-                    computeOomAdjLSP(client, cycleReEval ? cstate.getCurRawAdj() : cachedAdj, topApp, doingAll, now, cycleReEval, true);
+                    if (!app.info.packageName.equals(client.info.packageName)) {
+                        computeOomAdjLSP(client, cycleReEval ? cstate.getCurRawAdj() : ProcessList.UNKNOWN_ADJ, topApp, doingAll, now, cycleReEval, true);
+                    } else {
+                        computeOomAdjLSP(client, cycleReEval ? cstate.getCurRawAdj() : cachedAdj, topApp, doingAll, now, cycleReEval, true);
+                    }
                 } else {
                     cstate.setCurRawAdj(cstate.getCurAdj());
                     cstate.setCurRawProcState(cstate.getCurProcState());
