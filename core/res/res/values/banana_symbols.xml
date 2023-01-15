@@ -264,4 +264,7 @@
     <!-- Settings Restart -->
     <java-symbol type="string" name="settings_restart_title" />
     <java-symbol type="string" name="settings_restart_message" />
+
+    <!-- Enforce DisplayModeDirector to select user preferred resolution -->
+    <java-symbol type="bool" name="config_forceToUseSelectedResolution" />
 </resources>
