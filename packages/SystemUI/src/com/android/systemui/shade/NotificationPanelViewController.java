@@ -1387,7 +1387,6 @@ public final class NotificationPanelViewController implements Dumpable {
         mNotificationContainerParent.addView(keyguardStatusView, statusIndex);
 
         // Re-inflate the keyguard status bar.
-        statusIndex = mView.indexOfChild(mKeyguardStatusBar);
         mView.removeView(mKeyguardStatusBar);
         mKeyguardStatusBar = (KeyguardStatusBarView) mLayoutInflater.inflate(
                 R.layout.keyguard_status_bar, mView, false);
