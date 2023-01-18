@@ -1522,9 +1522,50 @@ public class CameraDeviceImpl extends CameraDevice
         return false;
     }
 
+    /**
+     * @hide
+     */
+    private String getMatchingSubstring(String packagename, List<String> whitelists) {
+        for (String whitelist : whitelists) {
+            if (packagename.contains(whitelist)) {
+                return whitelist;
+            }
+        }
+        return null;
+    }
+
     private boolean checkPrivilegedAppList() {
         String packageName = ActivityThread.currentOpPackageName();
         String packageList = SystemProperties.get("persist.vendor.camera.privapp.list");
+
+        /**
+         * e.g.
+         * persist.camera.manufacturer=oneplus
+         * persist.camera.oem.package=com.oneplus.camera
+         */
+        String deviceManufacturer = SystemProperties.get("persist.camera.manufacturer", "com.android");
+        String cameraPackage = SystemProperties.get("persist.camera.oem.package", "com.android.camera");
+
+        /**
+         * System default whitelist
+         */
+        List<String> defList = Arrays.asList(
+           // common camera processes, list the initial strings since we are using .contains method
+            "aperture",
+            "com.android.camera",
+            "faceunlock",
+            "google",
+            "grapheneos"
+        );
+
+        String prebuiltCameraApp = getMatchingSubstring(packageName, defList);
+
+        if (packageName.toLowerCase().contains(cameraPackage)
+            || packageName.toLowerCase().contains(deviceManufacturer)
+            || prebuiltCameraApp != null
+            ) {
+            return true;
+        }
 
         if (packageList.length() > 0) {
             TextUtils.StringSplitter splitter = new TextUtils.SimpleStringSplitter(',');
