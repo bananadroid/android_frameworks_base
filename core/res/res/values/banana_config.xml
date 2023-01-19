@@ -404,4 +404,7 @@
      <!-- Do the battery/notification LEDs support pulsing?
          Used to decide if we show pulse settings -->
     <bool name="config_ledCanPulse">true</bool>
+
+    <!-- Display color inversion availability -->
+    <bool name="config_displayInversionAvailable">true</bool>
 </resources>
