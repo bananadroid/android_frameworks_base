@@ -376,4 +376,7 @@
     <!-- Array of allowed USB classes to remove from sDenyInterfaces. -->
     <integer-array translatable="false" name="config_allowedUsbClasses">
     </integer-array>
+
+    <!-- Display color inversion availability -->
+    <bool name="config_displayInversionAvailable">true</bool>
 </resources>
