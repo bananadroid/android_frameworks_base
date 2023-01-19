@@ -269,4 +269,7 @@
     <java-symbol type="bool" name="config_forceToUseSelectedResolution" />
 
     <java-symbol type="array" name="config_allowedUsbClasses" />
+
+    <!-- Display color inversion availability -->
+    <java-symbol type="bool" name="config_displayInversionAvailable" />
 </resources>
