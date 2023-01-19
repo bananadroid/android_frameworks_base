@@ -194,10 +194,6 @@
         android:layout_marginTop="0dp"
         />
 
-    <!-- Elapsed time, shown only when scrubbing -->
-    <!-- The space to the left of the progress bar will either be actionPrev or
-         media_scrubbing_elapsed_time, so they use the same layout constraints. Visibilities of
-         elements are controlled in code. -->
     <TextView
         android:id="@+id/media_scrubbing_elapsed_time"
         style="@style/MediaPlayer.ScrubbingTime"
@@ -226,20 +222,6 @@
         android:layout_marginStart="0dp"
         android:layout_marginEnd="0dp" />
 
-    <ImageButton
-        android:id="@+id/actionNext"
-        style="@style/MediaPlayer.SessionAction.Secondary"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="0dp"
-        android:layout_marginEnd="@dimen/qs_media_action_spacing"
-        android:layout_marginBottom="@dimen/qs_media_padding"
-        android:layout_marginTop="0dp" />
-
-    <!-- Total time, shown only when scrubbing -->
-    <!-- The space to the right of the progress bar will either be actionNext or
-         media_scrubbing_total_time, so they use the same layout constraints. Visibilities of
-         elements are controlled in code. -->
     <TextView
         android:id="@+id/media_scrubbing_total_time"
         style="@style/MediaPlayer.ScrubbingTime"
@@ -249,8 +231,17 @@
         android:layout_marginEnd="@dimen/qs_media_action_spacing"
         android:layout_marginBottom="@dimen/qs_media_padding"
         android:layout_marginTop="0dp"
-        android:visibility="gone"
-        />
+        android:visibility="gone" />
+
+    <ImageButton
+        android:id="@+id/actionNext"
+        style="@style/MediaPlayer.SessionAction.Secondary"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginEnd="@dimen/qs_media_action_spacing"
+        android:layout_marginBottom="@dimen/qs_media_padding"
+        android:layout_marginTop="0dp" />
 
     <ImageButton
         android:id="@+id/action0"
