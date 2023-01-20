@@ -49,6 +49,16 @@ class MediaViewHolder constructor(itemView: View) {
 
     // Seekbar views
     val seekBar = itemView.requireViewById<SeekBar>(R.id.media_progress_bar)
+
+    // SeekBar attr
+    val context = itemView.getContext()
+    val squigglyProgress = context.getDrawable(R.drawable.media_squiggly_progress)
+    val squigglyThumb = context.getDrawable(R.drawable.media_seekbar_thumb)
+    val saneProgress = seekBar.getProgressDrawable()
+    val saneThumb = seekBar.getThumb()
+    val fgTintList = seekBar.getProgressTintList()
+    val bgTintList = seekBar.getProgressBackgroundTintList()
+
     // These views are only shown while the user is actively scrubbing
     val scrubbingElapsedTimeView: TextView =
         itemView.requireViewById(R.id.media_scrubbing_elapsed_time)
@@ -95,6 +105,20 @@ class MediaViewHolder constructor(itemView: View) {
                 action3,
                 action4
         )
+    }
+
+    fun setSquiggleEnabled(enabled: Boolean) {
+        seekBar.setProgressDrawable(
+            if (enabled) squigglyProgress
+            else saneProgress
+        )
+        seekBar.setThumb(
+            if (enabled) squigglyThumb
+            else saneThumb
+        )
+        seekBar.setProgressTintList(fgTintList)
+        seekBar.setProgressBackgroundTintList(bgTintList)
+        seekBar.setThumbTintList(fgTintList)
     }
 
     fun marquee(start: Boolean, delay: Long) {
