@@ -211,6 +211,7 @@ public class MediaControlPanel {
     private final SysuiColorExtractor mColorExtractor = Dependency.get(SysuiColorExtractor.class);
 
     private boolean mAlwaysOnTime;
+    private boolean mShowSquiggle;
 
     private final SettingsObserver mSettingsObserver = new SettingsObserver();
     private class SettingsObserver extends ContentObserver {
@@ -238,16 +239,28 @@ public class MediaControlPanel {
                     mMainExecutor.execute(() ->
                             updateDisplayForScrubbingChange(mMediaData.getSemanticActions()));
                     break;
+                case Settings.Secure.MEDIA_CONTROLS_SQUIGGLE:
+                    updateShowSquiggle();
+                    if (mMediaViewHolder != null) {
+                        mMediaViewHolder.setSquiggleEnabled(mShowSquiggle);
+                    }
+                    break;
             }
         }
 
         void update() {
             updateAlwaysOnTime();
+            updateShowSquiggle();
         }
 
         private void updateAlwaysOnTime() {
             mAlwaysOnTime = Settings.Secure.getInt(mContext.getContentResolver(),
                     Settings.Secure.MEDIA_CONTROLS_ALWAYS_SHOW_TIME, 0) == 1;
+        }
+
+        private void updateShowSquiggle() {
+            mShowSquiggle = Settings.Secure.getInt(mContext.getContentResolver(),
+                    Settings.Secure.MEDIA_CONTROLS_SQUIGGLE, 0) == 1;
         }
     }
 
@@ -396,6 +409,7 @@ public class MediaControlPanel {
         mSettingsObserver.update();
         mSettingsObserver.observe();
 
+        vh.setSquiggleEnabled(mShowSquiggle);
         mMediaViewHolder = vh;
         TransitionLayout player = vh.getPlayer();
 
