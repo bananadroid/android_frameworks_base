@@ -12225,37 +12225,6 @@ public final class Settings {
         public static final String BACK_GESTURE_HAPTIC = "back_gesture_haptic";
 
         /**
-         * Whether to enable Ambient edge light
-         * @hide
-         */
-        public static final String PULSE_AMBIENT_LIGHT = "pulse_ambient_light";
-
-        /**
-         * What color to use for Ambient edge light
-         * @hide
-         */
-        public static final String PULSE_AMBIENT_LIGHT_COLOR = "pulse_ambient_light_color";
-
-        /**
-         * Duration of Ambient edge light in seconds
-         * @hide
-         */
-        public static final String PULSE_AMBIENT_LIGHT_DURATION = "pulse_ambient_light_duration";
-
-        /**
-         * Ambient Edge Light Layout
-         * @hide
-         */
-        public static final String PULSE_AMBIENT_LIGHT_LAYOUT = "pulse_ambient_light_layout";
-
-        /**
-         * Helper setting to contain the current pulse reason so we can check
-         * if it has been triggered from a notification or a gesture
-         * @hide
-         */
-        public static final String PULSE_TRIGGER_REASON = "pulse_trigger_reason";
-
-        /**
          * Whether to pulse ambient on new music tracks
          * @hide
          */
