@@ -1392,7 +1392,6 @@ public final class NotificationPanelViewController implements Dumpable {
         mKeyguardStatusBar = (KeyguardStatusBarView) mLayoutInflater.inflate(
                 R.layout.keyguard_status_bar, mView, false);
         mView.addView(mKeyguardStatusBar, statusIndex);
-        mKeyguardStatusBar.setVisibility(isOnKeyguard() ? View.VISIBLE : View.INVISIBLE);
 
         // When it's reinflated, this is centered by default. If it shouldn't be, this will update
         // below when resources are updated.
@@ -5714,6 +5713,7 @@ public final class NotificationPanelViewController implements Dumpable {
 
             mBarState = statusBarState;
             mKeyguardShowing = keyguardShowing;
+            mKeyguardStatusBar.setVisibility(keyguardShowing ? View.VISIBLE : View.GONE);
 
             boolean fromShadeToKeyguard = statusBarState == KEYGUARD
                     && (oldState == SHADE || oldState == SHADE_LOCKED);
