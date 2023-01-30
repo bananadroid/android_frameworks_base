@@ -6288,12 +6288,6 @@ public final class Settings {
         public static final String RETICKER_STATUS = "reticker_status";
 
         /**
-         * Makes reticker look like OneUI's headsup
-         * @hide
-         */
-        public static final String NEW_RETICKER_ANIMATION = "new_reticker_animation";
-
-        /**
          * reTicker Colored
          * @hide
          */
