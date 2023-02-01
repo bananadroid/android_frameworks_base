@@ -156,6 +156,7 @@ public class QsWeatherText extends TextView implements
                         }
                         if (mQsWeatherEnabled != 0 && mQsWeatherEnabled != 5) {
                             setVisibility(View.VISIBLE);
+                            setTextSize(14.0f);
                         }
                     }
                 } else {
