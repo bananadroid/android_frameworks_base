@@ -372,4 +372,8 @@
 
     <!-- Enforce DisplayModeDirector to select user preferred resolution -->
     <bool name="config_forceToUseSelectedResolution">false</bool>
+
+    <!-- Array of allowed USB classes to remove from sDenyInterfaces. -->
+    <integer-array translatable="false" name="config_allowedUsbClasses">
+    </integer-array>
 </resources>

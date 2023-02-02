@@ -267,4 +267,6 @@
 
     <!-- Enforce DisplayModeDirector to select user preferred resolution -->
     <java-symbol type="bool" name="config_forceToUseSelectedResolution" />
+
+    <java-symbol type="array" name="config_allowedUsbClasses" />
 </resources>
