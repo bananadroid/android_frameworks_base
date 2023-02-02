@@ -285,53 +285,14 @@ public class Camera {
     /**
      * @hide
      */
-    public static String getMatchingSubstring(String packagename, List<String> whitelists) {
-        for (String whitelist : whitelists) {
-            if (packagename.contains(whitelist)) {
-                return whitelist;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * @hide
-     */
     public static boolean shouldExposeAuxCamera() {
         /**
          * Force to expose only two cameras
          * if the package name does not falls in this bucket
          */
         String packageName = ActivityThread.currentOpPackageName();
-
-        /**
-         * Expose camera if package name contains manufacturer/OEM name 
-         * 
-         */
-        String deviceManufacturer = SystemProperties.get("persist.camera.manufacturer", "com.android");
-        String cameraPackage = SystemProperties.get("persist.camera.oem.package", "com.android.camera");
-
-        /**
-         * System default whitelist
-         */
-        List<String> defList = Arrays.asList(
-           // common camera processes, list the initial strings since we are using .contains method
-            "aperture",
-            "com.android.camera",
-            "faceunlock",
-            "google",
-            "grapheneos"
-        );
-
-        String prebuiltCameraApp = getMatchingSubstring(packageName, defList);
-
-    	if (packageName == null 
-            || prebuiltCameraApp != null
-            || packageName.toLowerCase().contains(cameraPackage)
-            || packageName.toLowerCase().contains(deviceManufacturer)
-            )
+    	if (packageName == null)
     	    return true;
-
         List<String> packageList = new ArrayList<>(Arrays.asList(
                 SystemProperties.get("vendor.camera.aux.packagelist", ",").split(",")));
         List<String> packageExcludelist = new ArrayList<>(Arrays.asList(
@@ -344,13 +305,8 @@ public class Camera {
         packageExcludelist.addAll(Arrays.asList(res.getStringArray(
                 com.android.internal.R.array.config_cameraAuxPackageExcludeList)));
 
-        if (packageList.isEmpty())
-            return true;
-
-        String auxPackageListString = getMatchingSubstring(packageName, packageList);
-        String auxPackageExcludelistString = getMatchingSubstring(packageName, packageExcludelist);
-
-        return auxPackageListString != null && auxPackageExcludelistString == null;
+        return (packageList.isEmpty() || packageList.contains(packageName)) &&
+                !packageExcludelist.contains(packageName);
     }
 
     /**
