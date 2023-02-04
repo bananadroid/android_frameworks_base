@@ -125,8 +125,7 @@ class DefaultClockController(
                 }
 
                 override fun onFontSettingChanged(fontSizePx: Float) {
-                    // replace with clockfont
-            	    view.setTypeface(Typeface.create(resources.getString(com.android.internal.R.string.config_headlineFontFamily), Typeface.NORMAL))
+            	    view.setTypeface(Typeface.create(resources.getString(com.android.internal.R.string.config_clockFontFamily), Typeface.NORMAL))
                     view.setTextSize(TypedValue.COMPLEX_UNIT_PX, fontSizePx)
                     recomputePadding(targetRegion)
                 }
