@@ -29,9 +29,6 @@
     <!-- Doze: does the long press sensor need a proximity check? -->
     <bool name="doze_long_press_proximity_check">false</bool>
 
-    <!-- Body font family -->
-    <string name="config_bodyFontFamily">@*android:string/config_bodyFontFamily</string>
-
     <!-- The maximum number of tiles in the QuickQSPanel -->
     <integer name="quick_qs_panel_max_tiles_custom">4</integer>
 
