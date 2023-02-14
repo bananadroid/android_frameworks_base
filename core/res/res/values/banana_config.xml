@@ -379,4 +379,7 @@
         <item>com.gaana</item>
         <item>com.facebook.katana.LoginActivity</item>
     </string-array>
+
+    <!-- Whether to use Richtap vibration -->
+    <bool name="config_usesRichtapVibration">false</bool>
 </resources>

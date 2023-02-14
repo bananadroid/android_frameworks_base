@@ -222,4 +222,7 @@
 
     <!-- Sensor block -->
     <java-symbol type="array" name="config_blockPackagesSensorDrain" />
+
+    <!-- Whether to use Richtap vibration -->
+    <java-symbol type="bool" name="config_usesRichtapVibration" />
 </resources>
