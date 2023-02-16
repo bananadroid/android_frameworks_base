@@ -293,6 +293,8 @@ public class PixelPropsUtils {
                 if (processName.equals("com.google.android.gms.unstable")) {
                     sIsGms = true;
                     spoofBuildGms();
+                } else if (processName.toLowerCase().contains("persistent")) {
+                    propsToChange.putAll(propsToChangePixel6Pro);
                 }
                 return;
             }
