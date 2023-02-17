@@ -1640,15 +1640,7 @@ public class NetworkPolicyManagerService extends INetworkPolicyManager.Stub {
                         mContext, 0, snoozeIntent, FLAG_UPDATE_CURRENT | FLAG_IMMUTABLE));
 
                 final Intent viewIntent = buildViewDataUsageIntent(res, policy.template);
-                // TODO: Resolve to single code path.
-                if (UserManager.isHeadlessSystemUserMode()) {
-                    builder.setContentIntent(PendingIntent.getActivityAsUser(
-                            mContext, 0, viewIntent, FLAG_UPDATE_CURRENT | FLAG_IMMUTABLE,
-                            /* options= */ null, UserHandle.CURRENT));
-                } else {
-                    builder.setContentIntent(PendingIntent.getActivity(
-                            mContext, 0, viewIntent, FLAG_UPDATE_CURRENT | FLAG_IMMUTABLE));
-                }
+                setContentIntent(builder, viewIntent);
                 break;
             }
             case TYPE_LIMIT: {
@@ -1669,15 +1661,7 @@ public class NetworkPolicyManagerService extends INetworkPolicyManager.Stub {
                 builder.setSmallIcon(R.drawable.stat_notify_disabled_data);
 
                 final Intent intent = buildNetworkOverLimitIntent(res, policy.template);
-                // TODO: Resolve to single code path.
-                if (UserManager.isHeadlessSystemUserMode()) {
-                    builder.setContentIntent(PendingIntent.getActivityAsUser(
-                            mContext, 0, intent, FLAG_UPDATE_CURRENT | FLAG_IMMUTABLE,
-                            /* options= */ null, UserHandle.CURRENT));
-                } else {
-                    builder.setContentIntent(PendingIntent.getActivity(
-                            mContext, 0, intent, FLAG_UPDATE_CURRENT | FLAG_IMMUTABLE));
-                }
+                setContentIntent(builder, intent);
                 break;
             }
             case TYPE_LIMIT_SNOOZED: {
@@ -1701,15 +1685,7 @@ public class NetworkPolicyManagerService extends INetworkPolicyManager.Stub {
                 builder.setChannelId(SystemNotificationChannels.NETWORK_STATUS);
 
                 final Intent intent = buildViewDataUsageIntent(res, policy.template);
-                // TODO: Resolve to single code path.
-                if (UserManager.isHeadlessSystemUserMode()) {
-                    builder.setContentIntent(PendingIntent.getActivityAsUser(
-                            mContext, 0, intent, FLAG_UPDATE_CURRENT | FLAG_IMMUTABLE,
-                            /* options= */ null, UserHandle.CURRENT));
-                } else {
-                    builder.setContentIntent(PendingIntent.getActivity(
-                            mContext, 0, intent, FLAG_UPDATE_CURRENT | FLAG_IMMUTABLE));
-                }
+                setContentIntent(builder, intent);
                 break;
             }
             case TYPE_RAPID: {
@@ -1729,15 +1705,7 @@ public class NetworkPolicyManagerService extends INetworkPolicyManager.Stub {
                         mContext, 0, snoozeIntent, FLAG_UPDATE_CURRENT | FLAG_IMMUTABLE));
 
                 final Intent viewIntent = buildViewDataUsageIntent(res, policy.template);
-                // TODO: Resolve to single code path.
-                if (UserManager.isHeadlessSystemUserMode()) {
-                    builder.setContentIntent(PendingIntent.getActivityAsUser(
-                            mContext, 0, viewIntent, FLAG_UPDATE_CURRENT | FLAG_IMMUTABLE,
-                            /* options= */ null, UserHandle.CURRENT));
-                } else {
-                    builder.setContentIntent(PendingIntent.getActivity(
-                            mContext, 0, viewIntent, FLAG_UPDATE_CURRENT | FLAG_IMMUTABLE));
-                }
+                setContentIntent(builder, viewIntent);
                 break;
             }
             default: {
@@ -1753,6 +1721,17 @@ public class NetworkPolicyManagerService extends INetworkPolicyManager.Stub {
         mContext.getSystemService(NotificationManager.class).notifyAsUser(notificationId.getTag(),
                 notificationId.getId(), builder.build(), UserHandle.ALL);
         mActiveNotifs.add(notificationId);
+    }
+
+    private void setContentIntent(Notification.Builder builder, Intent intent) {
+        if (UserManager.isHeadlessSystemUserMode()) {
+            builder.setContentIntent(PendingIntent.getActivityAsUser(
+                    mContext, 0, intent, FLAG_UPDATE_CURRENT | FLAG_IMMUTABLE,
+                    /* options= */ null, UserHandle.CURRENT));
+        } else {
+            builder.setContentIntent(PendingIntent.getActivity(
+                    mContext, 0, intent, FLAG_UPDATE_CURRENT | FLAG_IMMUTABLE));
+        }
     }
 
     private void cancelNotification(NotificationId notificationId) {
