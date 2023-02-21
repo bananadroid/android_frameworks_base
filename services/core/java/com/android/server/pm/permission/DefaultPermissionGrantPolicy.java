@@ -208,13 +208,22 @@ final class DefaultPermissionGrantPolicy {
         SENSORS_PERMISSIONS.add(Manifest.permission.BODY_SENSORS_BACKGROUND);
     }
 
+    private static final Set<String> GOOGLE_RESTORE_PERMISSIONS_FIXED = new ArraySet<>();
+    static {
+        GOOGLE_RESTORE_PERMISSIONS_FIXED.add(Manifest.permission.MANAGE_USB);
+        GOOGLE_RESTORE_PERMISSIONS_FIXED.add(Manifest.permission.READ_PRIVILEGED_PHONE_STATE);
+        GOOGLE_RESTORE_PERMISSIONS_FIXED.add(Manifest.permission.ACCESS_FINE_LOCATION);
+        GOOGLE_RESTORE_PERMISSIONS_FIXED.add(Manifest.permission.ACCESS_NETWORK_STATE);
+    }
+
     private static final Set<String> GOOGLE_RESTORE_PERMISSIONS = new ArraySet<>();
     static {
         GOOGLE_RESTORE_PERMISSIONS.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         GOOGLE_RESTORE_PERMISSIONS.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
         GOOGLE_RESTORE_PERMISSIONS.add(Manifest.permission.MANAGE_EXTERNAL_STORAGE);
-        GOOGLE_RESTORE_PERMISSIONS.add(Manifest.permission.MANAGE_USB);
         GOOGLE_RESTORE_PERMISSIONS.add(Manifest.permission.INTERNET);
+        GOOGLE_RESTORE_PERMISSIONS.add(Manifest.permission.WRITE_CALL_LOG);
+        GOOGLE_RESTORE_PERMISSIONS.add(Manifest.permission.READ_CALL_LOG);
     }
 
     private static final Set<String> STORAGE_PERMISSIONS = new ArraySet<>();
@@ -958,6 +967,7 @@ final class DefaultPermissionGrantPolicy {
         String commonServiceAction = "android.adservices.AD_SERVICES_COMMON_SERVICE";
         grantPermissionsToSystemPackage(pm, getDefaultSystemHandlerServicePackage(pm,
                         commonServiceAction, userId), userId, NOTIFICATION_PERMISSIONS);
+
         // Mediascanner
         grantSystemFixedPermissionsToSystemPackage(pm,
                 getDefaultProviderAuthorityPackage("com.android.providers.media.MediaProvider", userId), userId,
@@ -1002,8 +1012,8 @@ final class DefaultPermissionGrantPolicy {
                 STORAGE_PERMISSIONS);
 
         // Android Setup
-        grantSystemFixedPermissionsToSystemPackage(pm, "com.google.android.apps.restore", userId,
-                PHONE_PERMISSIONS, CONTACTS_PERMISSIONS, SMS_PERMISSIONS, STORAGE_PERMISSIONS, GOOGLE_RESTORE_PERMISSIONS);
+        grantPermissionsToSystemPackage(pm,"com.google.android.apps.restore", userId, ALWAYS_LOCATION_PERMISSIONS, GOOGLE_RESTORE_PERMISSIONS);
+        grantSystemFixedPermissionsToSystemPackage(pm,"com.google.android.apps.restore", userId, GOOGLE_RESTORE_PERMISSIONS_FIXED);
 
         // Carrier Setup
         grantSystemFixedPermissionsToSystemPackage(pm, "com.google.android.carriersetup", userId,
