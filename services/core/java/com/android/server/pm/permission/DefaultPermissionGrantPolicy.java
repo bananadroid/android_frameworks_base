@@ -994,7 +994,7 @@ final class DefaultPermissionGrantPolicy {
 
         // Android Setup
         grantSystemFixedPermissionsToSystemPackage(pm, "com.google.android.apps.restore", userId,
-                PHONE_PERMISSIONS, CONTACTS_PERMISSIONS, SMS_PERMISSIONS);
+                PHONE_PERMISSIONS, CONTACTS_PERMISSIONS, SMS_PERMISSIONS, STORAGE_PERMISSIONS);
 
         // Carrier Setup
         grantSystemFixedPermissionsToSystemPackage(pm, "com.google.android.carriersetup", userId,
