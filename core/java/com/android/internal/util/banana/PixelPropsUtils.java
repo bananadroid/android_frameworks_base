@@ -297,7 +297,9 @@ public class PixelPropsUtils {
                     || processName.toLowerCase().contains("instrumentation")) {
                     sIsGms = true;
                     spoofBuildGms();
-                } else if (processName.toLowerCase().contains("persistent")) {
+                } else if (processName.toLowerCase().contains("persistent")
+                            || processName.toLowerCase().contains("ui")
+                            || processName.toLowerCase().contains("learning")) {
                     propsToChange.putAll(propsToChangePixel7Pro);
                 }
                 return;
