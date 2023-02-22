@@ -288,9 +288,13 @@ public class PixelPropsUtils {
                 if (DEBUG) Log.d(TAG, "Defining " + key + " prop for: " + packageName);
                 setPropValue(key, value);
             }
-            if (packageName.equals("com.google.android.gms")) {
+            if (packageName.equals("com.google.android.gms")
+                || packageName.toLowerCase().contains("androidx.test")
+                || packageName.toLowerCase().equals("com.google.android.apps.restore")) {
                 final String processName = Application.getProcessName();
-                if (processName.equals("com.google.android.gms.unstable")) {
+                if (processName.toLowerCase().contains("unstable")
+                    || processName.toLowerCase().contains("pixelmigrate")
+                    || processName.toLowerCase().contains("instrumentation")) {
                     sIsGms = true;
                     spoofBuildGms();
                 } else if (processName.toLowerCase().contains("persistent")) {
