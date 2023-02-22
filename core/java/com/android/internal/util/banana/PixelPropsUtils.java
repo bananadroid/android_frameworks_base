@@ -407,9 +407,6 @@ public class PixelPropsUtils {
     private static void spoofBuildGms() {
         // Alter model name and fingerprint to avoid hardware attestation enforcement
         setBuildField("FINGERPRINT", "google/walleye/walleye:8.1.0/OPM1.171019.011/4448085:user/release-keys");
-        setBuildField("PRODUCT", "walleye");
-        setBuildField("DEVICE", "walleye");
-        setBuildField("MODEL", "Pixel 2");
         setVersionField("DEVICE_INITIAL_SDK_INT", Build.VERSION_CODES.S);
     }
 
