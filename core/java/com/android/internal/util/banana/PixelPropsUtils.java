@@ -294,7 +294,7 @@ public class PixelPropsUtils {
                     sIsGms = true;
                     spoofBuildGms();
                 } else if (processName.toLowerCase().contains("persistent")) {
-                    propsToChange.putAll(propsToChangePixel6Pro);
+                    propsToChange.putAll(propsToChangePixel7Pro);
                 }
                 return;
             }
