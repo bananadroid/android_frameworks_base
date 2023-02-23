@@ -91,7 +91,6 @@ public class SystemSettings {
         Settings.System.NOTIFICATION_LIGHT_PULSE,
         Settings.System.MEDIA_ARTWORK_BLUR_ENABLED,
         Settings.System.MEDIA_ARTWORK_BLUR_RADIUS,
-        Settings.System.TORCH_POWER_BUTTON_GESTURE,
         Settings.System.STATUS_BAR_BRIGHTNESS_CONTROL,
         Settings.System.QS_TILE_LABEL_HIDE,
         Settings.System.QS_TILE_VERTICAL_LAYOUT,
