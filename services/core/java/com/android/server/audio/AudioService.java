@@ -956,6 +956,36 @@ public class AudioService extends IAudioService.Stub
     @GuardedBy("mSettingsLock")
     private boolean mRttEnabled = false;
 
+    private class UpdateAudioModeInfo {
+        private int mMode;
+        private int mPid;
+        private String mPackageName;
+        private boolean mForce;
+
+        public UpdateAudioModeInfo(int mode, int pid, String packageName, boolean force) {
+            mMode = mode;
+            mPid = pid;
+            mPackageName = packageName;
+            mForce = force;
+        }
+
+        public int getMode() {
+            return mMode;
+        }
+
+        public int getPid() {
+            return mPid;
+        }
+
+        public String getPackageName() {
+            return mPackageName;
+        }
+
+        public boolean isForce() {
+          return mForce;
+        }
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     // Construction
     ///////////////////////////////////////////////////////////////////////////
@@ -3978,9 +4008,12 @@ public class AudioService extends IAudioService.Stub
                 sendMsg(mAudioHandler,
                         MSG_UPDATE_AUDIO_MODE,
                         existingMsgPolicy,
-                        AudioSystem.MODE_CURRENT,
-                        android.os.Process.myPid(),
-                        mContext.getPackageName(),
+                        0 /*arg1 ignored*/,
+                        0 /*arg2 ignored*/,
+                        new UpdateAudioModeInfo(AudioSystem.MODE_CURRENT,
+                                                android.os.Process.myPid(),
+                                                mContext.getPackageName(),
+                                                false),
                         delay);
             }
         }
@@ -4027,9 +4060,12 @@ public class AudioService extends IAudioService.Stub
                 sendMsg(mAudioHandler,
                         MSG_UPDATE_AUDIO_MODE,
                         existingMsgPolicy,
-                        AudioSystem.MODE_CURRENT,
-                        android.os.Process.myPid(),
-                        mContext.getPackageName(),
+                        0 /*arg1 ignored*/,
+                        0 /*arg2 ignored*/,
+                        new UpdateAudioModeInfo(AudioSystem.MODE_CURRENT,
+                                                android.os.Process.myPid(),
+                                                mContext.getPackageName(),
+                                                false),
                         delay);
             }
         }
@@ -5222,9 +5258,12 @@ public class AudioService extends IAudioService.Stub
                     sendMsg(mAudioHandler,
                             MSG_UPDATE_AUDIO_MODE,
                             SENDMSG_QUEUE,
-                            AudioSystem.MODE_CURRENT,
-                            android.os.Process.myPid(),
-                            mContext.getPackageName(),
+                            0 /*arg1 ignored*/,
+                            0 /*arg2 ignored*/,
+                            new UpdateAudioModeInfo(AudioSystem.MODE_CURRENT,
+                                                    android.os.Process.myPid(),
+                                                    mContext.getPackageName(),
+                                                    true),
                             0);
                 }
             }
@@ -5474,9 +5513,12 @@ public class AudioService extends IAudioService.Stub
             sendMsg(mAudioHandler,
                     MSG_UPDATE_AUDIO_MODE,
                     SENDMSG_REPLACE,
-                    mode,
-                    pid,
-                    callingPackage,
+                    0 /*arg1 ignored*/,
+                    0 /*arg2 ignored*/,
+                    new UpdateAudioModeInfo(mode,
+                                            pid,
+                                            callingPackage,
+                                            false),
                     0);
         }
     }
@@ -8619,7 +8661,11 @@ public class AudioService extends IAudioService.Stub
 
                 case MSG_UPDATE_AUDIO_MODE:
                     synchronized (mDeviceBroker.mSetModeLock) {
-                        onUpdateAudioMode(msg.arg1, msg.arg2, (String) msg.obj, false /*force*/);
+                        UpdateAudioModeInfo mUpdateAudioModeInfo = (UpdateAudioModeInfo)msg.obj;
+                        onUpdateAudioMode(mUpdateAudioModeInfo.getMode(),
+                                          mUpdateAudioModeInfo.getPid(),
+                                          mUpdateAudioModeInfo.getPackageName(),
+                                          mUpdateAudioModeInfo.isForce());
                     }
                     break;
 
