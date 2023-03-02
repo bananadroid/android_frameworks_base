@@ -30,6 +30,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class PixelPropsUtils {
+    
+    private static final String SAMSUNG = "com.samsung.android.";
+    private static final String SAMSUNGACCESSORY = "com.samsung.accessory.";
 
     private static final String TAG = PixelPropsUtils.class.getSimpleName();
     private static final String DEVICE = "ro.product.device";
@@ -256,6 +259,8 @@ public class PixelPropsUtils {
             return;
         }
         if (packageName.startsWith("com.google.")
+                || packageName.startsWith(SAMSUNG)
+                || packageName.startsWith(SAMSUNGACCESSORY)
                 || Arrays.asList(extraPackagesToChange).contains(packageName)) {
 
             Map<String, Object> propsToChange = new HashMap<>();
