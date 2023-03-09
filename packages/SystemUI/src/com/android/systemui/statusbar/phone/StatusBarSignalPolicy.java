@@ -292,9 +292,6 @@ public class StatusBarSignalPolicy implements SignalCallback,
         state.roaming = indicators.roaming;
         state.activityIn = indicators.activityIn && mActivityEnabled;
         state.activityOut = indicators.activityOut && mActivityEnabled;
-        state.typeSpacerVisible = mMobileStates.size() > 1
-               && mMobileStates.get(1).subId == state.subId
-               && state.typeId != 0;
 
         if (DEBUG) {
             Log.d(TAG, "MobileIconStates: "
@@ -641,7 +638,6 @@ public class StatusBarSignalPolicy implements SignalCallback,
         public boolean roaming;
         public boolean needsLeadingPadding;
         public CharSequence typeContentDescription;
-        public boolean typeSpacerVisible;
 
         private MobileIconState(int subId) {
             super();
@@ -663,8 +659,7 @@ public class StatusBarSignalPolicy implements SignalCallback,
                     && showTriangle == that.showTriangle
                     && roaming == that.roaming
                     && needsLeadingPadding == that.needsLeadingPadding
-                    && Objects.equals(typeContentDescription, that.typeContentDescription)
-                    && typeSpacerVisible == that.typeSpacerVisible;
+                    && Objects.equals(typeContentDescription, that.typeContentDescription);
         }
 
         @Override
@@ -690,7 +685,6 @@ public class StatusBarSignalPolicy implements SignalCallback,
             other.roaming = roaming;
             other.needsLeadingPadding = needsLeadingPadding;
             other.typeContentDescription = typeContentDescription;
-            other.typeSpacerVisible = typeSpacerVisible;
         }
 
         private static List<MobileIconState> copyStates(List<MobileIconState> inStates) {
@@ -707,8 +701,7 @@ public class StatusBarSignalPolicy implements SignalCallback,
         @Override public String toString() {
             return "MobileIconState(subId=" + subId + ", strengthId=" + strengthId
                     + ", showTriangle=" + showTriangle + ", roaming=" + roaming
-                    + ", typeId=" + typeId + ", typeSpacerVisible=" + typeSpacerVisible
-                    + ", visible=" + visible + ")";
+                    + ", typeId=" + typeId + ", visible=" + visible + ")";
         }
     }
 }
