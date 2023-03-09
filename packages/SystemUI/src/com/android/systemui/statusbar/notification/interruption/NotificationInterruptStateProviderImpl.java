@@ -513,6 +513,8 @@ public class NotificationInterruptStateProviderImpl implements NotificationInter
         boolean isLessBoring = notificationPackageName.equals(getDefaultDialerPackage(mTm))
                 || notificationPackageName.equals(getDefaultSmsPackage(mContext))
                 || notificationPackageName.toLowerCase().contains("dialer")
+                || notificationPackageName.toLowerCase().contains("messaging")
+                || notificationPackageName.toLowerCase().contains("messenger")
                 || notificationPackageName.toLowerCase().contains("clock");
 
         return !mStatusBarStateController.isDozing() && mLessBoringHeadsUp && !isLessBoring;
