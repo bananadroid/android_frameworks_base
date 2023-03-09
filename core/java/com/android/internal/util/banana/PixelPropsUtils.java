@@ -82,8 +82,7 @@ public class PixelPropsUtils {
 
     // Packages to Spoof as Pixel XL
     private static final String[] packagesToChangePixelXL = {
-            "com.google.android.apps.photos",
-            "com.snapchat.android"
+            "com.google.android.apps.photos"
     };
 
     private static final String[] customGoogleCameraPackages = {
@@ -272,7 +271,6 @@ public class PixelPropsUtils {
             return;
         }
         if (packageName.startsWith("com.google.")
-                || packageName.equals("com.snapchat.android")
                 || packageName.startsWith(SAMSUNG)
                 || Arrays.asList(customGoogleCameraPackages).contains(packageName)
                 || Arrays.asList(extraPackagesToChange).contains(packageName)) {

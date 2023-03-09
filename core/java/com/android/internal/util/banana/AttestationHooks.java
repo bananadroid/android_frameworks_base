@@ -33,9 +33,13 @@ public final class AttestationHooks {
     private static final String TAG = "AttestationHooks";
     private static final boolean DEBUG = false;
 
+    // Use certified properties for GMS to pass SafetyNet / Play Integrity
     private static final String PACKAGE_GMS = "com.google.android.gms";
     private static final String PACKAGE_FINSKY = "com.android.vending";
     private static final String PACKAGE_RESTORE = "com.google.android.apps.restore";
+
+    // Use certified properties for Snapchat to prevent send/receive delays
+    private static final String PACKAGE_SNAPCHAT = "com.snapchat.android";
 
     private static final Map<String, Object> sP7Props = new HashMap<>();
     static {
@@ -103,6 +107,7 @@ public final class AttestationHooks {
                 || processName.toLowerCase().contains("pixelmigrate")
                 || processName.toLowerCase().contains("restore")) {
                 sIsGms = true;
+                dlog("Spoofing build for GMS");
                 spoofBuildGms();
             } else {
                 dlog("Spoofing Pixel 7 Pro for Google Play Services");
@@ -112,6 +117,11 @@ public final class AttestationHooks {
 
         if (packageName.equals(PACKAGE_FINSKY)) {
             sIsFinsky = true;
+        }
+
+        if (packageName.equals(PACKAGE_SNAPCHAT)) {
+            dlog("Spoofing build for: " + packageName);
+            spoofBuildGms();
         }
     }
 
