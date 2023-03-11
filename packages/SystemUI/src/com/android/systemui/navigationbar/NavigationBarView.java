@@ -872,20 +872,6 @@ public class NavigationBarView extends FrameLayout implements TunerService.Tunab
         mContextualButtonGroup.setButtonVisibility(R.id.accessibility_button, visible);
     }
 
-    public void shiftNavigationBarItems(int horizontalShift, int verticalShift) {
-        ViewGroup navButtons = (ViewGroup) findViewById(R.id.nav_buttons);
-
-        if (navButtons == null) {
-            return;
-        }
-
-        navButtons.setPaddingRelative(navButtons.getPaddingStart() + horizontalShift,
-                navButtons.getPaddingTop() + verticalShift,
-                navButtons.getPaddingEnd() + horizontalShift,
-                navButtons.getPaddingBottom() - verticalShift);
-        invalidate();
-    }
-
     @Override
     public void onFinishInflate() {
         super.onFinishInflate();

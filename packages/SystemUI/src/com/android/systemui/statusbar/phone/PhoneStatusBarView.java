@@ -19,7 +19,6 @@ package com.android.systemui.statusbar.phone;
 
 import android.annotation.Nullable;
 import android.content.Context;
-import android.content.res.Resources;
 import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.inputmethodservice.InputMethodService;
@@ -132,20 +131,6 @@ public class PhoneStatusBarView extends FrameLayout implements Callbacks {
         mTouchEventHandler = handler;
     }
 
-    public void shiftStatusBarItems(int horizontalShift, int verticalShift) {
-        View sbContents = findViewById(R.id.status_bar_contents);
-
-        if (sbContents == null) {
-            return;
-        }
-
-        sbContents.setPaddingRelative(sbContents.getPaddingStart() + horizontalShift,
-                sbContents.getPaddingTop() + verticalShift,
-                sbContents.getPaddingEnd() + horizontalShift,
-                sbContents.getPaddingBottom() - verticalShift);
-        invalidate();
-    }
-
     @Override
     public void onFinishInflate() {
         super.onFinishInflate();
@@ -183,7 +168,6 @@ public class PhoneStatusBarView extends FrameLayout implements Callbacks {
     @Override
     protected void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-
         updateResources();
 
         // May trigger cutout space layout-ing
