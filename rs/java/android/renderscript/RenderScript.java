@@ -127,6 +127,12 @@ public class RenderScript {
                 throw new RSRuntimeException("Error loading GC methods: " + e);
             }
             try {
+                System.loadLibrary("compiler_rt");
+            } catch (UnsatisfiedLinkError e) {
+                Log.e(LOG_TAG, "Error loading compiler-rt library: " + e);
+                throw new RSRuntimeException("Error loading compiler-rt library: " + e);
+            }
+            try {
                 System.loadLibrary("rs_jni");
                 _nInit();
                 sInitialized = true;
