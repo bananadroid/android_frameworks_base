@@ -70,6 +70,8 @@ import com.android.systemui.SysuiTestCase;
 import com.android.systemui.broadcast.BroadcastDispatcher;
 import com.android.systemui.demomode.DemoModeController;
 import com.android.systemui.dump.DumpManager;
+import com.android.systemui.flags.FeatureFlags;
+import com.android.systemui.flags.Flags;
 import com.android.systemui.plugins.log.LogBuffer;
 import com.android.systemui.settings.UserTracker;
 import com.android.systemui.statusbar.pipeline.StatusBarPipelineFlags;
@@ -129,6 +131,7 @@ public class NetworkControllerBaseTest extends SysuiTestCase {
     protected CarrierConfigTracker mCarrierConfigTracker;
     protected FakeExecutor mFakeExecutor = new FakeExecutor(new FakeSystemClock());
     protected Handler mMainHandler;
+    protected FeatureFlags mFeatureFlags;
     // Use a real mobile mappings object since lots of tests rely on it
     protected FakeMobileMappingsProxy mMobileMappingsProxy = new FakeMobileMappingsProxy();
     protected WifiStatusTrackerFactory mWifiStatusTrackerFactory;
@@ -162,6 +165,9 @@ public class NetworkControllerBaseTest extends SysuiTestCase {
 
     @Before
     public void setUp() throws Exception {
+        mFeatureFlags = mock(FeatureFlags.class);
+        when(mFeatureFlags.isEnabled(Flags.COMBINED_STATUS_BAR_SIGNAL_ICONS)).thenReturn(false);
+
         mInstrumentation = InstrumentationRegistry.getInstrumentation();
         Settings.Global.putInt(mContext.getContentResolver(), Global.AIRPLANE_MODE_ON, 0);
         TestableResources res = mContext.getOrCreateTestableResources();
@@ -232,6 +238,7 @@ public class NetworkControllerBaseTest extends SysuiTestCase {
                 mContext,
                 mCallbackHandler,
                 mCarrierConfigTracker,
+                mFeatureFlags,
                 mMobileMappingsProxy
         );
 
@@ -257,6 +264,7 @@ public class NetworkControllerBaseTest extends SysuiTestCase {
                 mWifiStatusTrackerFactory,
                 mMobileFactory,
                 mMainHandler,
+                mFeatureFlags,
                 mock(DumpManager.class),
                 mock(LogBuffer.class)
         );
@@ -273,6 +281,10 @@ public class NetworkControllerBaseTest extends SysuiTestCase {
         if (mMockingSession != null) {
             mMockingSession.finishMocking();
         }
+    }
+
+    public void setImsType(int imsType) {
+        mMobileSignalController.setImsType(imsType);
     }
 
     protected void setupNetworkController() {
