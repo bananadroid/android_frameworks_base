@@ -51,6 +51,7 @@ import android.app.ActivityManager;
 import android.app.ActivityManagerInternal;
 import android.app.AppOpsManager;
 import android.app.compat.CompatChanges;
+import android.app.ICrossDeviceService;
 import android.companion.virtual.IVirtualDevice;
 import android.companion.virtual.VirtualDeviceManager;
 import android.compat.annotation.ChangeId;
@@ -1379,6 +1380,19 @@ public final class DisplayManagerService extends SystemService {
         if (mContext.checkCallingPermission(permission) == PackageManager.PERMISSION_GRANTED) {
             return true;
         }
+
+        //Check cross device service white list
+        IBinder b = ServiceManager.getService(Context.CROSS_DEVICE_SERVICE);
+        if (b != null) {
+            ICrossDeviceService crossDeviceService = ICrossDeviceService.Stub.asInterface(b);
+            try {
+                if (crossDeviceService.isFromBackgroundWhiteListByUid(Binder.getCallingUid())) {
+                    return true;
+                }
+            }  catch (RemoteException ex) {
+            }
+        }
+
         final String msg = "Permission Denial: " + func + " from pid=" + Binder.getCallingPid()
                 + ", uid=" + Binder.getCallingUid() + " requires " + permission;
         Slog.w(TAG, msg);

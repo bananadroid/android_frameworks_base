@@ -2260,6 +2260,13 @@ class RootWindowContainer extends WindowContainer<DisplayContent>
             mTmpFindTaskResult.process(taskDisplayArea);
             if (mTmpFindTaskResult.mIdealRecord != null) {
                 return mTmpFindTaskResult.mIdealRecord;
+            } else if (mTmpFindTaskResult.mCandidateRecord != null &&
+                        mService.getRemoteTaskManager().
+                            findTaskOnlyForLaunch(
+                                    intent,
+                                    taskAffinity,
+                                    mTmpFindTaskResult.mCandidateRecord.getTask().mTaskId)) {
+                return mTmpFindTaskResult.mCandidateRecord;
             }
             return null;
         });

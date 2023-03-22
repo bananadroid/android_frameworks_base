@@ -21525,6 +21525,10 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
      * @see #onMovedToDisplay(int, Configuration)
      */
     void dispatchMovedToDisplay(Display display, Configuration config) {
+        // Device Integration: Fix bug that Youtube cannot move from MD2VD/VD2MD.
+        if (mAttachInfo == null) {
+            return;
+        }
         mAttachInfo.mDisplay = display;
         mAttachInfo.mDisplayState = display.getState();
         onMovedToDisplay(display.getDisplayId(), config);

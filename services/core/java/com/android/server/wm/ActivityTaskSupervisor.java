@@ -1695,6 +1695,13 @@ public class ActivityTaskSupervisor implements RecentTasks.Callbacks {
                 mService.notifyTaskPersisterLocked(null, true);
             }
             checkActivitySecurityForTaskClear(callingUid, task, callerActivityClassName);
+
+            // Device Integration: Intercept task remove event and notify remote task handler manager.
+            // If current task to be removed is hold and managed by RemoteTaskManager
+            // remove event should be sent and notify correspond remote task instance handler.
+            // If current removed task is handled by remote task manger, need to notify
+            // correspond handler that the task already been closed.
+            mService.getRemoteTaskManager().handleRemoveTask(task);
         } finally {
             task.mInRemoveTask = false;
         }
@@ -2930,6 +2937,10 @@ public class ActivityTaskSupervisor implements RecentTasks.Callbacks {
                                     // Recents always has a new launching state (not combinable).
                                     null /* caller */, isCallerRecents ? INVALID_UID : callingUid);
                     try {
+                        // Device Integration: Once detect this task already shows in VD,and user click this app
+                        // again from Recent task list, we need to execute interception flow in
+                        // RemoteTaskManager.
+                        mService.getRemoteTaskManager().interceptFromRecents(task, targetActivity.intent);
                         mService.moveTaskToFrontLocked(null /* appThread */,
                                 null /* callingPackage */, task.mTaskId, 0, options);
                         // Apply options to prevent pendingOptions be taken when scheduling

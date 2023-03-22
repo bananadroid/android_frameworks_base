@@ -16,6 +16,7 @@
 
 package com.android.server.wm;
 
+import static android.app.RemoteTaskConstants.FLAG_TASK_LAUNCH_SCENARIO_COMMON;
 import static android.app.ActivityManager.isStartResultSuccessful;
 import static android.app.ActivityTaskManager.INVALID_TASK_ID;
 import static android.app.ActivityTaskManager.INVALID_WINDOWING_MODE;
@@ -366,6 +367,9 @@ class Task extends TaskFragment {
      * user wants to return to it. */
     private WindowProcessController mRootProcess;
 
+    /** The process id that hosted the root activity of this task for remote task check. 0 if none*/
+    private int mRemoteTaskPid;
+
     /** Takes on same value as first root activity */
     boolean isPersistable = false;
     int maxRecents;
@@ -403,6 +407,8 @@ class Task extends TaskFragment {
     int mCallingUid;
     String mCallingPackage;
     String mCallingFeatureId;
+
+    int mLaunchScenario;
 
     private static final Rect sTmpBounds = new Rect();
 
@@ -509,6 +515,9 @@ class Task extends TaskFragment {
      * possible.
      */
     boolean mReparentLeafTaskIfRelaunch;
+
+    // Device Integration: Allow task reparent to a new display or not. Remote Task is not allow to reparent.
+    boolean mAllowReparent = true;
 
     private final AnimatingActivityRegistry mAnimatingActivityRegistry =
             new AnimatingActivityRegistry();
@@ -668,6 +677,7 @@ class Task extends TaskFragment {
         mCallingUid = callingUid;
         mCallingPackage = callingPackage;
         mCallingFeatureId = callingFeatureId;
+        mLaunchScenario = FLAG_TASK_LAUNCH_SCENARIO_COMMON;
         mResizeMode = resizeMode;
         if (info != null) {
             setIntent(_intent, info);
@@ -2332,6 +2342,11 @@ class Task extends TaskFragment {
             mRootProcess = proc;
             mRootProcess.addRecentTask(this);
         }
+        mRemoteTaskPid = proc.getPid();
+    }
+
+    int getRemoteTaskPid() {
+        return mRemoteTaskPid;
     }
 
     void clearRootProcess() {
@@ -2710,6 +2725,14 @@ class Task extends TaskFragment {
         // Display won't rotate for the orientation request if the Task/TaskDisplayArea
         // can't specify orientation.
         return canSpecifyOrientation() && getDisplayArea().canSpecifyOrientation(orientation);
+    }
+
+    @Override
+    void reparent(WindowContainer newParent, int position) {
+        if (!mAllowReparent) {
+            return;
+        }
+        super.reparent(newParent, position);
     }
 
     @Override

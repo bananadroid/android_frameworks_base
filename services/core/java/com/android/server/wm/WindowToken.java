@@ -18,6 +18,7 @@ package com.android.server.wm;
 
 import static android.app.WindowConfiguration.WINDOWING_MODE_PINNED;
 import static android.view.WindowManager.LayoutParams.TYPE_NAVIGATION_BAR;
+import static android.view.WindowManager.LayoutParams.TYPE_SYSTEM_BLACKSCREEN_OVERLAY;
 
 import static com.android.internal.protolog.ProtoLogGroup.WM_DEBUG_ADD_REMOVE;
 import static com.android.internal.protolog.ProtoLogGroup.WM_DEBUG_APP_TRANSITIONS;
@@ -388,7 +389,8 @@ class WindowToken extends WindowContainer<WindowState> {
     @Override
     SurfaceControl.Builder makeSurface() {
         final SurfaceControl.Builder builder = super.makeSurface();
-        if (mRoundedCornerOverlay) {
+        // Device Integration: This is to make phone screen not show our black screen
+        if (mRoundedCornerOverlay || windowType == TYPE_SYSTEM_BLACKSCREEN_OVERLAY) {
             builder.setParent(null);
         }
         return builder;

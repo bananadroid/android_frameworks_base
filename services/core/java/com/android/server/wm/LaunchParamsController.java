@@ -122,6 +122,16 @@ class LaunchParamsController {
             // should always use that.
             result.mPreferredTaskDisplayArea = mService.mRootWindowContainer
                     .getDisplayContent(mService.mVr2dDisplayId).getDefaultTaskDisplayArea();
+        } else if (mService.getRemoteTaskManager().isDisplaySwitchDetected(options)) {
+            // Device Integration: If switch display action is detected, we should reassign prefer
+            // TaskDisplayArea so that RootWindowContainer will help reparent task to target display.
+            TaskDisplayArea area = mService.getRemoteTaskManager().
+                                    getFinalPreferredTaskDisplayArea(request.caller, request.callingPid,
+                                            request.callingUid, request.realCallingPid, request.realCallingUid,
+                                            source, options);
+            if (area != null) {
+                result.mPreferredTaskDisplayArea = area;
+            }
         }
     }
 

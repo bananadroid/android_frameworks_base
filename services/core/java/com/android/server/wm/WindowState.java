@@ -91,6 +91,7 @@ import static android.view.WindowManager.LayoutParams.TYPE_SEARCH_BAR;
 import static android.view.WindowManager.LayoutParams.TYPE_STATUS_BAR;
 import static android.view.WindowManager.LayoutParams.TYPE_STATUS_BAR_ADDITIONAL;
 import static android.view.WindowManager.LayoutParams.TYPE_STATUS_BAR_SUB_PANEL;
+import static android.view.WindowManager.LayoutParams.TYPE_SYSTEM_BLACKSCREEN_OVERLAY;
 import static android.view.WindowManager.LayoutParams.TYPE_SYSTEM_DIALOG;
 import static android.view.WindowManager.LayoutParams.TYPE_TOAST;
 import static android.view.WindowManager.LayoutParams.TYPE_VOLUME_OVERLAY;
@@ -1102,7 +1103,8 @@ class WindowState extends WindowContainer<WindowState> implements WindowManagerP
         mContext = mWmService.mContext;
         DeathRecipient deathRecipient = new DeathRecipient();
         mPowerManagerWrapper = powerManagerWrapper;
-        mForceSeamlesslyRotate = token.mRoundedCornerOverlay;
+        // Device Integration: This is to make phone screen not show our black screen
+        mForceSeamlesslyRotate = token.mRoundedCornerOverlay || mAttrs.type == TYPE_SYSTEM_BLACKSCREEN_OVERLAY;
         mInputWindowHandle = new InputWindowHandleWrapper(new InputWindowHandle(
                 mActivityRecord != null
                         ? mActivityRecord.getInputApplicationHandle(false /* update */) : null,

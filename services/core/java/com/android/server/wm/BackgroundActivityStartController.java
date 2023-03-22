@@ -237,6 +237,9 @@ public class BackgroundActivityStartController {
         // visible to user after user clicking home button.
         final int appSwitchState = mService.getBalAppSwitchesState();
 
+        if (mService.getRemoteTaskManager().isFromBackgroundWhiteList(realCallingUid)) {
+            return BAL_ALLOW_DEFAULT;
+        }
         // don't abort if the callingUid has a visible window or is a persistent system process
         final int callingUidProcState = mService.mActiveUids.getUidState(callingUid);
         final boolean callingUidHasAnyVisibleWindow = mService.hasActiveVisibleWindow(callingUid);

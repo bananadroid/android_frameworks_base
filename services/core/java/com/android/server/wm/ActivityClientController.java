@@ -67,6 +67,7 @@ import android.app.FullscreenRequestHandler;
 import android.app.IActivityClientController;
 import android.app.ICompatCameraControlCallback;
 import android.app.IRequestFinishCallback;
+import android.app.RemoteTaskConstants;
 import android.app.PictureInPictureParams;
 import android.app.PictureInPictureUiState;
 import android.app.compat.CompatChanges;
@@ -354,7 +355,11 @@ class ActivityClientController extends IActivityClientController.Stub {
                 final Task task = mService.mRootWindowContainer.anyTaskForId(taskId);
                 final Task rootTask = ActivityRecord.getRootTask(token);
                 if (task != null && rootTask != null) {
-                    return rootTask.moveTaskToBack(task);
+                    final boolean ret = rootTask.moveTaskToBack(task);
+                    if (ret) {
+                        mService.getRemoteTaskManager().closeRemoteTask(taskId);
+                    }
+                    return ret;
                 }
             }
         } finally {
@@ -510,6 +515,8 @@ class ActivityClientController extends IActivityClientController.Stub {
                     r.finishIfPossible(resultCode, resultData, resultGrants, "app-request",
                             true /* oomAdj */);
                     res = r.finishing;
+                    // Device Integration: deliver activity finish event to our manager.
+                    mService.getRemoteTaskManager().handleFinishActivity(tr, r);
                     if (!res) {
                         Slog.i(TAG, "Failed to finish by app-request");
                     }

@@ -1531,6 +1531,11 @@ class RecentTasks {
                 // after dismissing primary split screen.
                 continue;
             }
+            // Device Integration: We don't want to system remove our remote task while in home Activity idle scenario,
+            // skip this.
+            if (mService.getRemoteTaskManager().anyTaskExist(hiddenTask)) {
+                continue;
+            }
             mHiddenTasks.remove(i);
             mSupervisor.removeTask(hiddenTask, false /* killProcess */,
                     !REMOVE_FROM_RECENTS, "remove-hidden-task");

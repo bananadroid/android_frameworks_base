@@ -6760,6 +6760,9 @@ class DisplayContent extends RootDisplayArea implements WindowManagerPolicy.Disp
      * example, the user has granted consent to token re-use, so we can now start mirroring).
      */
     void updateRecording() {
+        if (getContentRecorder().updateMirroringIfSurfaceSizeChanged()) {
+            return;
+        }
         if (mContentRecorder == null || !mContentRecorder.isContentRecordingSessionSet()) {
             if (!setDisplayMirroring()) {
                 return;

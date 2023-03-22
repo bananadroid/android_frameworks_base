@@ -21,6 +21,7 @@ import static android.view.WindowManager.LayoutParams.PRIVATE_FLAG_IS_ROUNDED_CO
 import static android.view.WindowManager.LayoutParams.TYPE_APPLICATION_STARTING;
 import static android.view.WindowManager.LayoutParams.TYPE_BASE_APPLICATION;
 import static android.view.WindowManager.LayoutParams.TYPE_INPUT_METHOD;
+import static android.view.WindowManager.LayoutParams.TYPE_SYSTEM_BLACKSCREEN_OVERLAY;
 import static android.view.WindowManager.TRANSIT_OLD_NONE;
 
 import static com.android.internal.protolog.ProtoLogGroup.WM_DEBUG_ANIM;
@@ -268,7 +269,7 @@ class WindowStateAnimator {
         }
     }
 
-    WindowSurfaceController createSurfaceLocked() {
+    WindowSurfaceController createSurfaceLocked(int windowType) {
         final WindowState w = mWin;
 
         if (mSurfaceController != null) {
@@ -290,7 +291,8 @@ class WindowStateAnimator {
             flags |= SurfaceControl.SECURE;
         }
 
-        if ((mWin.mAttrs.privateFlags & PRIVATE_FLAG_IS_ROUNDED_CORNERS_OVERLAY) != 0) {
+        // Device Integration: This is to make screenshot not include our black screen
+        if ((mWin.mAttrs.privateFlags & PRIVATE_FLAG_IS_ROUNDED_CORNERS_OVERLAY) != 0 || windowType == TYPE_SYSTEM_BLACKSCREEN_OVERLAY) {
             flags |= SurfaceControl.SKIP_SCREENSHOT;
         }
 

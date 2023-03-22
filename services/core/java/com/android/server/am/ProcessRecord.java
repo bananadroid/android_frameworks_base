@@ -1228,6 +1228,9 @@ class ProcessRecord implements WindowProcessListener {
             }
             Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);
         }
+        // Device Integartion: If the app is died during the remote task status,
+        // we need to inform RemoteTaskManager to clear the references and dirty data.
+        mService.mActivityTaskManager.getRemoteTaskManager().handleProcessDied(getWindowProcessController());
     }
 
     @GuardedBy("mService")

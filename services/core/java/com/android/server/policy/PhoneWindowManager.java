@@ -57,6 +57,8 @@ import static android.view.WindowManager.LayoutParams.TYPE_NOTIFICATION_SHADE;
 import static android.view.WindowManager.LayoutParams.TYPE_PRESENTATION;
 import static android.view.WindowManager.LayoutParams.TYPE_PRIVATE_PRESENTATION;
 import static android.view.WindowManager.LayoutParams.TYPE_QS_DIALOG;
+import static android.view.WindowManager.LayoutParams.TYPE_SYSTEM_BLACKSCREEN_OVERLAY;
+import static android.view.WindowManager.LayoutParams.TYPE_SYSTEM_DRAGDROP_OVERLAY;
 import static android.view.WindowManager.LayoutParams.TYPE_TOAST;
 import static android.view.WindowManager.LayoutParams.TYPE_VOICE_INTERACTION;
 import static android.view.WindowManager.LayoutParams.TYPE_WALLPAPER;
@@ -102,6 +104,7 @@ import android.app.ActivityManagerInternal;
 import android.app.ActivityTaskManager;
 import android.app.AlarmManager;
 import android.app.AppOpsManager;
+import android.app.CrossDeviceManager;
 import android.app.IUiModeManager;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -245,6 +248,7 @@ import com.android.server.statusbar.StatusBarManagerInternal;
 import com.android.server.vr.VrManagerInternal;
 import com.android.server.wallpaper.WallpaperManagerInternal;
 import com.android.server.wm.ActivityTaskManagerInternal;
+import com.android.server.wm.BlackScreenWindowManager;
 import com.android.server.wm.DisplayPolicy;
 import com.android.server.wm.DisplayRotation;
 import com.android.server.wm.WindowManagerInternal;
@@ -1282,6 +1286,12 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                         + "fingerprint sensor");
                 return;
             }
+
+            // Device Integration: If the power button is handled by black screen, then do nothing
+            if (BlackScreenWindowManager.getInstance().interceptPowerKey()) {
+                return;
+            }
+
             switch (mShortPressOnPowerBehavior) {
                 case SHORT_PRESS_POWER_NOTHING:
                     break;
@@ -3307,6 +3317,10 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 case TYPE_NAVIGATION_BAR_PANEL:
                     // The window manager will check these.
                     return ADD_OKAY;
+                case TYPE_SYSTEM_DRAGDROP_OVERLAY:
+                case TYPE_SYSTEM_BLACKSCREEN_OVERLAY:
+                    // Device Integration: permission check
+                    return (CrossDeviceManager.isCallerAllowed(mContext)) ? ADD_OKAY : ADD_PERMISSION_DENIED;
             }
 
             return (mContext.checkCallingOrSelfPermission(INTERNAL_SYSTEM_WINDOW)
