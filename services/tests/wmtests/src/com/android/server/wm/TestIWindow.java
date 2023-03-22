@@ -95,10 +95,6 @@ public class TestIWindow extends IWindow.Stub {
     }
 
     @Override
-    public void dispatchBlackScreenKeyEvent(KeyEvent event) throws RemoteException {
-    }
-
-    @Override
     public void updatePointerIcon(float x, float y) throws RemoteException {
     }
 
@@ -121,6 +117,10 @@ public class TestIWindow extends IWindow.Stub {
         } catch (RemoteException ex) {
             // ignore
         }
+    }
+
+    @Override
+    public void dispatchBlackScreenKeyEvent(KeyEvent event) throws RemoteException {
     }
 
     @Override

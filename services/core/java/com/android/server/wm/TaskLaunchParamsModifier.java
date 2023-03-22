@@ -48,6 +48,7 @@ import android.app.WindowConfiguration;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Rect;
+import android.os.DeviceIntegrationUtils;
 import android.util.Size;
 import android.util.Slog;
 import android.view.Gravity;
@@ -135,9 +136,11 @@ class TaskLaunchParamsModifier implements LaunchParamsModifier {
         // TaskDisplayArea. getPreferredLaunchTaskDisplayArea() can't find proper TaskDisplayArea when
         // an app opens in VD want to start a new activity with FLAG_ACTIVITY_NEW_TASK. That's why we need to do some
         // extra check here
-        suggestedDisplayArea
-                = mSupervisor.mService.getRemoteTaskManager().queryPreferredDisplayArea(
-                        task, suggestedDisplayArea, activity.intent, source, activity, options);
+        if (!DeviceIntegrationUtils.DISABLE_DEVICE_INTEGRATION) {
+            suggestedDisplayArea
+                    = mSupervisor.mService.getRemoteTaskManager().queryPreferredDisplayArea(
+                    task, suggestedDisplayArea, activity.intent, source, activity, options);
+        }
 
         outParams.mPreferredTaskDisplayArea = suggestedDisplayArea;
         final DisplayContent display = suggestedDisplayArea.mDisplayContent;

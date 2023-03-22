@@ -146,6 +146,7 @@ import android.media.session.MediaSessionLegacyHelper;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.DeviceIdleManager;
+import android.os.DeviceIntegrationUtils;
 import android.os.FactoryTest;
 import android.os.Handler;
 import android.os.IBinder;
@@ -1288,7 +1289,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             }
 
             // Device Integration: If the power button is handled by black screen, then do nothing
-            if (BlackScreenWindowManager.getInstance().interceptPowerKey()) {
+            if (!DeviceIntegrationUtils.DISABLE_DEVICE_INTEGRATION
+                && BlackScreenWindowManager.getInstance().interceptPowerKey()) {
                 return;
             }
 
@@ -3319,8 +3321,10 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     return ADD_OKAY;
                 case TYPE_SYSTEM_DRAGDROP_OVERLAY:
                 case TYPE_SYSTEM_BLACKSCREEN_OVERLAY:
-                    // Device Integration: permission check
-                    return (CrossDeviceManager.isCallerAllowed(mContext)) ? ADD_OKAY : ADD_PERMISSION_DENIED;
+                    if (!DeviceIntegrationUtils.DISABLE_DEVICE_INTEGRATION) {
+                        // Device Integration: permission check
+                        return (CrossDeviceManager.isCallerAllowed(mContext)) ? ADD_OKAY : ADD_PERMISSION_DENIED;
+                    }
             }
 
             return (mContext.checkCallingOrSelfPermission(INTERNAL_SYSTEM_WINDOW)

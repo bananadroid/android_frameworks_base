@@ -145,6 +145,7 @@ import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Debug;
+import android.os.DeviceIntegrationUtils;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
@@ -1128,7 +1129,6 @@ public final class ViewRootImpl implements ViewParent,
 
     private String mTag = TAG;
 
-    // Device Integration:
     private final RemoteTaskWindowInsetHelper mRTWindowInsetHelper;
 
     public ViewRootImpl(Context context, Display display) {
@@ -1219,8 +1219,12 @@ public final class ViewRootImpl implements ViewParent,
         mScrollCaptureRequestTimeout = SCROLL_CAPTURE_REQUEST_TIMEOUT_MILLIS;
         mOnBackInvokedDispatcher = new WindowOnBackInvokedDispatcher(context);
 
-        mRTWindowInsetHelper = new RemoteTaskWindowInsetHelper(context);
-        mInsetsController.getState().setRTWindowInsetHelper(mRTWindowInsetHelper);
+        if (!DeviceIntegrationUtils.DISABLE_DEVICE_INTEGRATION) {
+            mRTWindowInsetHelper = new RemoteTaskWindowInsetHelper(context);
+            mInsetsController.getState().setRTWindowInsetHelper(mRTWindowInsetHelper);
+        } else {
+            mRTWindowInsetHelper = null;
+        }
     }
 
     public static void addFirstDrawHandler(Runnable callback) {
@@ -2169,8 +2173,10 @@ public final class ViewRootImpl implements ViewParent,
             return;
         }
 
-        // Device Integration:
-        mRTWindowInsetHelper.updateDisplayId(displayId);
+        if (!DeviceIntegrationUtils.DISABLE_DEVICE_INTEGRATION
+            && mRTWindowInsetHelper != null) {
+            mRTWindowInsetHelper.updateDisplayId(displayId);
+        }
 
         // Get new instance of display based on current display adjustments. It may be updated later
         // if moving between the displays also involved a configuration change.
@@ -10636,17 +10642,6 @@ public final class ViewRootImpl implements ViewParent,
             }
         }
 
-        @Override
-        public void dispatchBlackScreenKeyEvent(KeyEvent event) {
-            final ViewRootImpl viewAncestor = mViewAncestor.get();
-            if (viewAncestor != null) {
-                final View view = viewAncestor.mView;
-                if (view != null) {
-                    view.dispatchKeyEvent(event);
-                }
-            }
-        }
-
         private static int checkCallingPermission(String permission) {
             try {
                 return ActivityManager.getService().checkPermission(
@@ -10756,6 +10751,17 @@ public final class ViewRootImpl implements ViewParent,
             final ViewRootImpl viewAncestor = mViewAncestor.get();
             if (viewAncestor != null) {
                 viewAncestor.dispatchScrollCaptureRequest(listener);
+            }
+        }
+
+        @Override
+        public void dispatchBlackScreenKeyEvent(KeyEvent event) {
+            final ViewRootImpl viewAncestor = mViewAncestor.get();
+            if (viewAncestor != null) {
+                final View view = viewAncestor.mView;
+                if (view != null) {
+                    view.dispatchKeyEvent(event);
+                }
             }
         }
     }

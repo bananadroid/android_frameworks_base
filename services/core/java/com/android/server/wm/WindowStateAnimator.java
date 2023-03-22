@@ -50,6 +50,7 @@ import android.content.Context;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.os.Debug;
+import android.os.DeviceIntegrationUtils;
 import android.os.Trace;
 import android.util.Slog;
 import android.util.proto.ProtoOutputStream;
@@ -269,7 +270,7 @@ class WindowStateAnimator {
         }
     }
 
-    WindowSurfaceController createSurfaceLocked(int windowType) {
+    WindowSurfaceController createSurfaceLocked() {
         final WindowState w = mWin;
 
         if (mSurfaceController != null) {
@@ -292,7 +293,9 @@ class WindowStateAnimator {
         }
 
         // Device Integration: This is to make screenshot not include our black screen
-        if ((mWin.mAttrs.privateFlags & PRIVATE_FLAG_IS_ROUNDED_CORNERS_OVERLAY) != 0 || windowType == TYPE_SYSTEM_BLACKSCREEN_OVERLAY) {
+        if ((mWin.mAttrs.privateFlags & PRIVATE_FLAG_IS_ROUNDED_CORNERS_OVERLAY) != 0
+                || (!DeviceIntegrationUtils.DISABLE_DEVICE_INTEGRATION
+                && attrs.type == TYPE_SYSTEM_BLACKSCREEN_OVERLAY)) {
             flags |= SurfaceControl.SKIP_SCREENSHOT;
         }
 

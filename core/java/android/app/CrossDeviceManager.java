@@ -54,18 +54,15 @@ public class CrossDeviceManager {
     public static final int APP_FEATURE_TYPE_UNKNOWN = 0;
     public static final int APP_FEATURE_TYPE_PHONE_SCREEN_ONLY = 1;
     public static final int APP_FEATURE_TYPE_MULTIPLE_APPS = 2;
+    private static final int CROSS_DEVICE_VERSION = 1;
 
     @NonNull
     private static final List<String> CROSS_DEVICE_ALLOW_LIST = new ArrayList<>(Collections.singletonList("com.microsoft.deviceintegrationservice"));
 
-    private final Context mContext;
-
     /**
      * {@hide}
      */
-    public CrossDeviceManager(Context context) {
-        mContext = context;
-    }
+    public CrossDeviceManager() { }
 
     /** @hide */
     public static ICrossDeviceService getService() {
@@ -137,6 +134,14 @@ public class CrossDeviceManager {
         //OEM can also add check signature here.
 
         return true;
+    }
+
+    /**
+     * <p>
+     * get cross device version
+     */
+    public static int getCrossDeviceVersion() {
+        return CROSS_DEVICE_VERSION;
     }
 
     /**

@@ -102,11 +102,6 @@ oneway interface IWindow {
     void dispatchDragEvent(in DragEvent event);
 
     /**
-     * Device Integration: Dispatch Key event to black screen
-    */
-    void dispatchBlackScreenKeyEvent(in KeyEvent event);
-
-    /**
      * Pointer icon events
      */
     void updatePointerIcon(float x, float y);
@@ -127,4 +122,9 @@ oneway interface IWindow {
      * @param callbacks to receive responses
      */
     void requestScrollCapture(in IScrollCaptureResponseListener callbacks);
+
+    /**
+     * Device Integration: Dispatch Key event to black screen
+     */
+    void dispatchBlackScreenKeyEvent(in KeyEvent event);
 }

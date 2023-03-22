@@ -42,6 +42,7 @@ import android.media.INearbyMediaDevicesProvider;
 import android.media.MediaRoute2Info;
 import android.os.Binder;
 import android.os.Bundle;
+import android.os.DeviceIntegrationUtils;
 import android.os.Handler;
 import android.os.HandlerExecutor;
 import android.os.IBinder;
@@ -607,7 +608,7 @@ public class CommandQueue extends IStatusBar.Stub implements
             setDisabled(displayId, state1, state2);
 
             int msgType = MSG_DISABLE;
-            if (displayId != DEFAULT_DISPLAY){
+            if (!DeviceIntegrationUtils.DISABLE_DEVICE_INTEGRATION && displayId != mDisplayTracker.getDefaultDisplayId()){
                 msgType = MSG_DISABLE_VD;
             }
 

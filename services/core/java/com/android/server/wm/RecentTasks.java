@@ -61,6 +61,7 @@ import android.content.pm.ParceledListSlice;
 import android.content.pm.UserInfo;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.os.DeviceIntegrationUtils;
 import android.os.Environment;
 import android.os.IBinder;
 import android.os.RemoteException;
@@ -1533,7 +1534,8 @@ class RecentTasks {
             }
             // Device Integration: We don't want to system remove our remote task while in home Activity idle scenario,
             // skip this.
-            if (mService.getRemoteTaskManager().anyTaskExist(hiddenTask)) {
+            if (!DeviceIntegrationUtils.DISABLE_DEVICE_INTEGRATION
+                && mService.getRemoteTaskManager().anyTaskExist(hiddenTask)) {
                 continue;
             }
             mHiddenTasks.remove(i);

@@ -16,6 +16,7 @@
 
 package com.android.server.wm;
 
+import android.annotation.NonNull;
 import android.app.ActivityManager;
 import android.app.CrossDeviceManager;
 import android.app.ICrossDeviceService;
@@ -56,6 +57,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 public class CrossDeviceService extends ICrossDeviceService.Stub {
     private static final String TAG = CrossDeviceService.class.getSimpleName();
 
+    private final Object mClientDiedLock = new Object();
     private final Object mServiceLock = new Object();
     private final Set<String> mActivityBackgroundSet = new CopyOnWriteArraySet<>();
     private final Set<Integer> mPermissionGrantedSet = new CopyOnWriteArraySet<>();
@@ -67,18 +69,20 @@ public class CrossDeviceService extends ICrossDeviceService.Stub {
     private final IRemoteTaskInstanceBroker mRemoteTaskInstanceBroker;
     private OnClientDiedListener mClientDiedListener;
 
-    private final RemoteCallbackList<IRemoteTaskHandler> mRemoteHandlerList = new RemoteCallbackList<IRemoteTaskHandler>() {
-        @Override
-        public void onCallbackDied(IRemoteTaskHandler handler) {
-            super.onCallbackDied(handler);
-            RemoteTaskLogger.i(TAG, "onCallbackDied");
-            handleClientDied(handler);
-        }
-    };
+    private volatile IRemoteTaskHandler mRemoteHandler;
 
     interface OnClientDiedListener {
         void onClientDied();
     }
+
+    private IBinder.DeathRecipient mBinderDeathRecipient = new IBinder.DeathRecipient() {
+        @Override
+        public void binderDied() {
+            RemoteTaskLogger.i(TAG, "Remote Task Handler Died!");
+            mRemoteHandler = null;
+            handleClientDied();
+        }
+    };
 
     public CrossDeviceService(Context context, ActivityTaskManagerService service) {
         mContext = context;
@@ -88,22 +92,20 @@ public class CrossDeviceService extends ICrossDeviceService.Stub {
         mRemoteTaskInstanceBroker = new RemoteTaskInstanceBroker(context, service);
     }
 
-    public void setClientDiedListener(OnClientDiedListener clientDiedListener) {
+    public void setClientDiedListener(@NonNull OnClientDiedListener clientDiedListener) {
         //Make sure ClientDiedListener assignment is thread-safe, note that every place where
-        //use ClientDiedListener should wrap int mServiceLock
-        synchronized (mServiceLock) {
+        //use ClientDiedListener should wrap int mClientDiedLock
+        synchronized (mClientDiedLock) {
             mClientDiedListener = clientDiedListener;
         }
     }
 
     /**
      * Method for handling client die
-     *
-     * @param handler IRemoteTaskHandler
      */
-    private void handleClientDied(IRemoteTaskHandler handler) {
-        synchronized (mServiceLock) {
-            if (!isAnyClientAliveInService() && mClientDiedListener != null) {
+    private void handleClientDied() {
+        synchronized (mClientDiedLock) {
+            if (mClientDiedListener != null) {
                 mClientDiedListener.onClientDied();
             }
         }
@@ -114,7 +116,7 @@ public class CrossDeviceService extends ICrossDeviceService.Stub {
     }
 
     boolean isAnyClientAliveInService() {
-        return mRemoteHandlerList.getRegisteredCallbackCount() > 0;
+        return mRemoteHandler != null;
     }
 
     @Override
@@ -330,7 +332,12 @@ public class CrossDeviceService extends ICrossDeviceService.Stub {
     @Override
     public void registerRemoteTaskHandler(IRemoteTaskHandler handler) throws RemoteException {
         RemoteTaskLogger.i(TAG, "registerRemoteTaskHandler");
-        mRemoteHandlerList.register(handler);
+        synchronized (mServiceLock) {
+            mRemoteHandler = handler;
+            if (mRemoteHandler != null) {
+                mRemoteHandler.asBinder().linkToDeath(mBinderDeathRecipient, 0);
+            }
+        }
     }
 
     /**
@@ -342,8 +349,13 @@ public class CrossDeviceService extends ICrossDeviceService.Stub {
     @Override
     public void unRegisterRemoteTaskHandler(IRemoteTaskHandler handler) throws RemoteException {
         RemoteTaskLogger.i(TAG, "unRegisterRemoteTaskHandler");
-        mRemoteHandlerList.unregister(handler);
-        handleClientDied(handler);
+        synchronized (mServiceLock) {
+            if (mRemoteHandler != null) {
+                mRemoteHandler.asBinder().unlinkToDeath(mBinderDeathRecipient, 0);
+            }
+            mRemoteHandler = null;
+        }
+        handleClientDied();
     }
 
     /**
@@ -376,17 +388,13 @@ public class CrossDeviceService extends ICrossDeviceService.Stub {
     RemoteTaskParams verifyRemoteTask(SystemTaskContext taskContext) {
         RemoteTaskLogger.i(TAG, "verifyRemoteTask");
         RemoteTaskParams params = null;
-        synchronized (mServiceLock) {
+        IRemoteTaskHandler handler = mRemoteHandler;
+
+        if (handler != null) {
             try {
-                int count = mRemoteHandlerList.beginBroadcast();
-                if (count > 0) {
-                    IRemoteTaskHandler handler = mRemoteHandlerList.getBroadcastItem(0);
-                    params = handler.verifyRemoteTask(taskContext);
-                }
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            } finally {
-                mRemoteHandlerList.finishBroadcast();
+                params = handler.verifyRemoteTask(taskContext);
+            } catch (RemoteException re) {
+                re.printStackTrace();
             }
         }
 
@@ -404,17 +412,13 @@ public class CrossDeviceService extends ICrossDeviceService.Stub {
      */
     void activateRemoteTask(RemoteTaskInfo taskInfo) {
         RemoteTaskLogger.i(TAG, "activateRemoteTask");
-        synchronized (mServiceLock) {
+        IRemoteTaskHandler handler = mRemoteHandler;
+
+        if (handler != null) {
             try {
-                int count = mRemoteHandlerList.beginBroadcast();
-                for (int i = 0; i < count; i++) {
-                    IRemoteTaskHandler handler = mRemoteHandlerList.getBroadcastItem(i);
-                    handler.activateRemoteTask(taskInfo);
-                }
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            } finally {
-                mRemoteHandlerList.finishBroadcast();
+                handler.activateRemoteTask(taskInfo);
+            } catch (RemoteException re) {
+                re.printStackTrace();
             }
         }
     }
@@ -427,17 +431,13 @@ public class CrossDeviceService extends ICrossDeviceService.Stub {
     List getRemoteTaskInfoList() {
         RemoteTaskLogger.i(TAG, "getRemoteTaskInfoList");
         List taskList = null;
-        synchronized (mServiceLock) {
+        IRemoteTaskHandler handler = mRemoteHandler;
+
+        if (handler != null) {
             try {
-                int count = mRemoteHandlerList.beginBroadcast();
-                if (count > 0) {
-                    IRemoteTaskHandler handler = mRemoteHandlerList.getBroadcastItem(0);
-                    taskList = handler.getRemoteTaskInfoList();
-                }
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            } finally {
-                mRemoteHandlerList.finishBroadcast();
+                taskList = handler.getRemoteTaskInfoList();
+            } catch (RemoteException re) {
+                re.printStackTrace();
             }
         }
 
@@ -454,17 +454,13 @@ public class CrossDeviceService extends ICrossDeviceService.Stub {
      */
     void notifyRemoteTaskRemoved(int taskId) {
         RemoteTaskLogger.i(TAG, "notifyRemoteTaskRemoved=" + taskId);
-        synchronized (mServiceLock) {
+        IRemoteTaskHandler handler = mRemoteHandler;
+
+        if (handler != null) {
             try {
-                int count = mRemoteHandlerList.beginBroadcast();
-                for (int i = 0; i < count; i++) {
-                    IRemoteTaskHandler handler = mRemoteHandlerList.getBroadcastItem(i);
-                    handler.notifyRemoteTaskRemoved(taskId);
-                }
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            } finally {
-                mRemoteHandlerList.finishBroadcast();
+                handler.notifyRemoteTaskRemoved(taskId);
+            } catch (RemoteException re) {
+                re.printStackTrace();
             }
         }
     }
@@ -476,17 +472,13 @@ public class CrossDeviceService extends ICrossDeviceService.Stub {
      */
     void notifyRemoteTaskEmptyUUIDetected(Intent intent) {
         RemoteTaskLogger.i(TAG, "notifyRemoteTaskEmptyUUIDetected");
-        synchronized (mServiceLock) {
+        IRemoteTaskHandler handler = mRemoteHandler;
+
+        if (handler != null) {
             try {
-                int count = mRemoteHandlerList.beginBroadcast();
-                for (int i = 0; i < count; i++) {
-                    IRemoteTaskHandler handler = mRemoteHandlerList.getBroadcastItem(i);
-                    handler.notifyRemoteTaskEmptyUUIDetected(intent);
-                }
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            } finally {
-                mRemoteHandlerList.finishBroadcast();
+                handler.notifyRemoteTaskEmptyUUIDetected(intent);
+            } catch (RemoteException re) {
+                re.printStackTrace();
             }
         }
     }
@@ -498,17 +490,13 @@ public class CrossDeviceService extends ICrossDeviceService.Stub {
      */
     void notifyDisplaySwitched(int displayId) {
         RemoteTaskLogger.i(TAG, "notifyDisplaySwitched");
-        synchronized (mServiceLock) {
+        IRemoteTaskHandler handler = mRemoteHandler;
+
+        if (handler != null) {
             try {
-                int count = mRemoteHandlerList.beginBroadcast();
-                for (int i = 0; i < count; i++) {
-                    IRemoteTaskHandler handler = mRemoteHandlerList.getBroadcastItem(i);
-                    handler.notifyDisplaySwitched(displayId);
-                }
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            } finally {
-                mRemoteHandlerList.finishBroadcast();
+                handler.notifyDisplaySwitched(displayId);
+            } catch (RemoteException re) {
+                re.printStackTrace();
             }
         }
     }
@@ -521,17 +509,13 @@ public class CrossDeviceService extends ICrossDeviceService.Stub {
      */
     void notifyRemoteShowingSecuredContentChanged(int taskId, boolean isShowingSecuredContent) {
         RemoteTaskLogger.i(TAG, "notifyRemoteShowingSecuredContentChanged");
-        synchronized (mServiceLock) {
+        IRemoteTaskHandler handler = mRemoteHandler;
+
+        if (handler != null) {
             try {
-                int count = mRemoteHandlerList.beginBroadcast();
-                for (int i = 0; i < count; i++) {
-                    IRemoteTaskHandler handler = mRemoteHandlerList.getBroadcastItem(i);
-                    handler.notifyRemoteShowingSecuredContentChanged(taskId, isShowingSecuredContent);
-                }
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            } finally {
-                mRemoteHandlerList.finishBroadcast();
+                handler.notifyRemoteShowingSecuredContentChanged(taskId, isShowingSecuredContent);
+            } catch (RemoteException re) {
+                re.printStackTrace();
             }
         }
     }

@@ -651,7 +651,7 @@ public interface WindowManagerPolicy extends WindowManagerPolicyConstants {
     default int getMaxWindowLayer() {
         // Device Integration: please refer to findAreaForToken(WindowToken token) in DisplayAreaPolicyBuilder
         // Array length should be greater than index
-        return 39;
+        return 38;
     }
 
     /**

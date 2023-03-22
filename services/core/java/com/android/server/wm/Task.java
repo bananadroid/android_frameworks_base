@@ -156,6 +156,7 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Binder;
 import android.os.Debug;
+import android.os.DeviceIntegrationUtils;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
@@ -677,7 +678,9 @@ class Task extends TaskFragment {
         mCallingUid = callingUid;
         mCallingPackage = callingPackage;
         mCallingFeatureId = callingFeatureId;
-        mLaunchScenario = FLAG_TASK_LAUNCH_SCENARIO_COMMON;
+        if (!DeviceIntegrationUtils.DISABLE_DEVICE_INTEGRATION) {
+            mLaunchScenario = FLAG_TASK_LAUNCH_SCENARIO_COMMON;
+        }
         mResizeMode = resizeMode;
         if (info != null) {
             setIntent(_intent, info);
@@ -2342,7 +2345,9 @@ class Task extends TaskFragment {
             mRootProcess = proc;
             mRootProcess.addRecentTask(this);
         }
-        mRemoteTaskPid = proc.getPid();
+        if (!DeviceIntegrationUtils.DISABLE_DEVICE_INTEGRATION) {
+            mRemoteTaskPid = proc.getPid();
+        }
     }
 
     int getRemoteTaskPid() {
@@ -2729,7 +2734,8 @@ class Task extends TaskFragment {
 
     @Override
     void reparent(WindowContainer newParent, int position) {
-        if (!mAllowReparent) {
+        if (!DeviceIntegrationUtils.DISABLE_DEVICE_INTEGRATION
+            && !mAllowReparent) {
             return;
         }
         super.reparent(newParent, position);

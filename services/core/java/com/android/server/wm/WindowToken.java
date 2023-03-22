@@ -40,6 +40,7 @@ import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Debug;
+import android.os.DeviceIntegrationUtils;
 import android.os.IBinder;
 import android.util.proto.ProtoOutputStream;
 import android.view.DisplayInfo;
@@ -390,7 +391,9 @@ class WindowToken extends WindowContainer<WindowState> {
     SurfaceControl.Builder makeSurface() {
         final SurfaceControl.Builder builder = super.makeSurface();
         // Device Integration: This is to make phone screen not show our black screen
-        if (mRoundedCornerOverlay || windowType == TYPE_SYSTEM_BLACKSCREEN_OVERLAY) {
+        if (mRoundedCornerOverlay
+                || (!DeviceIntegrationUtils.DISABLE_DEVICE_INTEGRATION
+                    && windowType == TYPE_SYSTEM_BLACKSCREEN_OVERLAY)) {
             builder.setParent(null);
         }
         return builder;

@@ -388,10 +388,6 @@ public class SystemWindows {
         @Override
         public void dispatchDragEvent(DragEvent event) {}
 
-        /* Key event */
-        @Override
-        public void dispatchBlackScreenKeyEvent(KeyEvent event) {}
-
         @Override
         public void updatePointerIcon(float x, float y) {}
 
@@ -413,5 +409,9 @@ public class SystemWindows {
                 // ignore
             }
         }
+
+        /* Key event */
+        @Override
+        public void dispatchBlackScreenKeyEvent(KeyEvent event) {}
     }
 }

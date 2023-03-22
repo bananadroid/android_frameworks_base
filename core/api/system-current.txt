@@ -10417,6 +10417,10 @@ package android.os {
     method @RequiresPermission(android.Manifest.permission.DEVICE_POWER) public void endIdle(@NonNull String);
   }
 
+  public class DeviceIntegrationUtils {
+    field public static final boolean DISABLE_DEVICE_INTEGRATION = false;
+  }
+
   public class Environment {
     method @NonNull public static java.io.File getDataCePackageDirectoryForUser(@NonNull java.util.UUID, @NonNull android.os.UserHandle, @NonNull String);
     method @NonNull public static java.io.File getDataDePackageDirectoryForUser(@NonNull java.util.UUID, @NonNull android.os.UserHandle, @NonNull String);

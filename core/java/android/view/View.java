@@ -96,6 +96,7 @@ import android.hardware.input.InputManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.DeviceIntegrationUtils;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -21526,7 +21527,7 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
      */
     void dispatchMovedToDisplay(Display display, Configuration config) {
         // Device Integration: Fix bug that Youtube cannot move from MD2VD/VD2MD.
-        if (mAttachInfo == null) {
+        if (!DeviceIntegrationUtils.DISABLE_DEVICE_INTEGRATION && mAttachInfo == null) {
             return;
         }
         mAttachInfo.mDisplay = display;

@@ -121,6 +121,7 @@ import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Debug;
+import android.os.DeviceIntegrationUtils;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
@@ -1701,7 +1702,9 @@ public class ActivityTaskSupervisor implements RecentTasks.Callbacks {
             // remove event should be sent and notify correspond remote task instance handler.
             // If current removed task is handled by remote task manger, need to notify
             // correspond handler that the task already been closed.
-            mService.getRemoteTaskManager().handleRemoveTask(task);
+            if (!DeviceIntegrationUtils.DISABLE_DEVICE_INTEGRATION) {
+                mService.getRemoteTaskManager().handleRemoveTask(task);
+            }
         } finally {
             task.mInRemoveTask = false;
         }
@@ -2940,7 +2943,9 @@ public class ActivityTaskSupervisor implements RecentTasks.Callbacks {
                         // Device Integration: Once detect this task already shows in VD,and user click this app
                         // again from Recent task list, we need to execute interception flow in
                         // RemoteTaskManager.
-                        mService.getRemoteTaskManager().interceptFromRecents(task, targetActivity.intent);
+                        if (!DeviceIntegrationUtils.DISABLE_DEVICE_INTEGRATION) {
+                            mService.getRemoteTaskManager().interceptFromRecents(task, targetActivity.intent);
+                        }
                         mService.moveTaskToFrontLocked(null /* appThread */,
                                 null /* callingPackage */, task.mTaskId, 0, options);
                         // Apply options to prevent pendingOptions be taken when scheduling

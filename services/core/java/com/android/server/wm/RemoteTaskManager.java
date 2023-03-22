@@ -29,6 +29,7 @@ import android.app.RemoteTaskConstants;
 import android.app.WindowConfiguration;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.os.DeviceIntegrationUtils;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.RemoteException;
@@ -73,7 +74,7 @@ public class RemoteTaskManager {
 
     RemoteTaskManager(ActivityTaskManagerService service) {
         mActivityTaskManagerService = service;
-        mDeviceIntegrationDisabled = SystemProperties.getBoolean("persist.deviceintegration.disabled", false);
+        mDeviceIntegrationDisabled = DeviceIntegrationUtils.DISABLE_DEVICE_INTEGRATION;
         HandlerThread handlerThread = new HandlerThread(THREAD_NAME);
         handlerThread.start();
         mDisplayQualifierList = new ArrayList<>();

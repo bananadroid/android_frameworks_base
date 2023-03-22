@@ -16,6 +16,7 @@
 
 package com.android.server.wm;
 
+import android.os.DeviceIntegrationUtils;
 import android.os.RemoteException;
 import android.os.SystemProperties;
 import android.util.Log;
@@ -36,7 +37,7 @@ public class BlackScreenWindowManager {
     private WindowState mBlackScreenWindow;
 
     BlackScreenWindowManager() {
-        mDeviceIntegrationDisabled = SystemProperties.getBoolean("persist.deviceintegration.disabled", false);
+        mDeviceIntegrationDisabled = DeviceIntegrationUtils.DISABLE_DEVICE_INTEGRATION;
     }
 
     public static BlackScreenWindowManager getInstance() {

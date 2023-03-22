@@ -83,6 +83,7 @@ import android.content.pm.PackageManagerInternal;
 import android.content.res.Configuration;
 import android.os.Binder;
 import android.os.Bundle;
+import android.os.DeviceIntegrationUtils;
 import android.os.IBinder;
 import android.os.IRemoteCallback;
 import android.os.Parcel;
@@ -355,11 +356,15 @@ class ActivityClientController extends IActivityClientController.Stub {
                 final Task task = mService.mRootWindowContainer.anyTaskForId(taskId);
                 final Task rootTask = ActivityRecord.getRootTask(token);
                 if (task != null && rootTask != null) {
-                    final boolean ret = rootTask.moveTaskToBack(task);
-                    if (ret) {
-                        mService.getRemoteTaskManager().closeRemoteTask(taskId);
+                    if (!DeviceIntegrationUtils.DISABLE_DEVICE_INTEGRATION) {
+                        final boolean ret = rootTask.moveTaskToBack(task);
+                        if (ret) {
+                            mService.getRemoteTaskManager().closeRemoteTask(taskId);
+                        }
+                        return ret;
+                    } else {
+                        return rootTask.moveTaskToBack(task);
                     }
-                    return ret;
                 }
             }
         } finally {
@@ -515,8 +520,10 @@ class ActivityClientController extends IActivityClientController.Stub {
                     r.finishIfPossible(resultCode, resultData, resultGrants, "app-request",
                             true /* oomAdj */);
                     res = r.finishing;
-                    // Device Integration: deliver activity finish event to our manager.
-                    mService.getRemoteTaskManager().handleFinishActivity(tr, r);
+                    if (!DeviceIntegrationUtils.DISABLE_DEVICE_INTEGRATION) {
+                        // Device Integration: deliver activity finish event to our manager.
+                        mService.getRemoteTaskManager().handleFinishActivity(tr, r);
+                    }
                     if (!res) {
                         Slog.i(TAG, "Failed to finish by app-request");
                     }

@@ -43,6 +43,7 @@ import android.graphics.Bitmap.Config;
 import android.graphics.Rect;
 import android.hardware.HardwareBuffer;
 import android.os.Bundle;
+import android.os.DeviceIntegrationUtils;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.IRemoteCallback;
@@ -1343,10 +1344,12 @@ public class ActivityOptions extends ComponentOptions {
                 KEY_PENDING_INTENT_CREATOR_BACKGROUND_ACTIVITY_START_MODE,
                 MODE_BACKGROUND_ACTIVITY_START_SYSTEM_DEFINED);
         mDisableStartingWindow = opts.getBoolean(KEY_DISABLE_STARTING_WINDOW);
-        mRemoteTaskFlag = opts.getInt(RemoteTaskConstants.KEY_REMOTE_TASK_LAUNCH_OPTION, RemoteTaskConstants.REMOTE_TASK_FLAG_DEFAULT);
-        mRemoteTaskUUID = opts.getString(RemoteTaskConstants.KEY_REMOTE_TASK_UUID, null);
-        mRemoteTaskSecurityToken = opts.getString(RemoteTaskConstants.KEY_REMOTE_TASK_SECURITY_TOKEN, null);
-        mRemoteTaskLaunchScenario = RemoteTaskConstants.FLAG_TASK_LAUNCH_SCENARIO_COMMON;
+        if (!DeviceIntegrationUtils.DISABLE_DEVICE_INTEGRATION) {
+            mRemoteTaskFlag = opts.getInt(RemoteTaskConstants.KEY_REMOTE_TASK_LAUNCH_OPTION, RemoteTaskConstants.REMOTE_TASK_FLAG_DEFAULT);
+            mRemoteTaskUUID = opts.getString(RemoteTaskConstants.KEY_REMOTE_TASK_UUID, null);
+            mRemoteTaskSecurityToken = opts.getString(RemoteTaskConstants.KEY_REMOTE_TASK_SECURITY_TOKEN, null);
+            mRemoteTaskLaunchScenario = RemoteTaskConstants.FLAG_TASK_LAUNCH_SCENARIO_COMMON;
+        }
     }
 
     /**
@@ -2445,14 +2448,16 @@ public class ActivityOptions extends ComponentOptions {
         if (mDisableStartingWindow) {
             b.putBoolean(KEY_DISABLE_STARTING_WINDOW, mDisableStartingWindow);
         }
-        if (mRemoteTaskFlag != RemoteTaskConstants.REMOTE_TASK_FLAG_DEFAULT) {
-            b.putInt(RemoteTaskConstants.KEY_REMOTE_TASK_LAUNCH_OPTION, mRemoteTaskFlag);
-        }
-        if (mRemoteTaskUUID != null) {
-            b.putString(RemoteTaskConstants.KEY_REMOTE_TASK_UUID, mRemoteTaskUUID);
-        }
-        if(mRemoteTaskSecurityToken != null) {
-            b.putString(RemoteTaskConstants.KEY_REMOTE_TASK_SECURITY_TOKEN, mRemoteTaskSecurityToken);
+        if (!DeviceIntegrationUtils.DISABLE_DEVICE_INTEGRATION) {
+            if (mRemoteTaskFlag != RemoteTaskConstants.REMOTE_TASK_FLAG_DEFAULT) {
+                b.putInt(RemoteTaskConstants.KEY_REMOTE_TASK_LAUNCH_OPTION, mRemoteTaskFlag);
+            }
+            if (mRemoteTaskUUID != null) {
+                b.putString(RemoteTaskConstants.KEY_REMOTE_TASK_UUID, mRemoteTaskUUID);
+            }
+            if (mRemoteTaskSecurityToken != null) {
+                b.putString(RemoteTaskConstants.KEY_REMOTE_TASK_SECURITY_TOKEN, mRemoteTaskSecurityToken);
+            }
         }
         return b;
     }

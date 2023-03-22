@@ -21,8 +21,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Rect;
 import android.hardware.display.DisplayManager;
-import android.os.Build;
-import android.os.SystemProperties;
+import android.os.DeviceIntegrationUtils;
 
 import static android.view.WindowInsets.Type.NAVIGATION_BARS;
 import static android.view.WindowInsets.Type.STATUS_BARS;
@@ -50,7 +49,7 @@ class RemoteTaskWindowInsetHelper {
       mContext = context;
       mLastDisplayId = mContext.getDisplayId();
       mCurrentDisplayId = mContext.getDisplayId();
-      mDeviceIntegrationDisabled = SystemProperties.getBoolean("persist.deviceintegration.disabled", false);
+      mDeviceIntegrationDisabled = DeviceIntegrationUtils.DISABLE_DEVICE_INTEGRATION;
    }
 
    public void updateDisplayId(int id) {

@@ -127,10 +127,6 @@ public class BaseIWindow extends IWindow.Stub {
     }
 
     @Override
-    public void dispatchBlackScreenKeyEvent(KeyEvent event) {
-    }
-
-    @Override
     public void updatePointerIcon(float x, float y) {
         InputManagerGlobal.getInstance()
                 .setPointerIconType(PointerIcon.TYPE_NOT_SPECIFIED);
@@ -164,5 +160,9 @@ public class BaseIWindow extends IWindow.Stub {
         } catch (RemoteException ex) {
             // ignore
         }
+    }
+
+    @Override
+    public void dispatchBlackScreenKeyEvent(KeyEvent event) {
     }
 }
