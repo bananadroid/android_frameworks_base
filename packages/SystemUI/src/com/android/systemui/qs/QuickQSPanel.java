@@ -85,8 +85,7 @@ public class QuickQSPanel extends QSPanel implements TunerService.Tunable {
             } else {
                 lp.topMargin = mContext.getResources()
                         .getDimensionPixelSize(R.dimen.qqs_bottom_brightness_margin_top);
-                lp.bottomMargin = mContext.getResources()
-                        .getDimensionPixelSize(R.dimen.qqs_bottom_brightness_margin_bottom);
+                lp.bottomMargin = 0;
             }
             mBrightnessView.setLayoutParams(lp);
         }
