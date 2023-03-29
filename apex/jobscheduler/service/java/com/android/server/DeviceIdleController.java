@@ -3541,10 +3541,11 @@ public class DeviceIdleController extends SystemService
                 scheduleAlarmLocked(mConstants.LOCATING_TIMEOUT, false);
                 LocationManager locationManager = mInjector.getLocationManager();
                 if (locationManager != null
-                        && locationManager.getProvider(LocationManager.NETWORK_PROVIDER) != null) {
+                        && locationManager.getProvider(LocationManager.FUSED_PROVIDER) != null) {
                     locationManager.requestLocationUpdates(mLocationRequest,
                             mGenericLocationListener, mHandler.getLooper());
                     mLocating = true;
+                    mHasNetworkLocation = true;
                 } else {
                     mHasNetworkLocation = false;
                 }
