@@ -10418,7 +10418,7 @@ package android.os {
   }
 
   public class DeviceIntegrationUtils {
-    field public static final boolean DISABLE_DEVICE_INTEGRATION = false;
+    field public static final boolean DISABLE_DEVICE_INTEGRATION = true;
   }
 
   public class Environment {
