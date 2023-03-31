@@ -1415,9 +1415,23 @@ public class VolumeDialogImpl implements VolumeDialog, Dumpable,
                     getApplicationIcon(mAppVolumeActivePackageName) : null;
             if (icon != null) {
                 mAppVolumeIcon.setImageTintList(null);
-                mAppVolumeIcon.setScaleType(ImageView.ScaleType.FIT_CENTER);
                 mAppVolumeIcon.setImageDrawable(icon);
-                mAppVolumeIcon.setPadding(mRingerRowsPadding, mRingerRowsPadding, mRingerRowsPadding, mRingerRowsPadding);
+                mAppVolumeIcon.getLayoutParams().height = mTargetTapSize;
+                mAppVolumeIcon.getLayoutParams().width = mTargetTapSize;
+                mAppVolumeIcon.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                mAppVolumeIcon.setPadding(
+                        mAppVolumeView.getPaddingLeft(),
+                        mAppVolumeView.getPaddingTop(),
+                        mAppVolumeView.getPaddingRight(),
+                        mRingerRowsPadding);
+            	mAppVolumeIcon.setOutlineProvider(new ViewOutlineProvider() {
+                    @Override
+                    public void getOutline(View view, Outline outline) {
+                    	outline.setRoundRect(
+                            	0, 0, view.getWidth(), view.getHeight(), mDialogCornerRadius);
+                    }
+            	});
+            	mAppVolumeIcon.setClipToOutline(true);
             }
         }
     }
