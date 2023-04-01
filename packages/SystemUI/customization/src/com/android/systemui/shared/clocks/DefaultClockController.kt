@@ -60,6 +60,7 @@ class DefaultClockController(
     private val burmeseLineSpacing =
         resources.getFloat(R.dimen.keyguard_clock_line_spacing_scale_burmese)
     private val defaultLineSpacing = resources.getFloat(R.dimen.keyguard_clock_line_spacing_scale)
+    private val defaultFont = resources.getString(com.android.internal.R.string.config_clockFontFamily);
 
     override val events: DefaultClockEvents
     override lateinit var animations: DefaultClockAnimations
@@ -202,6 +203,41 @@ class DefaultClockController(
             val nf = NumberFormat.getInstance(locale)
             if (nf.format(FORMAT_NUMBER.toLong()) == burmeseNumerals) {
                 clocks.forEach { it.setLineSpacingScale(burmeseLineSpacing) }
+            } else if (defaultFont.toString().toLowerCase().contains("sans") && !defaultFont.toString().toLowerCase().contains("google")) {
+                clocks.forEach { it.setLineSpacingScale(0.88f) }
+            } else if (defaultFont.toString().toLowerCase().contains("3d-isometric-black") 
+            	  || defaultFont.toString().toLowerCase().contains("3d-isometric-bold")
+            	  || defaultFont.toString().toLowerCase().contains("adventpro")
+            	  || defaultFont.toString().toLowerCase().contains("alien-league")
+            	  || defaultFont.toString().toLowerCase().contains("arcadeinterlaced")
+            	  || defaultFont.toString().toLowerCase().contains("baltic-bodden")
+            	  || defaultFont.toString().toLowerCase().contains("baltic-coast")
+            	  || defaultFont.toString().toLowerCase().contains("baltic-dune")
+            	  || defaultFont.toString().toLowerCase().contains("baltic-storm")
+            	  || defaultFont.toString().toLowerCase().contains("bignoodle-italic")
+            	  || defaultFont.toString().toLowerCase().contains("biko")
+            	  || defaultFont.toString().toLowerCase().contains("cafe24-decoshadow")
+            	  || defaultFont.toString().toLowerCase().contains("dotcom")
+            	  || defaultFont.toString().toLowerCase().contains("forta")
+            	  || defaultFont.toString().toLowerCase().contains("karmaticarcade")
+            	  || defaultFont.toString().toLowerCase().contains("liquidcrystal")
+            	  || defaultFont.toString().toLowerCase().contains("mx-wasgard")
+            	  || defaultFont.toString().toLowerCase().contains("museo-moderno")
+            	  || defaultFont.toString().toLowerCase().contains("neptun-cat")
+            	  || defaultFont.toString().toLowerCase().contains("pixelwars")
+            	  || defaultFont.toString().toLowerCase().contains("permanent-marker")
+            	  || defaultFont.toString().toLowerCase().contains("prodelt-co")
+            	  || defaultFont.toString().toLowerCase().contains("riviera")
+            	  || defaultFont.toString().toLowerCase().contains("roadrage-sys")
+            	  || defaultFont.toString().toLowerCase().contains("rubik-glitch")
+            	  || defaultFont.toString().toLowerCase().contains("snowstorm-sys")
+            	  || defaultFont.toString().toLowerCase().contains("tourney-medium")
+            	  || defaultFont.toString().toLowerCase().contains("unionfont")
+            	  || defaultFont.toString().toLowerCase().contains("v5prophit")
+            	  || defaultFont.toString().toLowerCase().contains("vg5000")
+            	  || defaultFont.toString().toLowerCase().contains("vibur")
+            	  || defaultFont.toString().toLowerCase().contains("zerofour")) {
+                clocks.forEach { it.setLineSpacingScale(0.9f) }
             } else {
                 clocks.forEach { it.setLineSpacingScale(defaultLineSpacing) }
             }
