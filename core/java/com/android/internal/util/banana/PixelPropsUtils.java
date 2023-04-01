@@ -85,11 +85,8 @@ public class PixelPropsUtils {
 
     // Packages to Keep with original device
     private static final String[] packagesToKeep = {
-            "com.google.android.MTCL83",
-            "com.google.android.UltraCVM",
-            "com.google.ar.core",
-            "com.google.android.apps.youtube.kids",
-            "com.google.android.apps.youtube.music",
+            "com.google.android.mtcl83",
+            "com.google.android.ultracvm",
             "com.google.android.apps.recorder",
             "com.google.android.apps.wearables.maestro.companion"
     };
@@ -215,60 +212,61 @@ public class PixelPropsUtils {
     }
     
     public static void setProps(String packageName) {
-        if (packageName == null || packageName.isEmpty()
-            || List.of("camera", "youtube", "euicc", "searchbox" , "ar.core").stream().anyMatch(packageName::contains)
-            || Arrays.asList(packagesToKeep).contains(packageName)) {
+    	String pkgName = packageName.toLowerCase();
+        if (pkgName == null || pkgName.isEmpty()
+            || List.of("camera", "youtube", "euicc", "searchbox" , "ar.core").stream().anyMatch(pkgName::contains)
+            || Arrays.asList(packagesToKeep).contains(pkgName)) {
             return;
         }
         Map<String, Object> propsToChange = new HashMap<>();;
-        sIsFinsky = List.of(".apps.restore", "com.google.android.gms", "com.android.vending").stream().anyMatch(packageName::contains);
+        sIsFinsky = List.of(".apps.restore", "com.google.android.gms", "com.android.vending").stream().anyMatch(pkgName::contains);
         if (sIsFinsky) {
-             final String processName = Application.getProcessName();
+             final String processName = Application.getProcessName().toLowerCase();
              sIsGms = List.of("unstable", "persistent", "pixelmigrate", "restore").stream().anyMatch(processName::contains);
              if (!sIsGms) return;
              spoofBuildGms();
         }
-        if (packageName.startsWith("com.google.") && !sIsFinsky
-                || Arrays.asList(extraPackagesToChange).contains(packageName)) {
+        if (pkgName.startsWith("com.google.") && !sIsFinsky
+                || Arrays.asList(extraPackagesToChange).contains(pkgName)) {
 
             boolean isPixelDevice = Arrays.asList(pixelCodenames).contains(SystemProperties.get(DEVICE));
                 
-            if (packageName.toLowerCase().contains("com.google.android.apps.photos")) {
+            if (pkgName.contains("com.google.android.apps.photos")) {
                 if (SystemProperties.getBoolean("persist.sys.pixelprops.gphotos", false)) {
                     propsToChange.putAll(propsToChangePixelXL);
                 } else {
                     if (isPixelDevice) return;
                     propsToChange.putAll(propsToChangePixel5);
                 }
-            } else if (packageName.toLowerCase().contains("netflix") && 
+            } else if (pkgName.contains("netflix") && 
                         !SystemProperties.getBoolean("persist.sys.pixelprops.netflix", false)) {
                     if (DEBUG) Log.d(TAG, "Netflix spoofing disabled by system prop");
                     return;
             } else if (isPixelDevice) {
                 return;
             } else {
-                if (Arrays.asList(packagesToChangePixel7Pro).contains(packageName)) {
+                if (Arrays.asList(packagesToChangePixel7Pro).contains(pkgName)) {
                     propsToChange.putAll(propsToChangePixel7Pro);
-                } else if (Arrays.asList(packagesToChangePixelXL).contains(packageName)) {
+                } else if (Arrays.asList(packagesToChangePixelXL).contains(pkgName)) {
                     propsToChange.putAll(propsToChangePixelXL);
                 } else {
                     propsToChange.putAll(propsToChangePixel5);
                 }
             }
 
-            if (DEBUG) Log.d(TAG, "Defining props for: " + packageName);
+            if (DEBUG) Log.d(TAG, "Defining props for: " + pkgName);
             for (Map.Entry<String, Object> prop : propsToChange.entrySet()) {
                 String key = prop.getKey();
                 Object value = prop.getValue();
-                if (propsToKeep.containsKey(packageName) && propsToKeep.get(packageName).contains(key)) {
-                    if (DEBUG) Log.d(TAG, "Not defining " + key + " prop for: " + packageName);
+                if (propsToKeep.containsKey(pkgName) && propsToKeep.get(pkgName).contains(key)) {
+                    if (DEBUG) Log.d(TAG, "Not defining " + key + " prop for: " + pkgName);
                     continue;
                 }
-                if (DEBUG) Log.d(TAG, "Defining " + key + " prop for: " + packageName);
+                if (DEBUG) Log.d(TAG, "Defining " + key + " prop for: " + pkgName);
                 setPropValue(key, value);
             }
             // Set proper indexing fingerprint
-            if (packageName.toLowerCase().contains("settings.intelligence")) {
+            if (pkgName.contains("settings.intelligence")) {
                 setPropValue("FINGERPRINT", Build.VERSION.INCREMENTAL);
             }
         } else {
@@ -276,50 +274,50 @@ public class PixelPropsUtils {
             if (!SystemProperties.getBoolean("persist.sys.pixelprops.games", false))
                 return;
 
-            if (Arrays.asList(packagesToChangeROG1).contains(packageName)) {
-                if (DEBUG) Log.d(TAG, "Defining props for: " + packageName);
+            if (Arrays.asList(packagesToChangeROG1).contains(pkgName)) {
+                if (DEBUG) Log.d(TAG, "Defining props for: " + pkgName);
                 for (Map.Entry<String, Object> prop : propsToChangeROG1.entrySet()) {
                     String key = prop.getKey();
                     Object value = prop.getValue();
                     setPropValue(key, value);
                 }
-            } else if (Arrays.asList(packagesToChangeROG3).contains(packageName)) {
-                if (DEBUG) Log.d(TAG, "Defining props for: " + packageName);
+            } else if (Arrays.asList(packagesToChangeROG3).contains(pkgName)) {
+                if (DEBUG) Log.d(TAG, "Defining props for: " + pkgName);
                 for (Map.Entry<String, Object> prop : propsToChangeROG3.entrySet()) {
                     String key = prop.getKey();
                     Object value = prop.getValue();
                     setPropValue(key, value);
                 }
-            } else if (Arrays.asList(packagesToChangeXP5).contains(packageName)) {
-                if (DEBUG) Log.d(TAG, "Defining props for: " + packageName);
+            } else if (Arrays.asList(packagesToChangeXP5).contains(pkgName)) {
+                if (DEBUG) Log.d(TAG, "Defining props for: " + pkgName);
                 for (Map.Entry<String, Object> prop : propsToChangeXP5.entrySet()) {
                     String key = prop.getKey();
                     Object value = prop.getValue();
                     setPropValue(key, value);
                 }
-            } else if (Arrays.asList(packagesToChangeOP8P).contains(packageName)) {
-                if (DEBUG) Log.d(TAG, "Defining props for: " + packageName);
+            } else if (Arrays.asList(packagesToChangeOP8P).contains(pkgName)) {
+                if (DEBUG) Log.d(TAG, "Defining props for: " + pkgName);
                 for (Map.Entry<String, Object> prop : propsToChangeOP8P.entrySet()) {
                     String key = prop.getKey();
                     Object value = prop.getValue();
                     setPropValue(key, value);
                 }
-            } else if (Arrays.asList(packagesToChangeOP9R).contains(packageName)) {
-                if (DEBUG) Log.d(TAG, "Defining props for: " + packageName);
+            } else if (Arrays.asList(packagesToChangeOP9R).contains(pkgName)) {
+                if (DEBUG) Log.d(TAG, "Defining props for: " + pkgName);
                 for (Map.Entry<String, Object> prop : propsToChangeOP9R.entrySet()) {
                     String key = prop.getKey();
                     Object value = prop.getValue();
                     setPropValue(key, value);
                 }
-            } else if (Arrays.asList(packagesToChange11T).contains(packageName)) {
-                if (DEBUG) Log.d(TAG, "Defining props for: " + packageName);
+            } else if (Arrays.asList(packagesToChange11T).contains(pkgName)) {
+                if (DEBUG) Log.d(TAG, "Defining props for: " + pkgName);
                 for (Map.Entry<String, Object> prop : propsToChange11T.entrySet()) {
                     String key = prop.getKey();
                     Object value = prop.getValue();
                     setPropValue(key, value);
                 }
-            } else if (Arrays.asList(packagesToChangeF4).contains(packageName)) {
-                if (DEBUG) Log.d(TAG, "Defining props for: " + packageName);
+            } else if (Arrays.asList(packagesToChangeF4).contains(pkgName)) {
+                if (DEBUG) Log.d(TAG, "Defining props for: " + pkgName);
                 for (Map.Entry<String, Object> prop : propsToChangeF4.entrySet()) {
                     String key = prop.getKey();
                     Object value = prop.getValue();
