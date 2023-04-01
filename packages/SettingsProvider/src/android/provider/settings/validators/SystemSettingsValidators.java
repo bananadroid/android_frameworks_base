@@ -248,5 +248,6 @@ public class SystemSettingsValidators {
         VALIDATORS.put(System.LOCK_HIDE_STATUS_BAR, BOOLEAN_VALIDATOR);
         VALIDATORS.put(System.VOLUME_DIALOG_TIMEOUT, new InclusiveIntegerRangeValidator(1, 7));
         VALIDATORS.put(System.MAX_VISIBLE_NOTIFICATION_ICONS, NON_NEGATIVE_INTEGER_VALIDATOR);
+        VALIDATORS.put(System.QS_PANEL_STYLE, NON_NEGATIVE_INTEGER_VALIDATOR);
     }
 }

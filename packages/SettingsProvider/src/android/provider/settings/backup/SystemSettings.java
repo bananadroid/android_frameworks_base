@@ -109,5 +109,6 @@ public class SystemSettings {
         Settings.System.LOCK_HIDE_STATUS_BAR,
         Settings.System.VOLUME_DIALOG_TIMEOUT,
         Settings.System.MAX_VISIBLE_NOTIFICATION_ICONS,
+        Settings.System.QS_PANEL_STYLE
     };
 }
