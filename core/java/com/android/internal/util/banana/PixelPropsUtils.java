@@ -267,7 +267,7 @@ public class PixelPropsUtils {
             }
             // Set proper indexing fingerprint
             if (pkgName.contains("settings.intelligence")) {
-                setPropValue("FINGERPRINT", Build.VERSION.INCREMENTAL);
+                setBuildField("FINGERPRINT", Build.VERSION.INCREMENTAL);
             }
         } else {
 
@@ -371,6 +371,22 @@ public class PixelPropsUtils {
         }
     }
 
+    private static void setVersionFieldString(String key, String value) {
+        try {
+            // Unlock
+            Field field = Build.VERSION.class.getDeclaredField(key);
+            field.setAccessible(true);
+
+            // Edit
+            field.set(null, value);
+
+            // Lock
+            field.setAccessible(false);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            Log.e(TAG, "Failed to spoof Build." + key, e);
+        }
+    }
+
     private static void spoofBuildGms() {
         // Alter most build properties for cts profile match checks
         setBuildField("BRAND", "google");
@@ -379,11 +395,11 @@ public class PixelPropsUtils {
     	setBuildField("MANUFACTURER", "Google");
         setBuildField("DEVICE", "walleye");
         setBuildField("FINGERPRINT", "google/walleye/walleye:8.1.0/OPM1.171019.011/4448085:user/release-keys");
+        setBuildField("ID", "OPM1.171019.011");
         setBuildField("TYPE", "user");
         setBuildField("TAGS", "release-keys");
-        setBuildField("ID", "OPM1.171019.011");
-        setBuildField("SECURITY_PATCH", "2017-12-05");
         setVersionField("DEVICE_INITIAL_SDK_INT", Build.VERSION_CODES.S);
+        setVersionFieldString("SECURITY_PATCH", "2017-12-05");
     }
 
     private static boolean isCallerSafetyNet() {
