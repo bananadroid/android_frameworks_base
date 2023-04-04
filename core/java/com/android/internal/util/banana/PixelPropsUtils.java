@@ -115,6 +115,7 @@ public class PixelPropsUtils {
             PACKAGE_GPHOTOS,
             PACKAGE_PS,
             PACKAGE_SUBSCRIPTION_RED,
+            "com.google.android.apps.photosgo",
             "com.google.android.apps.recorder",
             "com.google.android.apps.tachyon",
             "com.google.android.apps.tycho",
