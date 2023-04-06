@@ -89,7 +89,6 @@ public class PixelPropsUtils {
             "com.microsoft.android.smsorganizer",
             "com.nhs.online.nhsonline",
             "com.nothing.smartcenter",
-            "com.snapchat.android",
             "in.startv.hotstar"
     };
 
