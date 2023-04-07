@@ -220,6 +220,7 @@ import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
 import android.telephony.SubscriptionManager.OnSubscriptionsChangedListener;
 import android.telephony.SubscriptionPlan;
+import android.telephony.TelephonyCallback;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
@@ -801,6 +802,14 @@ public class NetworkPolicyManagerService extends INetworkPolicyManager.Stub {
             }
             return buckets;
         }
+
+        int getDefaultDataSubId() {
+            return SubscriptionManager.getDefaultDataSubscriptionId();
+        }
+
+        int getActivateDataSubId() {
+            return SubscriptionManager.getActiveDataSubscriptionId();
+        }
     }
 
     @VisibleForTesting
@@ -828,7 +837,7 @@ public class NetworkPolicyManagerService extends INetworkPolicyManager.Stub {
 
         mSuppressDefaultPolicy = suppressDefaultPolicy;
         mDeps = Objects.requireNonNull(deps, "missing Dependencies");
-
+        mActiveDataSubIdListener = new ActiveDataSubIdListener();
         mPolicyFile = new AtomicFile(new File(systemDir, "netpolicy.xml"), "net-policy");
 
         mAppOps = context.getSystemService(AppOpsManager.class);
@@ -1088,6 +1097,10 @@ public class NetworkPolicyManagerService extends INetworkPolicyManager.Stub {
                         }
                     });
 
+            // Listen for active data sub Id change, upon which data notifications is shown/hidden.
+            mContext.getSystemService(TelephonyManager.class).registerTelephonyCallback(executor,
+                    mActiveDataSubIdListener);
+
             // tell systemReady() that the service has been initialized
             initCompleteSignal.countDown();
         } finally {
@@ -1255,6 +1268,32 @@ public class NetworkPolicyManagerService extends INetworkPolicyManager.Stub {
             }
         }
     };
+
+    /**
+     * Listener that watches for active data sub Id change, upon which data notifications are
+     * shown/hidden.
+     */
+    private final ActiveDataSubIdListener mActiveDataSubIdListener;
+    private class ActiveDataSubIdListener extends TelephonyCallback implements
+            TelephonyCallback.ActiveDataSubscriptionIdListener {
+        /**
+         * In most cases active data sub is the same as the default data sub, but if user enabled
+         * auto data switch {@link TelephonyManager#MOBILE_DATA_POLICY_AUTO_DATA_SWITCH},
+         * active data sub could be the non-default data sub.
+         */
+        private int mDefaultDataSubId = mDeps.getDefaultDataSubId();
+        private int mActiveDataSubId = mDeps.getActivateDataSubId();
+        // Only listen to active data sub change is sufficient because default data sub change
+        // leads to active data sub change as well.
+        @Override
+        public void onActiveDataSubscriptionIdChanged(int subId) {
+            mActiveDataSubId = subId;
+            mDefaultDataSubId = mDeps.getDefaultDataSubId();
+            synchronized (mNetworkPoliciesSecondLock) {
+                updateNotificationsNL();
+            }
+        }
+    }
 
     /**
      * Listener that watches for {@link NetworkStatsManager} updates, which
@@ -1435,6 +1474,9 @@ public class NetworkPolicyManagerService extends INetworkPolicyManager.Stub {
 
             // ignore policies that aren't relevant to user
             if (subId == INVALID_SUBSCRIPTION_ID) continue;
+            // ignore if the data sub is neither default nor active for data.
+            if (subId != mActiveDataSubIdListener.mDefaultDataSubId
+                    && subId != mActiveDataSubIdListener.mActiveDataSubId) continue;
             if (!policy.hasCycle()) continue;
 
             final Pair<ZonedDateTime, ZonedDateTime> cycle = NetworkPolicyManager
@@ -2046,7 +2088,8 @@ public class NetworkPolicyManagerService extends INetworkPolicyManager.Stub {
             final TelephonyManager tm = mContext.getSystemService(TelephonyManager.class);
             for (int i = 0; i < matchingSubIds.size(); i++) {
                 final int subId = matchingSubIds.get(i);
-                tm.createForSubscriptionId(subId).setPolicyDataEnabled(enabled);
+                tm.createForSubscriptionId(subId).setDataEnabledForReason(
+                        TelephonyManager.DATA_ENABLED_REASON_POLICY, enabled);
             }
         }
     }
