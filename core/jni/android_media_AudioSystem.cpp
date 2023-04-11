@@ -511,7 +511,8 @@ android_media_AudioSystem_dyn_policy_callback(int event, String8 regId, int val)
     env->CallStaticVoidMethod(clazz, gAudioPolicyEventHandlerMethods.postDynPolicyEventFromNative,
             event, zestring, val);
 
-    env->ReleaseStringUTFChars(zestring, zechars);
+    //env->ReleaseStringUTFChars(zestring, zechars);
+	env->DeleteLocalRef(zestring);
     env->DeleteLocalRef(clazz);
 }
 
