@@ -99,7 +99,7 @@
                         android:id="@+id/clock"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:textAlignment="center"
+                        android:textAlignment="viewStart"
                         android:includeFontPadding="false"
                         android:textAppearance="@style/TextAppearance.StatusBar.Clock"
                         android:singleLine="true"
