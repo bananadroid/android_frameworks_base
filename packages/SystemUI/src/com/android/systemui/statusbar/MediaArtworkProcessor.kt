@@ -73,9 +73,8 @@ class MediaArtworkProcessor @Inject constructor() {
                 outBitmap = Bitmap.createBitmap(inBitmap.width, inBitmap.height,
                         Bitmap.Config.ARGB_8888)
                 input = Allocation.createFromBitmap(renderScript, inBitmap,
-                        Allocation.MipmapControl.MIPMAP_NONE, Allocation.USAGE_SHARED)
-                output = Allocation.createFromBitmap(renderScript, outBitmap,
-                        Allocation.MipmapControl.MIPMAP_NONE, Allocation.USAGE_SHARED)
+                        Allocation.MipmapControl.MIPMAP_NONE, Allocation.USAGE_GRAPHICS_TEXTURE)
+                output = Allocation.createFromBitmap(renderScript, outBitmap)
                     blur.setRadius(blur_radius)
                     blur.setInput(input)
                     blur.forEach(output)
