@@ -79,8 +79,7 @@ public class PixelPropsUtils {
             "com.breel.wallpapers20",
             "com.nhs.online.nhsonline",
             "com.netflix.mediaclient",
-            "com.nothing.smartcenter",
-            "com.snapchat.android"
+            "com.nothing.smartcenter"
     };
 
     // Packages to Keep with original device
@@ -219,7 +218,7 @@ public class PixelPropsUtils {
             return;
         }
         Map<String, Object> propsToChange = new HashMap<>();;
-        sIsFinsky = List.of(".apps.restore", "com.google.android.gms", "com.android.vending").stream().anyMatch(pkgName::contains);
+        sIsFinsky = List.of(".apps.restore", "com.google.android.gms", "com.android.vending", "snapchat").stream().anyMatch(pkgName::contains);
         if (sIsFinsky) {
              final String processName = Application.getProcessName().toLowerCase();
              sIsGms = List.of("unstable", "persistent", "pixelmigrate", "restore").stream().anyMatch(processName::contains);
