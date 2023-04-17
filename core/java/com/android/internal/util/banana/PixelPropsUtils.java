@@ -150,6 +150,7 @@ public class PixelPropsUtils {
 
     // Packages to Spoof as OnePlus 8 Pro
     private static final String[] packagesToChangeOP8P = {
+            "com.mobile.legends",
             "com.netease.lztgglobal",
             "com.pubg.imobile",
             "com.pubg.krmobile",
@@ -172,7 +173,6 @@ public class PixelPropsUtils {
     private static final String[] packagesToChange11T = {
             "com.ea.gp.apexlegendsmobilefps",
             "com.levelinfinite.hotta.gp",
-            "com.mobile.legends",
             "com.supercell.clashofclans",
             "com.tencent.tmgp.sgame",
             "com.vng.mlbbvn"
