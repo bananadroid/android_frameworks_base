@@ -2648,12 +2648,6 @@
     <!-- Maximum velocity to initiate a fling, as measured in dips per second. -->
     <dimen name="config_viewMaxFlingVelocity">21000dp</dimen>
 
-    <!-- Minimum velocity to initiate a gesture fling, as measured in dips per second. -->
-    <dimen name="config_viewMinGestureFlingVelocity">50dp</dimen>
-
-    <!-- Maximum velocity to initiate a gesture fling, as measured in dips per second. -->
-    <dimen name="config_viewMaxGestureFlingVelocity">8000dp</dimen>
-
     <!-- Amount of time in ms the user needs to press the relevant key to bring up the
          global actions dialog -->
     <integer name="config_globalActionsKeyTimeout">500</integer>

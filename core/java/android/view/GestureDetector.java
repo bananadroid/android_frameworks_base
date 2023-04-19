@@ -465,8 +465,8 @@ public class GestureDetector {
             doubleTapTouchSlop = touchSlop; // Hack rather than adding a hidden method for this
             doubleTapSlop = ViewConfiguration.getDoubleTapSlop();
             //noinspection deprecation
-            mMinimumFlingVelocity = ViewConfiguration.getMinimumGestureFlingVelocity();
-            mMaximumFlingVelocity = ViewConfiguration.getMaximumGestureFlingVelocity();
+            mMinimumFlingVelocity = ViewConfiguration.getMinimumFlingVelocity();
+            mMaximumFlingVelocity = ViewConfiguration.getMaximumFlingVelocity();
             mAmbiguousGestureMultiplier = ViewConfiguration.getAmbiguousGestureMultiplier();
         } else {
             StrictMode.assertConfigurationContext(context, "GestureDetector#init");
@@ -474,8 +474,8 @@ public class GestureDetector {
             touchSlop = configuration.getScaledTouchSlop();
             doubleTapTouchSlop = configuration.getScaledDoubleTapTouchSlop();
             doubleTapSlop = configuration.getScaledDoubleTapSlop();
-            mMinimumFlingVelocity = configuration.getScaledMinimumGestureFlingVelocity();
-            mMaximumFlingVelocity = configuration.getScaledMaximumGestureFlingVelocity();
+            mMinimumFlingVelocity = configuration.getScaledMinimumFlingVelocity();
+            mMaximumFlingVelocity = configuration.getScaledMaximumFlingVelocity();
             mAmbiguousGestureMultiplier = configuration.getScaledAmbiguousGestureMultiplier();
         }
         mTouchSlopSquare = touchSlop * touchSlop;
