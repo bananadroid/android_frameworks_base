@@ -56,6 +56,7 @@ public class PixelPropsUtils {
             "com.google.android.apps.subscriptions.red",
             "com.google.android.dialer",
             "com.google.android.messaging",
+            "com.google.android.googlequicksearchbox",
             "com.google.android.inputmethod.latin"
     };
 
@@ -214,7 +215,7 @@ public class PixelPropsUtils {
     public static void setProps(String packageName) {
     	String pkgName = packageName.toLowerCase();
         if (pkgName == null || pkgName.isEmpty()
-            || List.of("camera", "youtube", "euicc", "searchbox" , "ar.core").stream().anyMatch(pkgName::contains)
+            || List.of("camera", "youtube", "euicc" , "ar.core").stream().anyMatch(pkgName::contains)
             || Arrays.asList(packagesToKeep).contains(pkgName)) {
             return;
         }
