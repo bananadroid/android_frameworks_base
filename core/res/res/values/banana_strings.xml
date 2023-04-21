@@ -82,8 +82,4 @@
    <!-- Settings Restart -->
    <string name="settings_restart_title">Settings restart required</string>
    <string name="settings_restart_message">For all changes to take effect, a Settings app restart is required. Restart Settings app now?</string>
-
-    <!-- PowerOffAlarmService -->
-    <string name="poweroff_alarm_cancelled">Power off alarm cancelled</string>
-    <string name="poweroff_alarm_set">Power off alarm set</string>
 </resources>
