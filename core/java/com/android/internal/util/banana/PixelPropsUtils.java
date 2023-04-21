@@ -245,14 +245,14 @@ public class PixelPropsUtils {
                         !SystemProperties.getBoolean("persist.sys.pixelprops.netflix", false)) {
                     if (DEBUG) Log.d(TAG, "Netflix spoofing disabled by system prop");
                     return;
-            } else if (isPixelDevice) {
-                return;
             } else {
                 if (Arrays.asList(packagesToChangePixel7Pro).contains(pkgName)) {
                     propsToChange.putAll(propsToChangePixel7Pro);
                 } else if (Arrays.asList(packagesToChangePixelXL).contains(pkgName)) {
+                    if (isPixelDevice) return;
                     propsToChange.putAll(propsToChangePixelXL);
                 } else {
+                    if (isPixelDevice) return;
                     propsToChange.putAll(propsToChangePixel5);
                 }
             }
