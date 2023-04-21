@@ -220,11 +220,11 @@ public class PixelPropsUtils {
             return;
         }
         Map<String, Object> propsToChange = new HashMap<>();
-        sIsFinsky = pkgName.equals("com.android.vending");
+        sIsFinsky = pkgName.contains("com.android.vending");
         sNeedsWASpoof = List.of("pixelmigrate", "restore", "snapchat").stream().anyMatch(pkgName::contains);
-        if (pkgName.equals("com.google.android.gms")) {
+        if (pkgName.contains("com.google.android.gms")) {
             final String processName = Application.getProcessName().toLowerCase();
-            sIsGms = List.of("com.google.android.gms.persistent", "com.google.android.gms.unstable").stream().anyMatch(processName::contains);
+            sIsGms = List.of(".persistent", ".unstable").stream().anyMatch(processName::contains);
         }
         if (sNeedsWASpoof || sIsGms) {
              spoofBuildGms();
@@ -393,16 +393,16 @@ public class PixelPropsUtils {
     private static void spoofBuildGms() {
         // Alter most build properties for cts profile match checks
         setBuildField("BRAND", "google");
-        setBuildField("PRODUCT", "walleye");
-        setBuildField("MODEL", "Pixel 2");
+        setBuildField("PRODUCT", "marlin");
+        setBuildField("MODEL", "Pixel XL");
     	setBuildField("MANUFACTURER", "Google");
-        setBuildField("DEVICE", "walleye");
-        setBuildField("FINGERPRINT", "google/walleye/walleye:8.1.0/OPM1.171019.011/4448085:user/release-keys");
-        setBuildField("ID", "OPM1.171019.011");
+        setBuildField("DEVICE", "marlin");
+        setBuildField("FINGERPRINT", "google/marlin/marlin:7.1.2/NJH47F/4146041:user/release-keys");
+        setBuildField("ID", "NJH47F");
         setBuildField("TYPE", "user");
         setBuildField("TAGS", "release-keys");
-        setVersionField("DEVICE_INITIAL_SDK_INT", Build.VERSION_CODES.S);
-        setVersionFieldString("SECURITY_PATCH", "2017-12-05");
+        setVersionField("DEVICE_INITIAL_SDK_INT", Build.VERSION_CODES.N_MR1);
+        setVersionFieldString("SECURITY_PATCH", "2017-08-05");
     }
 
     private static boolean isCallerSafetyNet() {
