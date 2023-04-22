@@ -167,6 +167,7 @@ public class QuickQSPanelController extends QSPanelControllerBase<QuickQSPanel> 
     }
 
     private void setMaxTiles(int parseNumTiles) {
+    	if (mView == null) return;
         mView.setMaxTiles(parseNumTiles);
         setTiles();
     }
