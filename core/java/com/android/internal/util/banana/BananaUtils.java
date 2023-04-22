@@ -319,6 +319,12 @@ public class BananaUtils {
         }
     }
 
+    public static int getQsUiStyle(Context context) {
+        return Settings.System.getIntForUser(context.getContentResolver(),
+            Settings.System.QS_UI_STYLE,
+            0, UserHandle.USER_CURRENT);
+    }
+
     public static void restartSystemUi(Context context) {
         new RestartSystemUiTask(context).execute();
     }
