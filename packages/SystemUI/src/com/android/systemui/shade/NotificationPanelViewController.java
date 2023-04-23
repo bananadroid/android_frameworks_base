@@ -769,6 +769,7 @@ public final class NotificationPanelViewController implements Dumpable {
     private NotificationStackScrollLayout mNotificationStackScroller;
     private boolean mReTickerStatus;
     private boolean mReTickerColored;
+    private Boolean mReTickerVisible = null;
 
     private boolean mBlockedGesturalNavigation = false;
 
@@ -3759,7 +3760,7 @@ public final class NotificationPanelViewController implements Dumpable {
         float finalAlpha = alpha > 0.84f ? alpha : 0f;
         mNotificationStackScrollLayoutController.setAlpha(finalAlpha);
         if (mBarState != StatusBarState.KEYGUARD && !isFullyCollapsed() && !isPanelVisibleBecauseOfHeadsUp()) {
-            mCentralSurfaces.updateDismissAllVisibility(true);
+            mCentralSurfaces.updateDismissAllVisibility(mReTickerVisible != null && mReTickerVisible ? false : true);
         }
     }
 
@@ -6802,6 +6803,7 @@ public final class NotificationPanelViewController implements Dumpable {
             } else {
                 dw.setTintList(null);
             }
+            mReTickerVisible = true;
             mReTickerComeback.setBackground(dw);
             mReTickerContentTV.setText(mergedContentText);
             mReTickerContentTV.setTextAppearance(mView.getContext(), R.style.TextAppearance_Notifications_reTicker);
@@ -6817,6 +6819,7 @@ public final class NotificationPanelViewController implements Dumpable {
                         }
                     }
                     RetickerAnimations.revealAnimationHide(mReTickerComeback, mNotificationStackScroller);
+                    mReTickerVisible = false;
                     reTickerViewVisibility();
                 });
             }
@@ -6841,6 +6844,7 @@ public final class NotificationPanelViewController implements Dumpable {
 
     public void reTickerDismissal() {
         RetickerAnimations.revealAnimationHide(mReTickerComeback, mNotificationStackScroller);
+        mReTickerVisible = false;
         mReTickerComeback.getViewTreeObserver().removeOnComputeInternalInsetsListener(mInsetsListener);
     }
 
