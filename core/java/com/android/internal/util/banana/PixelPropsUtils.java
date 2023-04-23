@@ -60,20 +60,6 @@ public class PixelPropsUtils {
             "com.google.android.inputmethod.latin"
     };
 
-    // Packages to Spoof as Pixel XL
-    private static final String[] packagesToChangePixelXL = {
-            "com.samsung.accessory",
-            "com.samsung.accessory.fridaymgr",
-            "com.samsung.accessory.berrymgr",
-            "com.samsung.accessory.neobeanmgr",
-            "com.samsung.android.app.watchmanager",
-            "com.samsung.android.geargplugin",
-            "com.samsung.android.gearnplugin",
-            "com.samsung.android.modenplugin",
-            "com.samsung.android.neatplugin",
-            "com.samsung.android.waterplugin"
-    };
-
     // Extra Packages to Spoof
     private static final String[] extraPackagesToChange = {
             "com.android.chrome",
@@ -249,7 +235,8 @@ public class PixelPropsUtils {
                 if (Arrays.asList(packagesToChangePixel7Pro).contains(pkgName)) {
                     propsToChange.putAll(propsToChangePixel7Pro);
                 } else {
-                    if (isPixelDevice) return;
+                    boolean spoofALl = SystemProperties.getBoolean("persist.sys.pixelprops.spoofAll", false);
+                    if (!spoofALl) return;
                     propsToChange.putAll(propsToChangePixelXL);
                 }
             }
