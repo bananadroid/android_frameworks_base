@@ -19,6 +19,9 @@ package com.android.systemui.statusbar.phone;
 
 import android.annotation.Nullable;
 import android.content.Context;
+import android.content.pm.IPackageManager;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Rect;
@@ -79,6 +82,9 @@ public class PhoneStatusBarView extends FrameLayout implements Callbacks, TunerS
     private int mTopPad;
     private int mLeftPad;
     private int mRightPad;
+    private int sbPaddingTopRes;
+    private int sbPaddingStartRes;
+    private int sbPaddingEndRes;
 
     private DarkReceiver mBattery;
     private int mRotationOrientation = -1;
@@ -312,12 +318,23 @@ public class PhoneStatusBarView extends FrameLayout implements Callbacks, TunerS
         mStatusBarHeight = SystemBarUtils.getStatusBarHeight(mContext);
         layoutParams.height = mStatusBarHeight - waterfallTopInset;
 
+        float density = Resources.getSystem().getDisplayMetrics().density;
+        Resources res = null;
+        try {
+            res = mContext.getPackageManager().getResourcesForApplication("com.android.systemui");
+        } catch (NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
         int statusBarPaddingTop = getResources().getDimensionPixelSize(
                 R.dimen.status_bar_padding_top);
         int statusBarPaddingStart = getResources().getDimensionPixelSize(
                 R.dimen.status_bar_padding_start);
         int statusBarPaddingEnd = getResources().getDimensionPixelSize(
                 R.dimen.status_bar_padding_end);
+        sbPaddingTopRes = (int) (statusBarPaddingTop / density);
+        sbPaddingStartRes = (int) (statusBarPaddingStart / density);
+        sbPaddingEndRes = (int) (statusBarPaddingEnd / density);
 
         mStatusBarContents.setPaddingRelative(
                 (int) mLeftPad,
@@ -407,19 +424,19 @@ public class PhoneStatusBarView extends FrameLayout implements Callbacks, TunerS
     @Override
     public void onTuningChanged(String key, String newValue) {
         if (TOP_PADDING.equals(key)) {
-            int mTPadding = TunerService.parseInteger(newValue, 0);
+            int mTPadding = TunerService.parseInteger(newValue, sbPaddingTopRes);
             mTopPad = Math.round(TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP, mTPadding,
                 getResources().getDisplayMetrics()));
             updateStatusBarHeight();
         } else if (LEFT_PADDING.equals(key)) {
-            int mLPadding = TunerService.parseInteger(newValue, 0);
+            int mLPadding = TunerService.parseInteger(newValue, sbPaddingStartRes);
             mLeftPad = Math.round(TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP, mLPadding,
                 getResources().getDisplayMetrics()));
             updateStatusBarHeight();
         } else if (RIGHT_PADDING.equals(key)) {
-            int mRPadding = TunerService.parseInteger(newValue, 0);
+            int mRPadding = TunerService.parseInteger(newValue, sbPaddingEndRes);
             mRightPad = Math.round(TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP, mRPadding,
                 getResources().getDisplayMetrics()));
