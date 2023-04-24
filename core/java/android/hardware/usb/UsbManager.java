@@ -964,6 +964,51 @@ public class UsbManager {
     }
 
     /**
+     * Grants permission for USB accessory without showing system dialog.
+     * Only system components can call this function.
+     * @param accessory to request permissions for
+     *
+     * {@hide}
+     */
+    public void grantPermission(UsbAccessory accessory) {
+        grantPermission(accessory, Process.myUid());
+    }
+
+    /**
+     * Grants permission for USB accessory to given uid without showing system dialog.
+     * Only system components can call this function.
+     * @param accessory to request permissions for
+     * @uid uid to give permission
+     *
+     * {@hide}
+     */
+    public void grantPermission(UsbAccessory accessory, int uid) {
+        try {
+            mService.grantAccessoryPermission(accessory, uid);
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    /**
+     * Grants permission to specified package for USB accessory without showing system dialog.
+     * Only system components can call this function, as it requires the MANAGE_USB permission.
+     * @param accessory to request permissions for
+     * @param packageName of package to grant permissions
+     *
+     * {@hide}
+     */
+    public void grantPermission(UsbAccessory accessory, String packageName) {
+        try {
+            int uid = mContext.getPackageManager()
+                .getPackageUidAsUser(packageName, mContext.getUserId());
+            grantPermission(accessory, uid);
+        } catch (NameNotFoundException e) {
+            Log.e(TAG, "Package " + packageName + " not found.", e);
+        }
+    }
+
+    /**
      * Returns true if the specified USB function is currently enabled when in device mode.
      * <p>
      * USB functions represent interfaces which are published to the host to access

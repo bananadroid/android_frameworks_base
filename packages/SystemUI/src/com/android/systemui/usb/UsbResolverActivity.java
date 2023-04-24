@@ -21,6 +21,7 @@ import static com.android.internal.app.IntentForwarderActivity.FORWARD_INTENT_TO
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Intent;
+import android.content.pm.ComponentInfo;
 import android.content.pm.ResolveInfo;
 import android.hardware.usb.IUsbManager;
 import android.hardware.usb.UsbAccessory;
@@ -81,10 +82,11 @@ public class UsbResolverActivity extends ResolverActivity {
         mForwardResolveInfo = null;
         for (Iterator<ResolveInfo> iterator = rList.iterator(); iterator.hasNext();) {
             ResolveInfo ri = iterator.next();
+            ComponentInfo ci = ri.serviceInfo != null ? ri.serviceInfo : ri.activityInfo;
 
             if (ri.getComponentInfo().name.equals(FORWARD_INTENT_TO_MANAGED_PROFILE)) {
                 mForwardResolveInfo = ri;
-            } else if (UserHandle.getUserId(ri.activityInfo.applicationInfo.uid)
+            } else if (UserHandle.getUserId(ci.applicationInfo.uid)
                     != UserHandle.myUserId()) {
                 iterator.remove();
                 rListOtherProfile.add(ri);
@@ -166,7 +168,8 @@ public class UsbResolverActivity extends ResolverActivity {
         try {
             IBinder b = ServiceManager.getService(USB_SERVICE);
             IUsbManager service = IUsbManager.Stub.asInterface(b);
-            final int uid = ri.activityInfo.applicationInfo.uid;
+            ComponentInfo ci = ri.serviceInfo != null ? ri.serviceInfo : ri.activityInfo;
+            final int uid = ci.applicationInfo.uid;
             final int userId = UserHandle.myUserId();
 
             if (mDevice != null) {
@@ -174,7 +177,7 @@ public class UsbResolverActivity extends ResolverActivity {
                 service.grantDevicePermission(mDevice, uid);
                 // set or clear default setting
                 if (alwaysCheck) {
-                    service.setDevicePackage(mDevice, ri.activityInfo.packageName, userId);
+                    service.setDevicePackage(mDevice, ci.packageName, userId);
                 } else {
                     service.setDevicePackage(mDevice, null, userId);
                 }
@@ -183,7 +186,7 @@ public class UsbResolverActivity extends ResolverActivity {
                 service.grantAccessoryPermission(mAccessory, uid);
                 // set or clear default setting
                 if (alwaysCheck) {
-                    service.setAccessoryPackage(mAccessory, ri.activityInfo.packageName, userId);
+                    service.setAccessoryPackage(mAccessory, ci.packageName, userId);
                 } else {
                     service.setAccessoryPackage(mAccessory, null, userId);
                 }

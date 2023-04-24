@@ -25,6 +25,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.pm.ComponentInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -47,6 +48,7 @@ import com.android.internal.util.dump.DualDumpOutputStream;
 import org.xmlpull.v1.XmlPullParser;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 class UsbUserSettingsManager {
@@ -87,6 +89,18 @@ class UsbUserSettingsManager {
     }
 
     /**
+     * Get all services that can handle the device/accessory attached intent.
+     *
+     * @param intent The intent to handle
+     *
+     * @return The resolve infos of the services that can handle the intent
+     */
+    List<ResolveInfo> queryIntentServices(@NonNull Intent intent) {
+        return mPackageManager.queryIntentServicesAsUser(intent, PackageManager.GET_META_DATA,
+                mUser.getIdentifier());
+    }
+
+    /**
      * Can the app be the default for the USB device. I.e. can the app be launched by default if
      * the device is plugged in.
      *
@@ -96,13 +110,10 @@ class UsbUserSettingsManager {
      * @return {@code true} if the app can be default
      */
     boolean canBeDefault(@NonNull UsbDevice device, String packageName) {
-        ActivityInfo[] activities = getPackageActivities(packageName);
-        if (activities != null) {
-            int numActivities = activities.length;
-            for (int i = 0; i < numActivities; i++) {
-                ActivityInfo activityInfo = activities[i];
-
-                try (XmlResourceParser parser = activityInfo.loadXmlMetaData(mPackageManager,
+        ArrayList<ComponentInfo> components = getPackageActivitiesOrServices(packageName);
+        if (components != null) {
+            for (ComponentInfo componentInfo : components) {
+                try (XmlResourceParser parser = componentInfo.loadXmlMetaData(mPackageManager,
                         UsbManager.ACTION_USB_DEVICE_ATTACHED)) {
                     if (parser == null) {
                         continue;
@@ -120,7 +131,7 @@ class UsbUserSettingsManager {
                         XmlUtils.nextElement(parser);
                     }
                 } catch (Exception e) {
-                    Slog.w(TAG, "Unable to load component info " + activityInfo.toString(), e);
+                    Slog.w(TAG, "Unable to load component info " + componentInfo.toString(), e);
                 }
             }
         }
@@ -138,13 +149,10 @@ class UsbUserSettingsManager {
      * @return {@code true} if the app can be default
      */
     boolean canBeDefault(@NonNull UsbAccessory accessory, String packageName) {
-        ActivityInfo[] activities = getPackageActivities(packageName);
-        if (activities != null) {
-            int numActivities = activities.length;
-            for (int i = 0; i < numActivities; i++) {
-                ActivityInfo activityInfo = activities[i];
-
-                try (XmlResourceParser parser = activityInfo.loadXmlMetaData(mPackageManager,
+        ArrayList<ComponentInfo> components = getPackageActivitiesOrServices(packageName);
+        if (components != null) {
+            for (ComponentInfo componentInfo : components) {
+                try (XmlResourceParser parser = componentInfo.loadXmlMetaData(mPackageManager,
                         UsbManager.ACTION_USB_ACCESSORY_ATTACHED)) {
                     if (parser == null) {
                         continue;
@@ -162,7 +170,7 @@ class UsbUserSettingsManager {
                         XmlUtils.nextElement(parser);
                     }
                 } catch (Exception e) {
-                    Slog.w(TAG, "Unable to load component info " + activityInfo.toString(), e);
+                    Slog.w(TAG, "Unable to load component info " + componentInfo.toString(), e);
                 }
             }
         }
@@ -170,11 +178,13 @@ class UsbUserSettingsManager {
         return false;
     }
 
-    private ActivityInfo[] getPackageActivities(String packageName) {
+    private ArrayList<ComponentInfo> getPackageActivitiesOrServices(String packageName) {
         try {
             PackageInfo packageInfo = mPackageManager.getPackageInfo(packageName,
-                    PackageManager.GET_ACTIVITIES | PackageManager.GET_META_DATA);
-            return packageInfo.activities;
+                    PackageManager.GET_ACTIVITIES | PackageManager.GET_SERVICES | PackageManager.GET_META_DATA);
+            ArrayList<ComponentInfo> temp = new ArrayList<>(Arrays.asList(packageInfo.activities));
+            temp.addAll(Arrays.asList(packageInfo.services));
+            return temp;
         } catch (PackageManager.NameNotFoundException e) {
             // ignore
         }
@@ -196,9 +206,9 @@ class UsbUserSettingsManager {
                 long deviceAttachedActivityToken = dump.start("device_attached_activities",
                         UsbUserSettingsManagerProto.DEVICE_ATTACHED_ACTIVITIES);
 
+                ComponentInfo componentInfo = deviceAttachedActivity.serviceInfo != null ? deviceAttachedActivity.serviceInfo : deviceAttachedActivity.activityInfo;
                 writeComponentName(dump, "activity", UsbDeviceAttachedActivities.ACTIVITY,
-                        new ComponentName(deviceAttachedActivity.activityInfo.packageName,
-                                deviceAttachedActivity.activityInfo.name));
+                        new ComponentName(componentInfo.packageName, componentInfo.name));
 
                 ArrayList<DeviceFilter> deviceFilters = getDeviceFilters(mPackageManager,
                         deviceAttachedActivity);
@@ -223,9 +233,9 @@ class UsbUserSettingsManager {
                 long accessoryAttachedActivityToken = dump.start("accessory_attached_activities",
                         UsbUserSettingsManagerProto.ACCESSORY_ATTACHED_ACTIVITIES);
 
+                ComponentInfo componentInfo = accessoryAttachedActivity.serviceInfo != null ? accessoryAttachedActivity.serviceInfo : accessoryAttachedActivity.activityInfo;
                 writeComponentName(dump, "activity", UsbAccessoryAttachedActivities.ACTIVITY,
-                        new ComponentName(accessoryAttachedActivity.activityInfo.packageName,
-                                accessoryAttachedActivity.activityInfo.name));
+                        new ComponentName(componentInfo.packageName, componentInfo.name));
 
                 ArrayList<AccessoryFilter> accessoryFilters = getAccessoryFilters(mPackageManager,
                         accessoryAttachedActivity);

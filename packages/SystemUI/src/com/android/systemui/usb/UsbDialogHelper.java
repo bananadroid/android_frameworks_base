@@ -25,6 +25,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.PermissionChecker;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.ComponentInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.hardware.usb.IUsbManager;
@@ -80,8 +81,9 @@ public class UsbDialogHelper {
         PackageManager packageManager = mContext.getPackageManager();
         if (mResolveInfo != null) {
             // If a ResolveInfo is provided it will be used to determine the activity to start
-            mUid = mResolveInfo.activityInfo.applicationInfo.uid;
-            mPackageName = mResolveInfo.activityInfo.packageName;
+            ComponentInfo componentInfo = mResolveInfo.serviceInfo != null ? mResolveInfo.serviceInfo : mResolveInfo.activityInfo;
+            mUid = componentInfo.applicationInfo.uid;
+            mPackageName = componentInfo.packageName;
             mPendingIntent = null;
         } else {
             mUid = intent.getIntExtra(Intent.EXTRA_UID, -1);
@@ -225,13 +227,18 @@ public class UsbDialogHelper {
             intent.putExtra(UsbManager.EXTRA_ACCESSORY, mAccessory);
         }
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        ComponentInfo componentInfo = mResolveInfo.serviceInfo != null ? mResolveInfo.serviceInfo : mResolveInfo.activityInfo;
         intent.setComponent(
-                new ComponentName(mResolveInfo.activityInfo.packageName,
-                        mResolveInfo.activityInfo.name));
+                new ComponentName(componentInfo.packageName,
+                        componentInfo.name));
         try {
-            mContext.startActivityAsUser(intent, new UserHandle(userId));
+            if (mResolveInfo.serviceInfo != null) {
+                mContext.startServiceAsUser(intent, new UserHandle(userId));
+            } else {
+                mContext.startActivityAsUser(intent, new UserHandle(userId));
+            }
         } catch (Exception e) {
-            Log.e(TAG, "Unable to start activity", e);
+            Log.e(TAG, "Unable to start activity/service", e);
         }
     }
 

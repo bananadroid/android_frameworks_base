@@ -27,6 +27,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.ComponentInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -617,7 +618,7 @@ class UsbProfileGroupSettingsManager {
     static ArrayList<DeviceFilter> getDeviceFilters(@NonNull PackageManager pm,
             @NonNull ResolveInfo info) {
         ArrayList<DeviceFilter> filters = null;
-        ActivityInfo ai = info.activityInfo;
+        ComponentInfo ai = info.serviceInfo != null ? info.serviceInfo : info.activityInfo;
 
         XmlResourceParser parser = null;
         try {
@@ -659,7 +660,7 @@ class UsbProfileGroupSettingsManager {
     static @Nullable ArrayList<AccessoryFilter> getAccessoryFilters(@NonNull PackageManager pm,
             @NonNull ResolveInfo info) {
         ArrayList<AccessoryFilter> filters = null;
-        ActivityInfo ai = info.activityInfo;
+        ComponentInfo ai = info.serviceInfo != null ? info.serviceInfo : info.activityInfo;
 
         XmlResourceParser parser = null;
         try {
@@ -740,6 +741,27 @@ class UsbProfileGroupSettingsManager {
         for (int i = 0; i < numProfiles; i++) {
             resolveInfos.addAll(mSettingsManager.getSettingsForUser(profiles.get(i).id)
                     .queryIntentActivities(intent));
+        }
+
+        return resolveInfos;
+    }
+
+    /**
+     * Resolve all services that match an intent for all profiles of this group.
+     *
+     * @param intent The intent to resolve
+     *
+     * @return The {@link ResolveInfo}s for all profiles of the group
+     */
+    private @NonNull ArrayList<ResolveInfo> queryIntentServicesForAllProfiles(
+            @NonNull Intent intent) {
+        List<UserInfo> profiles = mUserManager.getEnabledProfiles(mParentUser.getIdentifier());
+
+        ArrayList<ResolveInfo> resolveInfos = new ArrayList<>();
+        int numProfiles = profiles.size();
+        for (int i = 0; i < numProfiles; i++) {
+            resolveInfos.addAll(mSettingsManager.getSettingsForUser(profiles.get(i).id)
+                    .queryIntentServices(intent));
         }
 
         return resolveInfos;
@@ -832,8 +854,8 @@ class UsbProfileGroupSettingsManager {
         for (int i = 0; i < numRawMatches; i++) {
             final ResolveInfo rawMatch = rawMatches.get(i);
             if (!isForwardMatch(rawMatch)) {
-                if (UserHandle.getUserHandleForUid(
-                        rawMatch.activityInfo.applicationInfo.uid).equals(mParentUser)) {
+                final int uid = rawMatch.serviceInfo != null ? rawMatch.serviceInfo.applicationInfo.uid : rawMatch.activityInfo.applicationInfo.uid;
+                if (UserHandle.getUserHandleForUid(uid).equals(mParentUser)) {
                     numParentActivityMatches++;
                 } else {
                     numNonParentActivityMatches++;
@@ -861,7 +883,8 @@ class UsbProfileGroupSettingsManager {
 
     private ArrayList<ResolveInfo> getDeviceMatchesLocked(UsbDevice device, Intent intent) {
         ArrayList<ResolveInfo> matches = new ArrayList<>();
-        List<ResolveInfo> resolveInfos = queryIntentActivitiesForAllProfiles(intent);
+        ArrayList<ResolveInfo> resolveInfos = new ArrayList<>(queryIntentActivitiesForAllProfiles(intent));
+        resolveInfos.addAll(queryIntentServicesForAllProfiles(intent));
         int count = resolveInfos.size();
         for (int i = 0; i < count; i++) {
             ResolveInfo resolveInfo = resolveInfos.get(i);
@@ -876,7 +899,8 @@ class UsbProfileGroupSettingsManager {
     private ArrayList<ResolveInfo> getAccessoryMatchesLocked(
             UsbAccessory accessory, Intent intent) {
         ArrayList<ResolveInfo> matches = new ArrayList<>();
-        List<ResolveInfo> resolveInfos = queryIntentActivitiesForAllProfiles(intent);
+        ArrayList<ResolveInfo> resolveInfos = new ArrayList<>(queryIntentActivitiesForAllProfiles(intent));
+        resolveInfos.addAll(queryIntentServicesForAllProfiles(intent));
         int count = resolveInfos.size();
         for (int i = 0; i < count; i++) {
             ResolveInfo resolveInfo = resolveInfos.get(i);
@@ -899,22 +923,22 @@ class UsbProfileGroupSettingsManager {
 
     private void resolveActivity(Intent intent, UsbDevice device, boolean showMtpNotification) {
         final ArrayList<ResolveInfo> matches;
-        final ActivityInfo defaultActivity;
+        final ResolveInfo defaultTarget;
         synchronized (mLock) {
             matches = getDeviceMatchesLocked(device, intent);
-            defaultActivity = getDefaultActivityLocked(
+            defaultTarget = getDefaultTargetLocked(
                     matches, mDevicePreferenceMap.get(new DeviceFilter(device)));
         }
 
         if (showMtpNotification && MtpNotificationManager.shouldShowNotification(
-                mPackageManager, device) && defaultActivity == null) {
+                mPackageManager, device) && defaultTarget == null) {
             // Show notification if the device is MTP storage.
             mMtpNotificationManager.showNotification(device);
             return;
         }
 
         // Start activity with registered intent
-        resolveActivity(intent, matches, defaultActivity, device, null);
+        resolveActivity(intent, matches, defaultTarget, device, null);
     }
 
     public void deviceAttachedForFixedHandler(UsbDevice device, ComponentName component) {
@@ -961,30 +985,31 @@ class UsbProfileGroupSettingsManager {
         intent.addFlags(
                 Intent.FLAG_ACTIVITY_NEW_TASK |
                 Intent.FLAG_RECEIVER_INCLUDE_BACKGROUND);
+        mContext.sendBroadcastAsUser(intent, UserHandle.ALL);
 
         final ArrayList<ResolveInfo> matches;
-        final ActivityInfo defaultActivity;
+        final ResolveInfo defaultTarget;
         synchronized (mLock) {
             matches = getAccessoryMatchesLocked(accessory, intent);
-            defaultActivity = getDefaultActivityLocked(
+            defaultTarget = getDefaultTargetLocked(
                     matches, mAccessoryPreferenceMap.get(new AccessoryFilter(accessory)));
         }
 
         sEventLogger.log(new UsbDeviceLogger.StringEvent("accessoryAttached: " + intent));
-        resolveActivity(intent, matches, defaultActivity, null, accessory);
+        resolveActivity(intent, matches, defaultTarget, null, accessory);
     }
 
     /**
-     * Start the appropriate package when an device/accessory got attached.
+     * Start the appropriate package when an device/accessory got attached. (Activity or service)
      *
      * @param intent The intent to start the package
      * @param matches The available resolutions of the intent
-     * @param defaultActivity The default activity for the device (if set)
+     * @param defaultTarget The default activity/service for the device (if set)
      * @param device The device if a device was attached
      * @param accessory The accessory if a device was attached
      */
     private void resolveActivity(@NonNull Intent intent, @NonNull ArrayList<ResolveInfo> matches,
-            @Nullable ActivityInfo defaultActivity, @Nullable UsbDevice device,
+            @Nullable ResolveInfo defaultTarget, @Nullable UsbDevice device,
             @Nullable UsbAccessory accessory) {
         // Remove all matches which are on the denied list
         ArraySet deniedPackages = null;
@@ -996,9 +1021,16 @@ class UsbProfileGroupSettingsManager {
         if (deniedPackages != null) {
             for (int i = matches.size() - 1; i >= 0; i--) {
                 ResolveInfo match = matches.get(i);
-                String packageName = match.activityInfo.packageName;
-                UserHandle user = UserHandle
-                        .getUserHandleForUid(match.activityInfo.applicationInfo.uid);
+                final String packageName;
+                final int uid;
+                if (match.serviceInfo != null) {
+                    packageName = match.serviceInfo.packageName;
+                    uid = match.serviceInfo.applicationInfo.uid;
+                } else {
+                    packageName = match.activityInfo.packageName;
+                    uid = match.activityInfo.applicationInfo.uid;
+                }
+                UserHandle user = UserHandle.getUserHandleForUid(uid);
                 if (deniedPackages.contains(new UserPackage(packageName, user))) {
                     matches.remove(i);
                 }
@@ -1014,29 +1046,53 @@ class UsbProfileGroupSettingsManager {
             return;
         }
 
-        if (defaultActivity != null) {
+        if (defaultTarget != null && defaultTarget.activityInfo != null) {
             UsbUserPermissionManager defaultRIUserPermissions =
                     mSettingsManager.mUsbService.getPermissionsForUser(
-                            UserHandle.getUserId(defaultActivity.applicationInfo.uid));
+                            UserHandle.getUserId(defaultTarget.activityInfo.applicationInfo.uid));
             // grant permission for default activity
             if (device != null) {
                 defaultRIUserPermissions
-                        .grantDevicePermission(device, defaultActivity.applicationInfo.uid);
+                        .grantDevicePermission(device, defaultTarget.activityInfo.applicationInfo.uid);
             } else if (accessory != null) {
                 defaultRIUserPermissions.grantAccessoryPermission(accessory,
-                        defaultActivity.applicationInfo.uid);
+                        defaultTarget.activityInfo.applicationInfo.uid);
             }
 
             // start default activity directly
             try {
                 intent.setComponent(
-                        new ComponentName(defaultActivity.packageName, defaultActivity.name));
+                        new ComponentName(defaultTarget.activityInfo.packageName, defaultTarget.activityInfo.name));
 
                 UserHandle user = UserHandle.getUserHandleForUid(
-                        defaultActivity.applicationInfo.uid);
+                        defaultTarget.activityInfo.applicationInfo.uid);
                 mContext.startActivityAsUser(intent, user);
             } catch (ActivityNotFoundException e) {
                 Slog.e(TAG, "startActivity failed", e);
+            }
+        } else if (defaultTarget != null && defaultTarget.serviceInfo != null) {
+            UsbUserPermissionManager defaultRIUserPermissions =
+                    mSettingsManager.mUsbService.getPermissionsForUser(
+                            UserHandle.getUserId(defaultTarget.serviceInfo.applicationInfo.uid));
+            // grant permission for default service
+            if (device != null) {
+                defaultRIUserPermissions
+                        .grantDevicePermission(device, defaultTarget.serviceInfo.applicationInfo.uid);
+            } else if (accessory != null) {
+                defaultRIUserPermissions.grantAccessoryPermission(accessory,
+                        defaultTarget.serviceInfo.applicationInfo.uid);
+            }
+
+            // start default service directly
+            try {
+                intent.setComponent(
+                        new ComponentName(defaultTarget.serviceInfo.packageName, defaultTarget.serviceInfo.name));
+
+                UserHandle user = UserHandle.getUserHandleForUid(
+                        defaultTarget.serviceInfo.applicationInfo.uid);
+                mContext.startServiceAsUser(intent, user);
+            } catch (Throwable e) {
+                Slog.e(TAG, "startService failed", e);
             }
         } else {
             if (matches.size() == 1) {
@@ -1054,32 +1110,49 @@ class UsbProfileGroupSettingsManager {
      *     is choosed by a user.
      * @return Default activity
      */
-    private @Nullable ActivityInfo getDefaultActivityLocked(
+    private @Nullable ResolveInfo getDefaultTargetLocked(
             @NonNull ArrayList<ResolveInfo> matches,
             @Nullable UserPackage userPackage) {
         if (userPackage != null) {
-            // look for default activity
+            // look for default activity/service
             for (final ResolveInfo info : matches) {
                 if (info.activityInfo != null && userPackage.equals(
                         new UserPackage(info.activityInfo.packageName,
                                 UserHandle.getUserHandleForUid(
                                         info.activityInfo.applicationInfo.uid)))) {
-                    return info.activityInfo;
+                    return info;
+                }
+                if (info.serviceInfo != null && userPackage.equals(
+                        new UserPackage(info.serviceInfo.packageName,
+                                UserHandle.getUserHandleForUid(
+                                        info.serviceInfo.applicationInfo.uid)))) {
+                    return info;
                 }
             }
         }
 
         if (matches.size() == 1) {
-            final ActivityInfo activityInfo = matches.get(0).activityInfo;
-            if (activityInfo != null) {
+            final ResolveInfo match = matches.get(0);
+            if (match.activityInfo != null) {
                 if (mDisablePermissionDialogs) {
-                    return activityInfo;
+                    return match;
                 }
                 // System apps are considered default unless there are other matches
-                if (activityInfo.applicationInfo != null
-                        && (activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM)
+                if (match.activityInfo.applicationInfo != null
+                        && (match.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM)
                                 != 0) {
-                    return activityInfo;
+                    return match;
+                }
+            }
+            if (match.serviceInfo != null) {
+                if (mDisablePermissionDialogs) {
+                    return match;
+                }
+                // System apps are considered default unless there are other matches
+                if (match.serviceInfo.applicationInfo != null
+                        && (match.serviceInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM)
+                                != 0) {
+                    return match;
                 }
             }
         }

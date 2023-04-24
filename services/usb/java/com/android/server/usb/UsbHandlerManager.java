@@ -90,8 +90,8 @@ class UsbHandlerManager {
                 mContext.getResources().getString(
                         com.android.internal.R.string.config_usbConfirmActivity)));
         resolverIntent.putExtra("rinfo", rInfo);
-        UserHandle user =
-                UserHandle.getUserHandleForUid(rInfo.activityInfo.applicationInfo.uid);
+        final int uid = rInfo.serviceInfo != null ? rInfo.serviceInfo.applicationInfo.uid : rInfo.activityInfo.applicationInfo.uid;
+        UserHandle user = UserHandle.getUserHandleForUid(uid);
 
         if (device != null) {
             resolverIntent.putExtra(UsbManager.EXTRA_DEVICE, device);
