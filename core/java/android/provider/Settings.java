@@ -6909,6 +6909,11 @@ public final class Settings {
         public static final String NOTIFICATION_MATERIAL_DISMISS_BGSTYLE = "notification_material_dismiss_bgstyle";
 
         /**
+         * @hide
+         */
+        public static final String RECENTS_LOCKED_TASKS = "recents_locked_tasks";
+
+        /**
          * Keys we no longer back up under the current schema, but want to continue to
          * process when restoring historical backup datasets.
          *
