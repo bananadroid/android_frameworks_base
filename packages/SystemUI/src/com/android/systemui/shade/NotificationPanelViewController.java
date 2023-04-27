@@ -6789,7 +6789,7 @@ public final class NotificationPanelViewController implements Dumpable {
             mReTickerContentTV.setText(mergedContentText);
             mReTickerContentTV.setTextAppearance(mView.getContext(), R.style.TextAppearance_Notifications_reTicker);
             mReTickerContentTV.setSelected(true);
-            RetickerAnimations.revealAnimation(mReTickerComeback);
+            RetickerAnimations.doBounceAnimationIn(mReTickerComeback);
             if (reTickerIntent != null) {
                 mReTickerComeback.setOnClickListener(v -> {
                     final GameSpaceManager gameSpace = mCentralSurfaces.getGameSpaceManager();
@@ -6799,7 +6799,7 @@ public final class NotificationPanelViewController implements Dumpable {
                         } catch (PendingIntent.CanceledException e) {
                         }
                     }
-                    RetickerAnimations.revealAnimationHide(mReTickerComeback, mNotificationStackScroller);
+                    RetickerAnimations.doBounceAnimationOut(mReTickerComeback, mNotificationStackScroller);
                     reTickerViewVisibility();
                 });
             }
@@ -6823,7 +6823,7 @@ public final class NotificationPanelViewController implements Dumpable {
     }
 
     public void reTickerDismissal() {
-        RetickerAnimations.revealAnimationHide(mReTickerComeback, mNotificationStackScroller);
+        RetickerAnimations.doBounceAnimationOut(mReTickerComeback, mNotificationStackScroller);
         mReTickerComeback.getViewTreeObserver().removeOnComputeInternalInsetsListener(mInsetsListener);
     }
 
