@@ -401,6 +401,20 @@ import java.util.concurrent.atomic.AtomicBoolean;
             postSetLeAudioVolumeIndex(leAudioVolIndex, leAudioMaxVolIndex, streamType);
         }
 
+        // In BT classic for communication, the device changes from a2dp to sco device, but for
+        // LE Audio it stays the same and we must trigger the proper stream volume alignment, if
+        // LE Audio communication device is activated after the audio system has already switched to
+        // MODE_IN_CALL mode.
+        if (isBluetoothLeHeadsetRequested()) {
+            final int streamType = mAudioService.getBluetoothContextualVolumeStream();
+            final int leAudioVolIndex = getVssVolumeForDevice(streamType, device.getInternalType());
+            final int leAudioMaxVolIndex = getMaxVssVolumeForStream(streamType);
+            if (AudioService.DEBUG_COMM_RTE) {
+                Log.v(TAG, "setCommunicationRouteForClient restoring LE Audio device volume lvl.");
+            }
+            postSetLeAudioVolumeIndex(leAudioVolIndex, leAudioMaxVolIndex, streamType);
+        }
+
         sendLMsgNoDelay(MSG_L_UPDATE_COMMUNICATION_ROUTE, SENDMSG_QUEUE, eventSource);
     }
 
