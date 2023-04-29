@@ -100,7 +100,6 @@ public class KeyguardStatusBarView extends RelativeLayout {
     private int mCutoutSideNudge = 0;
 
     private DisplayCutout mDisplayCutout;
-    private int mRoundedCornerPadding = 0;
     // right and left padding applied to this view to account for cutouts and rounded corners
     private Pair<Integer, Integer> mPadding = new Pair(0, 0);
 
@@ -168,18 +167,6 @@ public class KeyguardStatusBarView extends RelativeLayout {
                 mStatusIconContainer.getPaddingBottom()
         );
 
-        // Respect font size setting.
-        mCarrierLabel.setTextSize(TypedValue.COMPLEX_UNIT_PX,
-                getResources().getDimensionPixelSize(
-                        com.android.internal.R.dimen.text_size_small_material));
-        lp = (MarginLayoutParams) mCarrierLabel.getLayoutParams();
-
-        int marginStart = calculateMargin(
-                getResources().getDimensionPixelSize(R.dimen.keyguard_carrier_text_margin),
-                mPadding.first);
-        lp.setMarginStart(marginStart);
-
-        mCarrierLabel.setLayoutParams(lp);
         updateKeyguardStatusBarHeight();
     }
 
@@ -203,8 +190,6 @@ public class KeyguardStatusBarView extends RelativeLayout {
                 R.dimen.ongoing_appops_dot_min_padding);
         mCutoutSideNudge = getResources().getDimensionPixelSize(
                 R.dimen.display_cutout_margin_consumption);
-        mRoundedCornerPadding = res.getDimensionPixelSize(
-                R.dimen.rounded_corner_content_padding);
     }
 
     private void updateVisibilities() {
