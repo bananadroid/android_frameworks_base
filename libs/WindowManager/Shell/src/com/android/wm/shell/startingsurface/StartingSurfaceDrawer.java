@@ -430,8 +430,7 @@ public class StartingSurfaceDrawer {
         }
 
         @Override
-        @Nullable
-        public SplashScreenView get() {
+        public @Nullable SplashScreenView get() {
             synchronized (this) {
                 while (!mIsViewSet) {
                     try {
@@ -692,7 +691,7 @@ public class StartingSurfaceDrawer {
         private final TaskSnapshotWindow mTaskSnapshotWindow;
         private SplashScreenView mContentView;
         private boolean mSetSplashScreen;
-        @StartingWindowType private int mSuggestType;
+        private @StartingWindowType int mSuggestType;
         private int mBGColor;
         private final long mCreateTime;
         private int mSystemBarAppearance;
@@ -733,7 +732,7 @@ public class StartingSurfaceDrawer {
 
         // Reset the system bar color which set by splash screen, make it align to the app.
         private void clearSystemBarColor() {
-            if (mDecorView == null || !mDecorView.isAttachedToWindow()) {
+            if (mDecorView == null) {
                 return;
             }
             if (mDecorView.getLayoutParams() instanceof WindowManager.LayoutParams) {
