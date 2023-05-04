@@ -106,7 +106,8 @@ public class FullscreenTaskListener implements ShellTaskOrganizer.TaskListener {
                     .onTaskOpening(taskInfo, leash, t, t);
             t.apply();
         }
-        if (!createdWindowDecor) {
+        // avoid bounding surface to used/released/failing layer/s
+        if (!createdWindowDecor && leash.isValid()) {
             mSyncQueue.runInSync(t -> {
                 // Reset several properties back to fullscreen (PiP, for example, leaves all these
                 // properties in a bad state).
