@@ -184,7 +184,7 @@ public class Resources {
     private int mBaseApkAssetsSize;
 
     /** @hide */
-    private static Set<Resources> sResourcesHistory = Collections.synchronizedSet(
+    private static final Set<Resources> sResourcesHistory = Collections.synchronizedSet(
             Collections.newSetFromMap(
                     new WeakHashMap<>()));
 
