@@ -78,6 +78,8 @@ import com.android.systemui.util.CarrierConfigTracker;
 import com.android.systemui.util.CarrierConfigTracker.CarrierConfigChangedListener;
 import com.android.systemui.util.CarrierConfigTracker.DefaultDataSubscriptionChangedListener;
 
+import com.android.systemui.banana.logo.LogoImage;
+
 import kotlin.Unit;
 
 import java.io.PrintWriter;
@@ -739,12 +741,16 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
     }
 
     public void hideNotificationIconArea(boolean animate) {
-        animateHide(mLeftLogo, animate);
+    	if (LogoImage.getLogoPosition(getContext()) == 0) {
+            animateFullyHide(mLeftLogo, animate);
+        }
         animateHide(mNotificationIconAreaInner, animate);
     }
 
     public void showNotificationIconArea(boolean animate) {
-        animateShow(mLeftLogo, animate);
+    	if (LogoImage.getLogoPosition(getContext()) == 0) {
+            animateShow(mLeftLogo, animate);
+        }
         animateShow(mNotificationIconAreaInner, animate);
     }
 
@@ -786,6 +792,13 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
         if (v == null)
             return;
         animateHiddenState(v, View.INVISIBLE, animate);
+    }
+
+    /**
+     * Hides a view and its hierarchy.
+     */
+    private void animateFullyHide(final View v, boolean animate) {
+        animateHiddenState(v, View.GONE, animate);
     }
 
     /**
