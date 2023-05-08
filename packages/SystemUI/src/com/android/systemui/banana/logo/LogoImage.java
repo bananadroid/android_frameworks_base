@@ -228,4 +228,9 @@ public abstract class LogoImage extends ImageView {
         updateLogo();
         setVisibility(View.VISIBLE);
     }
+    
+    public static int getLogoPosition(Context context) {
+        return Settings.System.getInt(context.getContentResolver(),
+                Settings.System.STATUS_BAR_LOGO_POSITION, 0);
+    }
 }
