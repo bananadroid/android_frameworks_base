@@ -108,4 +108,7 @@
 
     <!-- FPSInfoService FPS Info text padding -->
     <dimen name="fps_info_text_padding">4dp</dimen>
+
+    <!-- Volume app icon -->  
+    <dimen name="volume_app_icon_max_size">108dp</dimen>
 </resources>
