@@ -111,7 +111,6 @@ import android.widget.DateTimeView;
 import android.widget.ImageButton;
 import android.window.OnBackInvokedCallback;
 import android.window.OnBackInvokedDispatcher;
-import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.Lifecycle;
@@ -303,10 +302,6 @@ public class CentralSurfacesImpl implements CoreStartable, CentralSurfaces, Tune
             "system:" + Settings.System.QS_TRANSPARENCY;
     private static final String NOTIFICATION_MATERIAL_DISMISS =
             "system:" + Settings.System.NOTIFICATION_MATERIAL_DISMISS;
-    private static final String NOTIFICATION_MATERIAL_DISMISS_STYLE =
-            "system:" + Settings.System.NOTIFICATION_MATERIAL_DISMISS_STYLE;
-    private static final String NOTIFICATION_MATERIAL_DISMISS_BGSTYLE =
-            "system:" + Settings.System.NOTIFICATION_MATERIAL_DISMISS_BGSTYLE;
     private static final String FORCE_SHOW_NAVBAR =
             "customsystem:" + Settings.System.FORCE_SHOW_NAVBAR;
 
@@ -595,9 +590,6 @@ public class CentralSurfacesImpl implements CoreStartable, CentralSurfaces, Tune
     private final MetricsLogger mMetricsLogger;
 
     private ImageButton mDismissAllButton;
-    private int mClearAllBgColorStyle;
-    private int mClearAllBgStyle;
-    private int mClearAllButtonStyle;
     private boolean mShowDimissButton;
 
     // ensure quick settings is disabled until the current user makes it through the setup wizard
@@ -965,8 +957,6 @@ public class CentralSurfacesImpl implements CoreStartable, CentralSurfaces, Tune
 
         mTunerService.addTunable(this, QS_TRANSPARENCY);
         mTunerService.addTunable(this, NOTIFICATION_MATERIAL_DISMISS);
-        mTunerService.addTunable(this, NOTIFICATION_MATERIAL_DISMISS_STYLE);
-        mTunerService.addTunable(this, NOTIFICATION_MATERIAL_DISMISS_BGSTYLE);
         mTunerService.addTunable(this, PULSE_ON_NEW_TRACKS);
         mTunerService.addTunable(this, LESS_BORING_HEADS_UP);
         mTunerService.addTunable(this, RETICKER_STATUS);
@@ -1573,57 +1563,10 @@ public class CentralSurfacesImpl implements CoreStartable, CentralSurfaces, Tune
     @Override
     public void updateDismissAllButton() {
         if (mDismissAllButton == null) return;
-        switch (mClearAllButtonStyle) {
-            case 1:
-                mDismissAllButton.setImageResource(R.drawable.dismiss_all_icon1);
-                break;
-            case 2:
-                mDismissAllButton.setImageResource(R.drawable.dismiss_all_icon2);
-                break;
-            case 3:
-                mDismissAllButton.setImageResource(R.drawable.dismiss_all_icon3);
-                break;
-            case 4:
-                mDismissAllButton.setImageResource(R.drawable.dismiss_all_icon4);
-                break;
-            case 5:
-                mDismissAllButton.setImageResource(R.drawable.dismiss_all_icon5);
-                break;
-            case 6:
-                mDismissAllButton.setImageResource(R.drawable.dismiss_all_icon6);
-                break;
-            case 7:
-                mDismissAllButton.setImageResource(R.drawable.dismiss_all_icon7);
-                break;
-            case 8:
-                mDismissAllButton.setImageResource(R.drawable.dismiss_all_icon8);
-                break;
-            case 9:
-                mDismissAllButton.setImageResource(R.drawable.dismiss_all_icon9);
-                break;
-            default:
-                mDismissAllButton.setImageResource(R.drawable.dismiss_all_icon);
-                break;
-        }
+        mDismissAllButton.setImageResource(R.drawable.dismiss_all_icon);
         mDismissAllButton.setElevation(mContext.getResources().getDimension(R.dimen.dismiss_all_button_elevation));
         mDismissAllButton.setColorFilter(mContext.getColor(R.color.notif_pill_text));
-        switch (mClearAllBgStyle) {
-            case 1:
-                mDismissAllButton.setBackground(mContext.getTheme().getDrawable(R.drawable.dismiss_all_background1));
-                break;
-            case 2:
-                mDismissAllButton.setBackground(mContext.getTheme().getDrawable(R.drawable.dismiss_all_background2));
-                break;
-            case 3:
-                mDismissAllButton.setBackground(mContext.getTheme().getDrawable(R.drawable.dismiss_all_background3));
-                break;
-            case 4:
-                mDismissAllButton.setBackground(mContext.getTheme().getDrawable(R.drawable.dismiss_all_background4));
-                break;
-            default:
-                mDismissAllButton.setBackground(mContext.getTheme().getDrawable(R.drawable.dismiss_all_background));
-                break;
-        }
+        mDismissAllButton.setBackground(mContext.getTheme().getDrawable(R.drawable.dismiss_all_background));
     }
 
     @Override
@@ -4281,17 +4224,6 @@ public class CentralSurfacesImpl implements CoreStartable, CentralSurfaces, Tune
             case NOTIFICATION_MATERIAL_DISMISS:
                 mShowDimissButton =
                         TunerService.parseIntegerSwitch(newValue, false);
-                updateDismissAllButton();
-                break;
-            case NOTIFICATION_MATERIAL_DISMISS_STYLE:
-                mClearAllButtonStyle =
-                        TunerService.parseInteger(newValue, 0);
-                updateDismissAllButton();
-                break;
-            case NOTIFICATION_MATERIAL_DISMISS_BGSTYLE:
-                mClearAllBgStyle =
-                        TunerService.parseInteger(newValue, 0);
-                updateDismissAllButton();
                 break;
             case PULSE_ON_NEW_TRACKS:
                 boolean showPulseOnNewTracks =
