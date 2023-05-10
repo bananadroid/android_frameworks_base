@@ -385,7 +385,7 @@ public class QuickStatusBarHeader extends FrameLayout implements TunerService.Tu
         int statusBarHeight = SystemBarUtils.getStatusBarHeight(mContext);
 
         mStatusBarPaddingTop = resources.getDimensionPixelSize(
-                R.dimen.status_bar_padding_top);
+                R.dimen.status_bar_padding_top_insets);
 
         mDatePrivacyView.getLayoutParams().height = statusBarHeight;
         mDatePrivacyView.setLayoutParams(mDatePrivacyView.getLayoutParams());

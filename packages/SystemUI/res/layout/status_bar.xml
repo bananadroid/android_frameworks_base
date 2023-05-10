@@ -46,7 +46,6 @@
         android:layout_height="match_parent"
         android:paddingStart="@dimen/status_bar_padding_start"
         android:paddingEnd="@dimen/status_bar_padding_end"
-        android:paddingTop="@dimen/status_bar_padding_top"
         android:orientation="horizontal">
 
         <!-- Container for the entire start half of the status bar. It will always use the same
@@ -76,6 +75,7 @@
                     android:id="@+id/status_bar_start_side_except_heads_up"
                     android:layout_height="match_parent"
                     android:layout_width="wrap_content"
+                    android:layout_gravity="center_vertical"
                     android:gravity="center_vertical"
                     android:clipChildren="false">
                     <ViewStub
@@ -86,9 +86,9 @@
 
                     <com.android.systemui.banana.logo.LogoImageView
                         android:id="@+id/statusbar_logo"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center"
+                        android:layout_width="@dimen/statusbar_logo_size"
+                        android:layout_height="@dimen/statusbar_logo_size"
+                        android:layout_gravity="center_vertical|start"
                         android:paddingStart="@dimen/status_bar_left_clock_starting_padding"
                         android:paddingEnd="@dimen/status_bar_left_clock_end_padding"
                         android:gravity="center_vertical|start"
@@ -147,7 +147,7 @@
                 android:id="@+id/status_bar_end_side_content"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_gravity="end"
+                android:layout_gravity="center_vertical|end"
                 android:orientation="horizontal"
                 android:gravity="center_vertical|end"
                 android:clipChildren="false">
@@ -170,7 +170,6 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingTop="@dimen/status_bar_padding_top"
         >
         <com.android.systemui.statusbar.policy.Clock
             android:id="@+id/clock_center"

@@ -20,7 +20,7 @@
     android:layout_height="@dimen/status_bar_height"
     android:layout_width="wrap_content"
     android:layout_gravity="bottom|right"
-    android:paddingTop="@dimen/status_bar_padding_top"
+    android:paddingTop="@dimen/status_bar_padding_top_insets"
     android:visibility="invisible" >
     <ImageView
         android:id="@+id/privacy_dot"

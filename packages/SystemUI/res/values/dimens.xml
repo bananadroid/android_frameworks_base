@@ -308,6 +308,9 @@
     <!-- the padding on the top of the statusbar (usually 0) -->
     <dimen name="status_bar_padding_top">0dp</dimen>
 
+    <!-- the override for padding on the top of the statusbar (recommended to avoid clip/alignment issues) -->  
+    <dimen name="status_bar_padding_top_insets">0dp</dimen>
+
     <!-- the radius of the overflow dot in the status bar -->
     <dimen name="overflow_dot_radius">2dp</dimen>
 

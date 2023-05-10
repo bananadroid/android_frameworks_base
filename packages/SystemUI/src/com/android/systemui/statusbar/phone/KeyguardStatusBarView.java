@@ -154,7 +154,7 @@ public class KeyguardStatusBarView extends RelativeLayout {
         // mStatusIconArea
         mStatusIconArea.setPaddingRelative(
                 mStatusIconArea.getPaddingStart(),
-                getResources().getDimensionPixelSize(R.dimen.status_bar_padding_top),
+                getResources().getDimensionPixelSize(R.dimen.status_bar_padding_top_insets),
                 mStatusIconArea.getPaddingEnd(),
                 mStatusIconArea.getPaddingBottom()
         );
