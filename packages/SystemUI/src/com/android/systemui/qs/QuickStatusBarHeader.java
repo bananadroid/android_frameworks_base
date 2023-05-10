@@ -425,8 +425,8 @@ public class QuickStatusBarHeader extends FrameLayout implements TunerService.Tu
         } else if (!mUseCombinedQSHeader) {
             qqsLP.topMargin = qsOffsetHeight;
         } else {
-            qqsLP.topMargin = SystemBarUtils.getStatusBarHeight(mContext) + mContext.getResources()
-                    .getDimensionPixelSize(R.dimen.qqs_margin_top);
+            qqsLP.topMargin = mContext.getResources()
+                    .getDimensionPixelSize(R.dimen.large_screen_shade_header_min_height);
         }
         mHeaderQsPanel.setLayoutParams(qqsLP);
 

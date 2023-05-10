@@ -27,7 +27,6 @@ import androidx.constraintlayout.widget.ConstraintSet.END
 import androidx.constraintlayout.widget.ConstraintSet.PARENT_ID
 import androidx.constraintlayout.widget.ConstraintSet.START
 import androidx.constraintlayout.widget.ConstraintSet.TOP
-import com.android.internal.policy.SystemBarUtils
 import com.android.systemui.R
 import com.android.systemui.dagger.qualifiers.Main
 import com.android.systemui.flags.FeatureFlags
@@ -151,7 +150,7 @@ class NotificationsQSContainerController @Inject constructor(
         panelMarginHorizontal = resources.getDimensionPixelSize(
                 R.dimen.notification_panel_margin_horizontal)
         topMargin = if (largeScreenShadeHeaderActive) {
-            SystemBarUtils.getStatusBarHeight(context) + resources.getDimensionPixelSize(R.dimen.qqs_margin_top)
+            largeScreenShadeHeaderHeight
         } else {
             resources.getDimensionPixelSize(R.dimen.notification_panel_margin_top)
         }
@@ -245,7 +244,7 @@ class NotificationsQSContainerController @Inject constructor(
 
     private fun setLargeScreenShadeHeaderConstraints(constraintSet: ConstraintSet) {
         if (largeScreenShadeHeaderActive) {
-            constraintSet.constrainHeight(R.id.split_shade_status_bar, SystemBarUtils.getStatusBarHeight(context))
+            constraintSet.constrainHeight(R.id.split_shade_status_bar, largeScreenShadeHeaderHeight)
         } else {
             if (useCombinedQSHeaders) {
                 constraintSet.constrainHeight(R.id.split_shade_status_bar, WRAP_CONTENT)
