@@ -6423,6 +6423,11 @@ public final class Settings {
          */
         public static final String VOLUME_ANSWER_CALL = "volume_answer_call";
 
+	/**
+         * @hide
+         */
+        public static final String VOLUME_MEDIA_OUTPUT_TOGGLE = "volume_media_output_toggle";
+
         /**
          * Whether to wake the screen with the camera key half-press.
          * 0 = 0ff, 1 = on
