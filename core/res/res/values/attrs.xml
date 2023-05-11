@@ -1127,6 +1127,9 @@
 
         <!-- Light accent color used on Material NEXT buttons. @hide -->
         <attr name="colorAccentPrimary" format="color" />
+        
+         <attr name="colorAccentCustom" format="color" />
+
 
         <!-- Inverse accent color used on Material NEXT buttons. @hide -->
         <attr name="colorAccentCustom" format="color" />
