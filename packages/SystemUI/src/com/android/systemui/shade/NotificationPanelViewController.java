@@ -3752,9 +3752,6 @@ public final class NotificationPanelViewController implements Dumpable {
             alpha *= mClockPositionResult.clockAlpha;
         }
         mNotificationStackScrollLayoutController.setAlpha(alpha);
-        if (mBarState != StatusBarState.KEYGUARD && !isFullyCollapsed() && !isPanelVisibleBecauseOfHeadsUp()) {
-            mCentralSurfaces.updateDismissAllVisibility(true);
-        }
     }
 
     private float getFadeoutAlpha() {
@@ -4296,7 +4293,7 @@ public final class NotificationPanelViewController implements Dumpable {
     }
 
     private boolean isPanelVisibleBecauseOfHeadsUp() {
-        return mHeadsUpManager != null && (mHeadsUpManager.hasPinnedHeadsUp() || mHeadsUpAnimatingAway)
+        return (mHeadsUpManager.hasPinnedHeadsUp() || mHeadsUpAnimatingAway)
                 && mBarState == StatusBarState.SHADE;
     }
 
@@ -5356,7 +5353,7 @@ public final class NotificationPanelViewController implements Dumpable {
         return mExpandedHeight;
     }
 
-    public float getExpandedFraction() {
+    private float getExpandedFraction() {
         return mExpandedFraction;
     }
 
@@ -6761,7 +6758,6 @@ public final class NotificationPanelViewController implements Dumpable {
             StatusBarNotification sbn = mHeadsUpManager.getTopEntry().getRow().getEntry().getSbn();
             Notification notification = sbn.getNotification();
             String pkgname = sbn.getPackageName();
-            if (mCentralSurfaces != null) mCentralSurfaces.updateDismissAllVisibility(false);
             Drawable icon = null;
             try {
                 if (pkgname.equals("com.android.systemui")) {
