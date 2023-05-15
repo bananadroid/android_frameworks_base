@@ -51,6 +51,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+import static android.app.RemoteTaskConstants.DEVICE_AVAILABILITY_STATE_FREE;
+
 /**
  * System service for managing Cross Device features
  */
@@ -324,6 +326,21 @@ public class CrossDeviceService extends ICrossDeviceService.Stub {
     }
 
     /**
+     * Get device availability state
+     * Please refer {@link RemoteTaskConstants} for the meaning of device
+     * availabiltiy state code
+     *
+     * @return Device availability state code
+     */
+    private int getDeviceAvailabilityStatus() {
+        /*
+         * OEM change this method according to special policy to customize the initial
+         * device availability state.
+         */
+        return DEVICE_AVAILABILITY_STATE_FREE;
+    }
+
+    /**
      * Each client who wants to handle remote task lifecycle event should register a {@link IRemoteTaskHandler}
      *
      * @param handler IRemoteTaskHandler
@@ -337,6 +354,15 @@ public class CrossDeviceService extends ICrossDeviceService.Stub {
             if (mRemoteHandler != null) {
                 mRemoteHandler.asBinder().linkToDeath(mBinderDeathRecipient, 0);
             }
+        }
+        if (handler != null) {
+            /*
+             * if OEM want to set the device availability state according to special scenarios, please add OEM
+             * device availability judgement strategy (such as battery/memory/... policy) whenever needed and
+             * set correspond availability value as the parameter to call "handleDeviceAvailabilityStateChanged"
+             * in CrossDeviceServiceDelegate.
+             */
+            handler.notifyDeviceAvailabilityStateChanged(getDeviceAvailabilityStatus());
         }
     }
 
@@ -495,6 +521,24 @@ public class CrossDeviceService extends ICrossDeviceService.Stub {
         if (handler != null) {
             try {
                 handler.notifyDisplaySwitched(displayId);
+            } catch (RemoteException re) {
+                re.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * Notify service the device availability state changed
+     *
+     * @param deviceAvailabilityState the device availability state value
+     */
+    void notifyDeviceAvailabilityStateChanged(int deviceAvailabilityState) {
+        RemoteTaskLogger.i(TAG, "notifyDeviceAvailabilityStateChanged=" + deviceAvailabilityState);
+        IRemoteTaskHandler handler = mRemoteHandler;
+
+        if (handler != null) {
+            try {
+                handler.notifyDeviceAvailabilityStateChanged(deviceAvailabilityState);
             } catch (RemoteException re) {
                 re.printStackTrace();
             }

@@ -63,6 +63,22 @@ class CrossDeviceServiceDelegate implements CrossDeviceService.OnClientDiedListe
         return (CrossDeviceService) ICrossDeviceService.Stub.asInterface(b);
     }
 
+    /**
+     * Inform remote task service for device availability state change,
+     * OEM should call this API when device availability state changed
+     * for example device temperature too high, memory/cpu resource exhuasted.
+     * Please refer {@link RemoteTaskConstants} for the meaning of device
+     * availabiltiy state code
+     *
+     * @param deviceAvailabilityState current device state
+     */
+    void handleDeviceAvailabilityStateChanged(int deviceAvailabilityState) {
+        if (isAnyClientAliveInService()) {
+            mHandler.post(() -> mCrossDeviceService
+                    .notifyDeviceAvailabilityStateChanged(deviceAvailabilityState));
+        }
+    }
+
     @Override
     public void onClientDied() {
         if (mRemoteTaskManager != null) {

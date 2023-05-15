@@ -121,6 +121,7 @@ public class RemoteTaskInstanceBroker extends IRemoteTaskInstanceBroker.Stub {
     public void removeRemoteTask(int taskId) {
         Task task = mActivityTaskManagerService.mRootWindowContainer.anyTaskForId(taskId);
         if (task == null) {
+            mActivityTaskManagerService.getRemoteTaskManager().notifyRemoteTaskClosed(taskId);
             return;
         }
 

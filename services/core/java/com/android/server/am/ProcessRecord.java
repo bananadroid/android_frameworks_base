@@ -1232,7 +1232,7 @@ class ProcessRecord implements WindowProcessListener {
         if (!DeviceIntegrationUtils.DISABLE_DEVICE_INTEGRATION) {
             // Device Integartion: If the app is died during the remote task status,
             // we need to inform RemoteTaskManager to clear the references and dirty data.
-            mService.mActivityTaskManager.getRemoteTaskManager().handleProcessDied(getWindowProcessController());
+            mService.mActivityTaskManager.getRemoteTaskManager().handleProcessDied(getWindowProcessController(), reason);
         }
     }
 

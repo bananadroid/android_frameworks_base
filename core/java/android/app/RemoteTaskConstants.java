@@ -77,6 +77,19 @@ public final class RemoteTaskConstants {
     public static final int REMOTE_TASK_FLAG_DEFAULT = 0;
 
     /**
+     * value for device availability state
+     */
+    /* Device availability constrained, New invocations will be denied */
+    @SuppressLint("OverlappingConstants")
+    public static final int DEVICE_AVAILABILITY_STATE_CONSTRAINED = 4;
+    /* Device availability free, New invocations are acceptable */
+    @SuppressLint("OverlappingConstants")
+    public static final int DEVICE_AVAILABILITY_STATE_FREE = 8;
+    /* Device availability critical, Current handlers will be killed */
+    @SuppressLint("OverlappingConstants")
+    public static final int DEVICE_AVAILABILITY_STATE_CRITICAL = 16;
+
+    /**
      * Flag for task launch scenarios
      */
     private static final int FIRST_LOCAL_TASK_LAUNCH_SCENARIO_FLAG = 0;

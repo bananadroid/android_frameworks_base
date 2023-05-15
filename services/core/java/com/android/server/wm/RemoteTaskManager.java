@@ -63,12 +63,12 @@ import static android.content.pm.ActivityInfo.LAUNCH_SINGLE_TOP;
 public class RemoteTaskManager {
     private static final String THREAD_NAME = "RemoteTaskThread";
     private static final String TAG = RemoteTaskManager.class.getSimpleName();
+    private static final String REASON_PROCESS_RESTART = "restartActivityProcess";
 
     final ActivityTaskManagerService mActivityTaskManagerService;
     private final boolean mDeviceIntegrationDisabled;
     private final CrossDeviceServiceDelegate mCrossDeviceServiceDelegate;
     private final List<BasePreferredTaskDisplayQualifier> mDisplayQualifierList;
-    private final ConcurrentMap<Integer, Integer> mTaskPidMap;
     private final Handler mRemoteTaskHandler;
     private RootWindowContainer mRootWindowContainer;
 
@@ -80,7 +80,6 @@ public class RemoteTaskManager {
         mDisplayQualifierList = new ArrayList<>();
         mDisplayQualifierList.add(new LaunchIntentPreferredTaskDisplayQualifier(this));
         mDisplayQualifierList.add(new OtherIntentPreferredTaskDisplayQualifier(this));
-        mTaskPidMap = new ConcurrentHashMap<Integer, Integer>();
         mRemoteTaskHandler = new Handler(handlerThread.getLooper());
         mCrossDeviceServiceDelegate = new CrossDeviceServiceDelegate(this, mRemoteTaskHandler);
     }
@@ -195,8 +194,10 @@ public class RemoteTaskManager {
          * new updated task launch options including task uuid, prefered display id, launch scenario.
          */
         int launchScenario = taskParams.getLaunchScenario();
-        if (options == null &&
-                launchScenario != FLAG_TASK_LAUNCH_SCENARIO_COMMON) {
+        if (launchScenario == FLAG_TASK_LAUNCH_SCENARIO_COMMON) {
+            return options;
+        }
+        if (options == null) {
             options = ActivityOptions.makeBasic();
         }
 
@@ -294,11 +295,29 @@ public class RemoteTaskManager {
         if(!isAnyClientAlive()) {
             return;
         }
-        /*
-         * Notify aosp task manager service to close and remove this task really, task remove
-         * action must be processed in aosp main tread to avoid dead lock.
-         */
-        mRemoteTaskHandler.post(() -> mActivityTaskManagerService.removeTask(taskId));
+
+        Task task = anyTaskForId(taskId);
+        if(anyTaskExist(task)) {
+            /*
+             * Notify aosp task manager service to close and remove this task really, task remove
+             * action must be processed in aosp main tread to avoid dead lock.
+             */
+            mRemoteTaskHandler.post(() -> mActivityTaskManagerService.removeTask(taskId));
+        }
+    }
+
+    /**
+     * Notify task was closed by task id
+     * This API is only called when PL want to close a task that
+     * didn't exist, and just notify PL that the task already closed before
+     * and PL can release the task container safty.
+     *
+     * @param taskId id for task
+     */
+    void notifyRemoteTaskClosed(int taskId) {
+        mRemoteTaskHandler.post(() -> {
+            mCrossDeviceServiceDelegate.handleCloseRemoteTask(taskId);
+        });
     }
 
     /**
@@ -314,18 +333,8 @@ public class RemoteTaskManager {
      * the handler that the task already closed.
      */
     void notifyRemoteTaskClosed(Task task) {
-        mTaskPidMap.put(task.mTaskId, task.getRemoteTaskPid());
         task.mAllowReparent = false;
-        mRemoteTaskHandler.postDelayed(() -> {
-            if (mTaskPidMap.containsKey(task.mTaskId)) {
-                final int pid = mTaskPidMap.remove(task.mTaskId);
-                if (pid != task.getRemoteTaskPid()) {
-                    task.mAllowReparent = true;
-                    return;
-                }
-            }
-            mCrossDeviceServiceDelegate.handleCloseRemoteTask(task.mTaskId);
-        }, 500);
+        mCrossDeviceServiceDelegate.handleCloseRemoteTask(task.mTaskId);
     }
 
     boolean anyTaskExist(Task task) {
@@ -422,7 +431,7 @@ public class RemoteTaskManager {
     TaskDisplayArea queryPreferredDisplayArea(@Nullable Task task, TaskDisplayArea defaultArea, Intent intent,
                                               ActivityRecord sourceRecord, ActivityRecord record,
                                               ActivityOptions options) {
-        if (!isAnyClientAlive()) {
+        if (!isAnyClientAlive() || options == null || options.getRemoteTaskLaunchScenario() == FLAG_TASK_LAUNCH_SCENARIO_COMMON) {
             return defaultArea;
         }
 
@@ -534,7 +543,7 @@ public class RemoteTaskManager {
                                                       int callingUid, int realCallingPid,
                                                       int realCallingUid, ActivityRecord sourceRecord,
                                                       ActivityOptions options) {
-        if (!isAnyClientAlive()) {
+        if (!isAnyClientAlive() || options == null || options.getRemoteTaskLaunchScenario() == FLAG_TASK_LAUNCH_SCENARIO_COMMON) {
             return null;
         }
         ActivityTaskManagerService service = mActivityTaskManagerService;
@@ -582,7 +591,6 @@ public class RemoteTaskManager {
      * Clean all of caches from manager.
      */
     void recycleAll() {
-        mTaskPidMap.clear();
     }
 
     /**
@@ -590,9 +598,10 @@ public class RemoteTaskManager {
      * try to remove handler
      *
      * @param wpc WindowProcessController
+     * @param reason reason of process die
      */
-    public void handleProcessDied(WindowProcessController wpc) {
-        if (!isAnyClientAlive()) {
+    public void handleProcessDied(WindowProcessController wpc, String reason) {
+        if (!isAnyClientAlive() || TextUtils.equals(reason, REASON_PROCESS_RESTART)) {
             return;
         }
 

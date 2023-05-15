@@ -119,19 +119,20 @@ public class CrossDeviceManager {
      * Check if the caller is supported.
      */
     public static boolean isCallerAllowed(@NonNull Context context) {
-        Context appContext = context.getApplicationContext();
-        int result = appContext.checkCallingOrSelfPermission(Manifest.permission.MANAGE_CROSS_DEVICE);
-        if (result != PERMISSION_GRANTED) {
-            return false;
-        }
-
+        final Context appContext = context.getApplicationContext();
         final int callingUid = Binder.getCallingUid();
         final String callingPackage  = appContext.getPackageManager().getNameForUid(callingUid);
-        if (!CROSS_DEVICE_ALLOW_LIST.contains(callingPackage)) {
+
+        int result = appContext.checkCallingOrSelfPermission(Manifest.permission.MANAGE_CROSS_DEVICE);
+        if (result != PERMISSION_GRANTED) {
+            Log.e(TAG, "permission.MANAGE_CROSS_DEVICE is not granted: " + callingPackage);
             return false;
         }
 
-        //OEM can also add check signature here.
+        if (!CROSS_DEVICE_ALLOW_LIST.contains(callingPackage)) {
+            Log.e(TAG, "CROSS_DEVICE_ALLOW_LIST does not contain: " + callingPackage);
+            return false;
+        }
 
         return true;
     }

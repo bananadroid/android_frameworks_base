@@ -37,6 +37,7 @@ import static android.hardware.display.DisplayManagerGlobal.DisplayEvent;
 import static android.hardware.display.DisplayViewport.VIEWPORT_EXTERNAL;
 import static android.hardware.display.DisplayViewport.VIEWPORT_INTERNAL;
 import static android.hardware.display.DisplayViewport.VIEWPORT_VIRTUAL;
+import static android.Manifest.permission.MANAGE_CROSS_DEVICE;
 import static android.hardware.display.HdrConversionMode.HDR_CONVERSION_UNSUPPORTED;
 import static android.os.Process.FIRST_APPLICATION_UID;
 import static android.os.Process.ROOT_UID;
@@ -1485,19 +1486,12 @@ public final class DisplayManagerService extends SystemService {
         }
 
         if (callingUid != Process.SYSTEM_UID && (flags & VIRTUAL_DISPLAY_FLAG_TRUSTED) != 0) {
-            //Check cross device service white list
-            boolean isFromWhiteList = false;
+            // check MANAGE_CROSS_DEVICE permission
+            boolean manageCrossDeviceGranted = false;
             if (!DeviceIntegrationUtils.DISABLE_DEVICE_INTEGRATION) {
-                IBinder b = ServiceManager.getService(Context.CROSS_DEVICE_SERVICE);
-                if (b != null) {
-                    ICrossDeviceService crossDeviceService = ICrossDeviceService.Stub.asInterface(b);
-                    try {
-                        isFromWhiteList = crossDeviceService.isFromBackgroundWhiteListByUid(Binder.getCallingUid());
-                    }  catch (RemoteException ex) {}
-                }
+                manageCrossDeviceGranted = checkCallingPermission(MANAGE_CROSS_DEVICE, "createVirtualDisplay()");
             }
-
-            if (!isFromWhiteList && !checkCallingPermission(ADD_TRUSTED_DISPLAY, "createVirtualDisplay()")) {
+            if (!manageCrossDeviceGranted && !checkCallingPermission(ADD_TRUSTED_DISPLAY, "createVirtualDisplay()")) {
                 EventLog.writeEvent(0x534e4554, "162627132", callingUid,
                         "Attempt to create a trusted display without holding permission!");
                 throw new SecurityException("Requires ADD_TRUSTED_DISPLAY permission to "

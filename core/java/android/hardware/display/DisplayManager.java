@@ -1132,17 +1132,8 @@ public final class DisplayManager {
             executor = new HandlerExecutor(
                     Handler.createAsync(handler != null ? handler.getLooper() : Looper.myLooper()));
         }
-        if (!DeviceIntegrationUtils.DISABLE_DEVICE_INTEGRATION) {
-            VirtualDisplay virtualDisplay =  mGlobal.createVirtualDisplay(mContext, projection,
-                    virtualDisplayConfig, callback, executor);
-            if (virtualDisplay != null && RemoteTaskHelper.isFromRemoteTaskWhiteList()) {
-                virtualDisplay.setDisplayState(true);
-            }
-            return virtualDisplay;
-        } else {
-            return mGlobal.createVirtualDisplay(mContext, projection, virtualDisplayConfig, callback,
-                    executor);
-        }
+        return mGlobal.createVirtualDisplay(mContext, projection, virtualDisplayConfig, callback,
+                executor);
     }
 
     /**
