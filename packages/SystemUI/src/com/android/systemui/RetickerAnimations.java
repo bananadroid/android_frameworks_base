@@ -58,7 +58,7 @@ public class RetickerAnimations {
 
         Animator anim = ViewAnimationUtils.createCircularReveal(targetView, cx, cy, 0f, finalRadius);
         anim.setInterpolator(new AccelerateDecelerateInterpolator());
-        anim.setDuration(1000);
+        anim.setDuration(700);
 
         targetView.setVisibility(View.VISIBLE);
         anim.start();
