@@ -1363,6 +1363,7 @@ public final class NotificationPanelViewController implements Dumpable {
                 mResources.getDimensionPixelSize(R.dimen.split_shade_full_transition_distance);
 
         mEnableQsClipping = mResources.getBoolean(R.bool.qs_enable_clipping);
+        mCentralSurfaces.updateDismissAllVisibility(mBarState != StatusBarState.KEYGUARD && !isFullyCollapsed() && !isPanelVisibleBecauseOfHeadsUp());
     }
 
     private void onSplitShadeEnabledChanged() {
@@ -3753,6 +3754,9 @@ public final class NotificationPanelViewController implements Dumpable {
             alpha *= mClockPositionResult.clockAlpha;
         }
         mNotificationStackScrollLayoutController.setAlpha(alpha);
+        if (mBarState != StatusBarState.KEYGUARD && !isFullyCollapsed() && !isPanelVisibleBecauseOfHeadsUp()) {
+            mCentralSurfaces.updateDismissAllVisibility(true);
+        }
     }
 
     private float getFadeoutAlpha() {
@@ -4294,7 +4298,7 @@ public final class NotificationPanelViewController implements Dumpable {
     }
 
     private boolean isPanelVisibleBecauseOfHeadsUp() {
-        return (mHeadsUpManager.hasPinnedHeadsUp() || mHeadsUpAnimatingAway)
+        return mHeadsUpManager != null && (mHeadsUpManager.hasPinnedHeadsUp() || mHeadsUpAnimatingAway)
                 && mBarState == StatusBarState.SHADE;
     }
 
@@ -5354,7 +5358,7 @@ public final class NotificationPanelViewController implements Dumpable {
         return mExpandedHeight;
     }
 
-    private float getExpandedFraction() {
+    public float getExpandedFraction() {
         return mExpandedFraction;
     }
 
@@ -5815,6 +5819,7 @@ public final class NotificationPanelViewController implements Dumpable {
         public void onUiModeChanged() {
             if (DEBUG_LOGCAT) Log.d(TAG, "onUiModeChanged");
             resetViews(true);
+            mCentralSurfaces.updateDismissAllVisibility(false);
         }
 
         @Override
@@ -6759,6 +6764,7 @@ public final class NotificationPanelViewController implements Dumpable {
             StatusBarNotification sbn = mHeadsUpManager.getTopEntry().getRow().getEntry().getSbn();
             Notification notification = sbn.getNotification();
             String pkgname = sbn.getPackageName();
+            if (mCentralSurfaces != null) mCentralSurfaces.updateDismissAllVisibility(false);
             Drawable icon = null;
             try {
                 if (pkgname.equals("com.android.systemui")) {

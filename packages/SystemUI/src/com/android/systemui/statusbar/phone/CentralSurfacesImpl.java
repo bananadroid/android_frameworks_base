@@ -36,6 +36,7 @@ import static com.android.systemui.charging.WirelessChargingAnimation.UNKNOWN_BA
 import static com.android.systemui.keyguard.WakefulnessLifecycle.WAKEFULNESS_ASLEEP;
 import static com.android.systemui.statusbar.NotificationLockscreenUserManager.PERMISSION_SELF;
 import static com.android.systemui.statusbar.StatusBarState.SHADE;
+import static com.android.systemui.statusbar.notification.stack.NotificationStackScrollLayout.ROWS_ALL;
 import static com.android.systemui.statusbar.phone.BarTransitions.MODE_LIGHTS_OUT;
 import static com.android.systemui.statusbar.phone.BarTransitions.MODE_LIGHTS_OUT_TRANSPARENT;
 import static com.android.systemui.statusbar.phone.BarTransitions.MODE_OPAQUE;
@@ -107,8 +108,10 @@ import android.view.WindowManager;
 import android.view.WindowManagerGlobal;
 import android.view.accessibility.AccessibilityManager;
 import android.widget.DateTimeView;
+import android.widget.ImageButton;
 import android.window.OnBackInvokedCallback;
 import android.window.OnBackInvokedDispatcher;
+import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.Lifecycle;
@@ -298,6 +301,12 @@ public class CentralSurfacesImpl implements CoreStartable, CentralSurfaces, Tune
 
     private static final String QS_TRANSPARENCY =
             "system:" + Settings.System.QS_TRANSPARENCY;
+    private static final String NOTIFICATION_MATERIAL_DISMISS =
+            "system:" + Settings.System.NOTIFICATION_MATERIAL_DISMISS;
+    private static final String NOTIFICATION_MATERIAL_DISMISS_STYLE =
+            "system:" + Settings.System.NOTIFICATION_MATERIAL_DISMISS_STYLE;
+    private static final String NOTIFICATION_MATERIAL_DISMISS_BGSTYLE =
+            "system:" + Settings.System.NOTIFICATION_MATERIAL_DISMISS_BGSTYLE;
     private static final String FORCE_SHOW_NAVBAR =
             "customsystem:" + Settings.System.FORCE_SHOW_NAVBAR;
 
@@ -584,6 +593,12 @@ public class CentralSurfacesImpl implements CoreStartable, CentralSurfaces, Tune
     private final ScreenPinningRequest mScreenPinningRequest;
 
     private final MetricsLogger mMetricsLogger;
+
+    private ImageButton mDismissAllButton;
+    private int mClearAllBgColorStyle;
+    private int mClearAllBgStyle;
+    private int mClearAllButtonStyle;
+    private boolean mShowDimissButton;
 
     // ensure quick settings is disabled until the current user makes it through the setup wizard
     @VisibleForTesting
@@ -949,6 +964,9 @@ public class CentralSurfacesImpl implements CoreStartable, CentralSurfaces, Tune
         mColorExtractor.addOnColorsChangedListener(mOnColorsChangedListener);
 
         mTunerService.addTunable(this, QS_TRANSPARENCY);
+        mTunerService.addTunable(this, NOTIFICATION_MATERIAL_DISMISS);
+        mTunerService.addTunable(this, NOTIFICATION_MATERIAL_DISMISS_STYLE);
+        mTunerService.addTunable(this, NOTIFICATION_MATERIAL_DISMISS_BGSTYLE);
         mTunerService.addTunable(this, PULSE_ON_NEW_TRACKS);
         mTunerService.addTunable(this, LESS_BORING_HEADS_UP);
         mTunerService.addTunable(this, RETICKER_STATUS);
@@ -1238,6 +1256,8 @@ public class CentralSurfacesImpl implements CoreStartable, CentralSurfaces, Tune
         inflateStatusBarWindow();
         mNotificationShadeWindowView.setOnTouchListener(getStatusBarWindowTouchListener());
         mWallpaperController.setRootView(mNotificationShadeWindowView);
+        mDismissAllButton = mNotificationShadeWindowView.findViewById(R.id.clear_notifications);
+        updateDismissAllButton();
 
         // TODO: Deal with the ugliness that comes from having some of the status bar broken out
         // into fragments, but the rest here, it leaves some awkward lifecycle and whatnot.
@@ -1531,6 +1551,39 @@ public class CentralSurfacesImpl implements CoreStartable, CentralSurfaces, Tune
         filter.addAction(NotificationPanelViewController.CANCEL_NOTIFICATION_PULSE_ACTION);
         mBroadcastDispatcher.registerReceiver(mBroadcastReceiver, filter, null, UserHandle.ALL);
         mGameSpaceManager.observe();
+    }
+
+    @Override
+    public void updateDismissAllVisibility(boolean visible) {
+        if (mDismissAllButton == null) return;
+            boolean isDismissButtonVisible =  mDismissAllButton.getVisibility() == View.VISIBLE;
+            boolean shouldHideDismissButton = !mShowDimissButton || !mStackScrollerController.hasActiveClearableNotifications(ROWS_ALL)
+                             || !visible || mState == StatusBarState.KEYGUARD || mQSPanelController.isExpanded();
+
+	    int alpha = mNotificationPanelViewController.getExpandedFraction() < 0.84f ? 0 : Math.round(mNotificationPanelViewController.getExpandedFraction()  * 255.0f);
+            mDismissAllButton.setAlpha(shouldHideDismissButton ? 0 : alpha);
+            mDismissAllButton.getBackground().setAlpha(shouldHideDismissButton ? 0 : alpha);
+            mDismissAllButton.setVisibility(shouldHideDismissButton && isDismissButtonVisible ? View.GONE : View.VISIBLE);
+    }
+
+    @Override
+    public void updateDismissAllButton() {
+        if (mDismissAllButton == null) return;
+             boolean nightMode = (mContext.getResources().getConfiguration().uiMode
+                & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES;
+             String clearAllButtonUri = "dismiss_all" + (nightMode? "_icon_dark" : "_icon") + String.valueOf(mClearAllButtonStyle);
+             int clearAllButtonResId = mContext.getResources().getIdentifier(clearAllButtonUri, "drawable", "com.android.systemui");
+             String clearAllBGButtonUri = "dismiss_all" + (nightMode? "_background_dark" : "_background") + String.valueOf(mClearAllBgStyle);
+             int clearAllBGButtonResId = mContext.getResources().getIdentifier(clearAllBGButtonUri, "drawable", "com.android.systemui");
+
+             mDismissAllButton.setImageResource(clearAllButtonResId);
+             mDismissAllButton.setBackgroundResource(clearAllBGButtonResId);
+             mDismissAllButton.setElevation(mContext.getResources().getDimension(R.dimen.dismiss_all_button_elevation));
+    }
+
+    @Override
+    public View getDismissAllButton() {
+        return mDismissAllButton;
     }
 
     protected QS createDefaultQSFragment() {
@@ -4180,6 +4233,21 @@ public class CentralSurfacesImpl implements CoreStartable, CentralSurfaces, Tune
                 mScrimController.setCustomScrimAlpha(
                         TunerService.parseInteger(newValue, 100));
                 break;
+            case NOTIFICATION_MATERIAL_DISMISS:
+                mShowDimissButton =
+                        TunerService.parseIntegerSwitch(newValue, false);
+                updateDismissAllButton();
+                break;
+            case NOTIFICATION_MATERIAL_DISMISS_STYLE:
+                mClearAllButtonStyle =
+                        TunerService.parseInteger(newValue, 0);
+                updateDismissAllButton();
+                break;
+            case NOTIFICATION_MATERIAL_DISMISS_BGSTYLE:
+                mClearAllBgStyle =
+                        TunerService.parseInteger(newValue, 0);
+                updateDismissAllButton();
+                break;
             case PULSE_ON_NEW_TRACKS:
                 boolean showPulseOnNewTracks =
                         TunerService.parseIntegerSwitch(newValue, false);
@@ -4376,6 +4444,9 @@ public class CentralSurfacesImpl implements CoreStartable, CentralSurfaces, Tune
             if (mBrightnessMirrorController != null) {
                 mBrightnessMirrorController.onUiModeChanged();
             }
+            if (mState == StatusBarState.KEYGUARD) {
+               updateDismissAllVisibility(false);
+            }
         }
     };
 
@@ -4399,6 +4470,9 @@ public class CentralSurfacesImpl implements CoreStartable, CentralSurfaces, Tune
 
                 @Override
                 public void onStateChanged(int newState) {
+                    if (mState != newState && (mState == StatusBarState.KEYGUARD || newState == StatusBarState.KEYGUARD)) {
+                        updateDismissAllVisibility(false);
+                    }
                     mState = newState;
                     updateReportRejectedTouchVisibility();
                     mDozeServiceHost.updateDozing();
@@ -4407,6 +4481,7 @@ public class CentralSurfacesImpl implements CoreStartable, CentralSurfaces, Tune
                     Trace.beginSection("CentralSurfaces#updateKeyguardState");
                     if (mState == StatusBarState.KEYGUARD) {
                         mNotificationPanelViewController.cancelPendingPanelCollapse();
+                        updateDismissAllVisibility(false);
                     }
                     updateDozingState();
                     checkBarModes();

@@ -6234,6 +6234,12 @@ public final class Settings {
         public static final String QS_FOOTER_DATA_USAGE = "qs_footer_data_usage";
 
         /**
+         * Whether to show material Dismiss All Button for notifications
+         * @hide
+         */
+        public static final String NOTIFICATION_MATERIAL_DISMISS = "notification_material_dismiss";
+
+        /**
          * Change quick settings tiles animation style
          * @hide
          */
@@ -6886,6 +6892,16 @@ public final class Settings {
          * @hide
          */
         public static final String QS_HEADER_IMAGE = "qs_header_image";
+
+        /**
+         * @hide
+         */
+        public static final String NOTIFICATION_MATERIAL_DISMISS_STYLE = "notification_material_dismiss_style";
+
+        /**
+         * @hide
+         */
+        public static final String NOTIFICATION_MATERIAL_DISMISS_BGSTYLE = "notification_material_dismiss_bgstyle";
 
         /**
          * Keys we no longer back up under the current schema, but want to continue to
