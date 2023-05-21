@@ -115,4 +115,7 @@
 
     <!-- Body font family -->
     <string name="config_bodyFontFamily">@*android:string/config_bodyFontFamily</string>
+
+    <!-- Whether to call onFingerDown with regular action down events -->
+    <bool name="config_onFingerDownWithActionDown">true</bool>
 </resources>
