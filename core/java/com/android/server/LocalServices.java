@@ -18,7 +18,7 @@ package com.android.server;
 
 import com.android.internal.annotations.VisibleForTesting;
 
-import java.util.HashMap;
+import android.util.ArrayMap;
 
 /**
  * This class is used in a similar way as ServiceManager, except the services registered here
@@ -32,8 +32,8 @@ import java.util.HashMap;
 public final class LocalServices {
     private LocalServices() {}
 
-    private static final HashMap<Class<?>, Object> sLocalServiceObjects =
-            new HashMap<Class<?>, Object>();
+    private static final ArrayMap<Class<?>, Object> sLocalServiceObjects =
+            new ArrayMap<Class<?>, Object>();
 
     /**
      * Returns a local service instance that implements the specified interface.
