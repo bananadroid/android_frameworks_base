@@ -6670,12 +6670,6 @@ public final class Settings {
         public static final String LOCKSCREEN_ENABLE_POWER_MENU = "lockscreen_enable_power_menu";
 
         /**
-         * Use doubletap as doze pulse triggers
-         * @hide
-         */
-        public static final String DOZE_TRIGGER_DOUBLETAP = "doze_trigger_doubletap";
-
-        /**
          * Whether to display the torch option in the power menu
          * @hide
          */
