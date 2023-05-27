@@ -437,11 +437,15 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
                     R.dimen.status_bar_left_clock_starting_padding);
             int leftClockPaddingEnd = getResources().getDimensionPixelSize(
                     R.dimen.status_bar_left_clock_end_padding);
-    	    int start = mClockPosition == 0 ? leftClockPaddingStart : (mClockPosition == 1 ? 0 : clockPaddingStart);
-    	    int end = mClockPosition == 0 ? leftClockPaddingEnd : (mClockPosition == 1 ? 0 : clockPaddingEnd);
+    	    int start = mClockPosition == 2 ? leftClockPaddingStart : (mClockPosition == 0 ? clockPaddingStart : 0);
+    	    int end = mClockPosition == 2 ? leftClockPaddingEnd : (mClockPosition == 0 ? clockPaddingEnd : 0);
             v.setPaddingRelative(start,0,end,0);
         }
-        v.setTextAlignment(enabled ? View.TEXT_ALIGNMENT_CENTER : View.TEXT_ALIGNMENT_VIEW_START);
+        if (mClockPosition == 1) {
+            v.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        } else {
+            v.setTextAlignment(enabled ? View.TEXT_ALIGNMENT_CENTER : View.TEXT_ALIGNMENT_VIEW_START);
+        }
     }
 
     /** Initializes views related to the notification icon area. */
