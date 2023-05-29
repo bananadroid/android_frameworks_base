@@ -47,6 +47,7 @@ public class PixelPropsUtils {
     private static final Map<String, Object> propsToChangeOP9R;
     private static final Map<String, Object> propsToChange11T;
     private static final Map<String, Object> propsToChangeF4;
+    private static final Map<String, Object> propsToChangeK30U;
     private static final Map<String, ArrayList<String>> propsToKeep;
 
     // Packages to Spoof as Pixel 7 Pro
@@ -89,6 +90,11 @@ public class PixelPropsUtils {
             "com.pearlabyss.blackdesertm.gl"
     };
 
+    // Packages to Spoof as Redmi K30 Ultra
+    private static final String[] packagesToChangeK30U = {
+            "com.pubg.imobile"
+    };
+
     // Packages to Spoof as Xperia 5
     private static final String[] packagesToChangeXP5 = {
             "com.activision.callofduty.shooter",
@@ -100,7 +106,6 @@ public class PixelPropsUtils {
     // Packages to Spoof as OnePlus 8 Pro
     private static final String[] packagesToChangeOP8P = {
             "com.netease.lztgglobal",
-            "com.pubg.imobile",
             "com.pubg.krmobile",
             "com.rekoo.pubgm",
             "com.riotgames.league.wildrift",
@@ -197,6 +202,9 @@ public class PixelPropsUtils {
         propsToChangeF4 = new HashMap<>();
         propsToChangeF4.put("MODEL", "22021211RG");
         propsToChangeF4.put("MANUFACTURER", "Xiaomi");
+        propsToChangeK30U = new HashMap<>();
+        propsToChangeK30U.put("MODEL", "M2006J10C");
+        propsToChangeK30U.put("MANUFACTURER", "Xiaomi");
     }
     
     public static void setProps(String packageName) {
@@ -293,6 +301,13 @@ public class PixelPropsUtils {
             } else if (Arrays.asList(packagesToChangeOP9R).contains(pkgName)) {
                 if (DEBUG) Log.d(TAG, "Defining props for: " + pkgName);
                 for (Map.Entry<String, Object> prop : propsToChangeOP9R.entrySet()) {
+                    String key = prop.getKey();
+                    Object value = prop.getValue();
+                    setPropValue(key, value);
+                }
+            } else if (Arrays.asList(packagesToChangeK30U).contains(packageName)) {
+                if (DEBUG) Log.d(TAG, "Defining props for: " + packageName);
+                for (Map.Entry<String, Object> prop : propsToChangeK30U.entrySet()) {
                     String key = prop.getKey();
                     Object value = prop.getValue();
                     setPropValue(key, value);
