@@ -852,6 +852,10 @@ public class ApplicationPackageManager extends PackageManager {
             "com.google.android.apps.photos.NEXUS_PRELOAD",
             "com.google.android.apps.photos.nexus_preload"
     };
+    
+    private static final String[] featuresAndroid = {
+            "android.software.freeform_window_management"
+    };
 
     @Override
     public boolean hasSystemFeature(String name, int version) {
@@ -863,6 +867,7 @@ public class ApplicationPackageManager extends PackageManager {
             if (Arrays.asList(featuresNexus).contains(name)) return true;
         }
         if (Arrays.asList(featuresPixel).contains(name)) return true;
+        if (Arrays.asList(featuresAndroid).contains(name)) return true;
         return mHasSystemFeatureCache.query(new HasSystemFeatureQuery(name, version));
     }
 
