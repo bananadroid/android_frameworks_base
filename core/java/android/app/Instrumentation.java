@@ -64,6 +64,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 
+import com.android.internal.util.banana.AttestationHooks;
 import com.android.internal.util.banana.PixelPropsUtils;
 
 /**
@@ -93,7 +94,7 @@ public class Instrumentation {
 
     private static final String TAG = "Instrumentation";
 
-    private static final long CONNECT_TIMEOUT_MILLIS = 60_000;
+    private static final long CONNECT_TIMEOUT_MILLIS = 5000;
 
     /**
      * @hide
@@ -1244,8 +1245,8 @@ public class Instrumentation {
         Application app = getFactory(context.getPackageName())
                 .instantiateApplication(cl, className);
         app.attach(context);
-        String packageName = context.getPackageName();
-        PixelPropsUtils.setProps(packageName);
+        AttestationHooks.initApplicationBeforeOnCreate(context);
+        PixelPropsUtils.setProps(context);
         return app;
     }
     
@@ -1263,8 +1264,8 @@ public class Instrumentation {
             ClassNotFoundException {
         Application app = (Application)clazz.newInstance();
         app.attach(context);
-        String packageName = context.getPackageName();
-        PixelPropsUtils.setProps(packageName);
+        AttestationHooks.initApplicationBeforeOnCreate(context);
+        PixelPropsUtils.setProps(context);
         return app;
     }
 
