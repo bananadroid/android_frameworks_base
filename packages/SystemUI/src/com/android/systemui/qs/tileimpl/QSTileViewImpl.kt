@@ -223,15 +223,16 @@ open class QSTileViewImpl @JvmOverloads constructor(
             orientation = LinearLayout.VERTICAL
             gravity = Gravity.CENTER
         } else {
-            orientation = if (vertical) LinearLayout.VERTICAL else LinearLayout.HORIZONTAL
+            orientation = if (vertical) LinearLayout.VERTICAL else LinearLayout.HORIZONTAL or Gravity.CENTER_VERTICAL
             gravity = if (vertical) Gravity.CENTER_HORIZONTAL else Gravity.CENTER_VERTICAL or Gravity.START  
         }
-
+	
         labelHide = QSLayoutUtils.getQSTileLabelHide(context)
 
         if (labelHide)
             gravity = Gravity.CENTER_HORIZONTAL or Gravity.CENTER_VERTICAL
-        importantForAccessibility = IMPORTANT_FOR_ACCESSIBILITY_YES
+        
+	importantForAccessibility = IMPORTANT_FOR_ACCESSIBILITY_YES
         clipChildren = false
         clipToPadding = false
         isFocusable = true
@@ -313,10 +314,12 @@ open class QSTileViewImpl @JvmOverloads constructor(
             orientation = LinearLayout.VERTICAL
             gravity = Gravity.CENTER
         } else {
-            orientation = if (vertical) LinearLayout.VERTICAL else LinearLayout.HORIZONTAL
+            orientation = if (vertical) LinearLayout.VERTICAL else LinearLayout.HORIZONTAL or Gravity.CENTER_VERTICAL
             gravity = if (vertical) Gravity.CENTER_HORIZONTAL else Gravity.CENTER_VERTICAL or Gravity.START  
         }
         
+	labelHide = QSLayoutUtils.getQSTileLabelHide(context)
+	
         if (labelHide)
             gravity = Gravity.CENTER_HORIZONTAL or Gravity.CENTER_VERTICAL
 
@@ -430,7 +433,8 @@ open class QSTileViewImpl @JvmOverloads constructor(
         // is too short.
         val constrainedSquishiness = constrainSquishiness(squishinessFraction)
         bottom = top + (actualHeight * constrainedSquishiness).toInt()
-        scrollY = (actualHeight - height) / 2
+        scrollY = (actualHeight - height) / if (vertical) 7 else 2
+        label.alpha = if (!vertical) 1.0f else Math.pow(squishinessFraction.toDouble(), 7.0).toFloat()
     }
 
     override fun updateAccessibilityOrder(previousView: View?): View {
