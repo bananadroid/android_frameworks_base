@@ -62,6 +62,11 @@ public class PixelPropsUtils {
             "com.google.android.inputmethod.latin"
     };
 
+    // Packages to Spoof as Pixel XL
+    private static final String[] packagesToChangePixelXL = {
+            "com.snapchat.android"
+    };
+
     // Extra Packages to Spoof
     private static final String[] extraPackagesToChange = {
             "com.android.chrome",
@@ -216,7 +221,7 @@ public class PixelPropsUtils {
         }
         Map<String, Object> propsToChange = new HashMap<>();
         sIsFinsky = pkgName.contains("com.android.vending");
-        sNeedsWASpoof = List.of("pixelmigrate", "restore", "snapchat").stream().anyMatch(pkgName::contains);
+        sNeedsWASpoof = List.of("pixelmigrate", "restore").stream().anyMatch(pkgName::contains);
         if (pkgName.contains("com.google.android.gms")) {
             final String processName = Application.getProcessName().toLowerCase();
             sIsGms = List.of(".persistent", ".unstable").stream().anyMatch(processName::contains);
@@ -243,6 +248,8 @@ public class PixelPropsUtils {
             } else {
                 if (Arrays.asList(packagesToChangePixel7Pro).contains(pkgName)) {
                     propsToChange.putAll(propsToChangePixel7Pro);
+                } else if (Arrays.asList(packagesToChangePixelXL).contains(packageName)) {
+                    propsToChange.putAll(propsToChangePixelXL);
                 } else {
                     boolean spoofALl = SystemProperties.getBoolean("persist.sys.pixelprops.spoofAll", false);
                     if (!spoofALl) return;
