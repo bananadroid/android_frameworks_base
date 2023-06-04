@@ -97,7 +97,8 @@ public class PixelPropsUtils {
 
     // Packages to Spoof as Redmi K30 Ultra
     private static final String[] packagesToChangeK30U = {
-            "com.pubg.imobile"
+            "com.pubg.imobile",
+            "com.tencent.tmgp.sgame"
     };
 
     // Packages to Spoof as Xperia 5
@@ -133,7 +134,6 @@ public class PixelPropsUtils {
             "com.levelinfinite.hotta.gp",
             "com.mobile.legends",
             "com.supercell.clashofclans",
-            "com.tencent.tmgp.sgame",
             "com.vng.mlbbvn"
     };
 
