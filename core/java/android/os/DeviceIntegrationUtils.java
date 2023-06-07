@@ -16,7 +16,6 @@
 
 package android.os;
 
-import android.annotation.SystemApi;
 import android.compat.annotation.UnsupportedAppUsage;
 
 /**
@@ -24,7 +23,6 @@ import android.compat.annotation.UnsupportedAppUsage;
  *
  * {@hide}
  */
-@SystemApi
 public class DeviceIntegrationUtils {
     public static final boolean DISABLE_DEVICE_INTEGRATION = true;
 
