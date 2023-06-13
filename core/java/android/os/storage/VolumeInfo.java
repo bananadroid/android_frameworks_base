@@ -175,6 +175,8 @@ public class VolumeInfo implements Parcelable {
     public String path;
     @UnsupportedAppUsage
     public String internalPath;
+    @UnsupportedAppUsage
+    public boolean sessionRecorded = false;
 
     public VolumeInfo(String id, int type, DiskInfo disk, String partGuid) {
         this.id = Preconditions.checkNotNull(id);
@@ -216,6 +218,7 @@ public class VolumeInfo implements Parcelable {
         this.fsLabel = volumeInfo.fsLabel;
         this.path = volumeInfo.path;
         this.internalPath = volumeInfo.internalPath;
+        this.sessionRecorded = volumeInfo.sessionRecorded;
     }
 
     @UnsupportedAppUsage
@@ -332,6 +335,11 @@ public class VolumeInfo implements Parcelable {
             return false;
         }
         return type == TYPE_PUBLIC || type == TYPE_STUB || type == TYPE_EMULATED;
+    }
+
+    @UnsupportedAppUsage
+    public boolean isPublicVolumeSessionRecorded() {
+        return type == TYPE_PUBLIC ? sessionRecorded : true;
     }
 
     /**

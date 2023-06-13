@@ -40,6 +40,7 @@ import android.os.UserHandle;
 import android.os.storage.StorageManager;
 import android.os.storage.StorageManagerInternal;
 import android.os.storage.StorageVolume;
+import android.os.storage.VolumeInfo;
 import android.service.storage.ExternalStorageService;
 import android.service.storage.IExternalStorageService;
 import android.util.Slog;
@@ -97,7 +98,7 @@ public final class StorageUserConnection {
      * @throws IllegalArgumentException if a {@code Session} with {@code sessionId} already exists
      */
     public void startSession(String sessionId, ParcelFileDescriptor pfd, String upperPath,
-            String lowerPath) throws ExternalStorageServiceException {
+            String lowerPath, VolumeInfo vol) throws ExternalStorageServiceException {
         Objects.requireNonNull(sessionId);
         Objects.requireNonNull(pfd);
         Objects.requireNonNull(upperPath);
@@ -108,6 +109,7 @@ public final class StorageUserConnection {
             Preconditions.checkArgument(!mSessions.containsKey(sessionId));
             mSessions.put(sessionId, session);
         }
+        vol.sessionRecorded = true;
         mActiveConnection.startSession(session, pfd);
     }
 
@@ -117,13 +119,13 @@ public final class StorageUserConnection {
      * @throws ExternalStorageServiceException if failed to notify the Storage Service that
      * {@code StorageVolume} is changed
      */
-    public void notifyVolumeStateChanged(String sessionId, StorageVolume vol)
+    public void notifyVolumeStateChanged(String sessionId, StorageVolume vol, boolean sessionRecorded)
             throws ExternalStorageServiceException {
         Objects.requireNonNull(sessionId);
         Objects.requireNonNull(vol);
 
         synchronized (mSessionsLock) {
-            if (!mSessions.containsKey(sessionId)) {
+            if (!(mSessions.containsKey(sessionId) && sessionRecorded)) {
                 Slog.i(TAG, "No session found for sessionId: " + sessionId);
                 return;
             }
