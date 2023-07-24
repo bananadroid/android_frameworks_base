@@ -33,6 +33,52 @@
     android:paddingStart="0dp"
     android:elevation="4dp" >
 
+    <!-- header image -->
+    <LinearLayout
+        android:id="@+id/layout_header"
+        android:layout_width="match_parent"          
+        android:layout_height="@dimen/qs_header_height_full"
+        android:layout_marginLeft="@dimen/qs_header_side_offsets"
+        android:layout_marginRight="@dimen/qs_header_side_offsets"  
+        android:background="#00000000" >
+
+        <LinearLayout
+          android:id="@+id/layout_inner_header"
+          android:layout_width="match_parent"          
+          android:layout_height="match_parent"
+          android:layout_marginLeft="0dp"
+          android:layout_marginRight="0dp"  
+          android:background="#00000000" >
+
+            <FrameLayout
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+                  <ImageView 
+                      android:id="@+id/qs_header_image_view"
+                      android:layout_width="match_parent"
+                      android:layout_height="match_parent"    
+                      android:layout_marginTop="0dp"
+                      android:layout_marginBottom="0dp"
+                      android:scaleType="centerCrop"
+                      android:visibility="gone"
+                      android:adjustViewBounds="true"
+                      android:background="@drawable/qs_header_image_view_outline" />
+
+                <View
+                    android:id="@+id/qs_header_gradient_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="bottom"
+                    android:visibility="gone"
+                    android:background="@drawable/custom_gradient_bottom"/>
+
+            </FrameLayout>
+
+        </LinearLayout>    
+
+    </LinearLayout>
+
     <com.android.systemui.qs.QuickQSPanel
         android:id="@+id/quick_qs_panel"
         android:layout_width="match_parent"
