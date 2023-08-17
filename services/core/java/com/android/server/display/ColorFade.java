@@ -401,6 +401,18 @@ final class ColorFade implements ScreenStateAnimator {
         }
     }
 
+    @Override
+    protected void finalize() throws Throwable {
+        try {
+            if (mEglContext != null) {
+                EGL14.eglDestroyContext(mEglDisplay, mEglContext);
+                mEglContext = null;
+            }
+        } finally {
+            super.finalize();
+        }
+    }
+
     /**
      * Draws an animation frame showing the color fade activated at the
      * specified level.
