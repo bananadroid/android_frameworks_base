@@ -16,7 +16,6 @@
 
 package com.android.systemui.shade
 
-import android.app.WallpaperManager
 import android.content.Context
 import android.database.ContentObserver
 import android.graphics.Color
@@ -64,7 +63,6 @@ class EdgeLightViewController @Inject constructor(
     UserTracker.Callback {
 
     private val coroutineScope = CoroutineScope(Dispatchers.Main)
-    private val wallpaperManager = context.getSystemService(WallpaperManager::class.java)
     private val animationDuration =
         (dozeParameters.pulseVisibleDuration / 3).toLong() - COLLAPSE_ANIMATION_DURATION
 
@@ -78,7 +76,7 @@ class EdgeLightViewController @Inject constructor(
     private var edgeLightEnabled = false
 
     @GuardedBy("settingsMutex")
-    private var colorMode = ColorMode.ACCENT
+    private var colorMode = ColorMode.THEME
 
     // Whether to always trigger edge light on pulse even if it
     // is not because notification was posted. For example: tap to wake
@@ -189,7 +187,7 @@ class EdgeLightViewController @Inject constructor(
                 UserHandle.USER_CURRENT
             )
         }
-        return ColorMode.values().find { it.ordinal == colorModeInt } ?: ColorMode.ACCENT
+        return ColorMode.values().find { it.ordinal == colorModeInt } ?: ColorMode.THEME
     }
 
     private suspend fun getCustomColor(): Int {
@@ -207,14 +205,17 @@ class EdgeLightViewController @Inject constructor(
         }
     }
 
-    // Accent color is returned for notification color mode
+    private suspend fun getThemeColor(): Int {
+        return Utils.getColorAttrDefaultColor(context,
+                com.android.internal.R.attr.colorAccentPrimary) ?: Utils.getColorAccentDefaultColor(context)
+    }
+
+    // Theme color is returned for notification color mode
     // as well since the color is set when notification is posted.
     private suspend fun getColorForMode(mode: ColorMode): Int =
         when (mode) {
-            ColorMode.WALLPAPER -> wallpaperManager.getWallpaperColors(WallpaperManager.FLAG_SYSTEM)
-                    ?.primaryColor?.toArgb() ?: Utils.getColorAccentDefaultColor(context)
             ColorMode.CUSTOM -> getCustomColor()
-            else -> Utils.getColorAccentDefaultColor(context)
+            else -> getThemeColor()
         }
 
     override fun onScreenTurnedOn() {
@@ -260,7 +261,7 @@ class EdgeLightViewController @Inject constructor(
     }
 
     override fun onUiModeChanged() {
-        // Reload accent color
+        // Reload theme color
         coroutineScope.launch {
             settingsMutex.withLock {
                 edgeLightView?.setColor(getColorForMode(colorMode))
@@ -298,10 +299,10 @@ class EdgeLightViewController @Inject constructor(
                 if (pulsing && (alwaysTriggerOnPulse ||
                         reason == DozeLog.PULSE_REASON_NOTIFICATION)) {
                     this@EdgeLightViewController.pulsing = true
-                    // Use accent color if color mode is set to notification color
+                    // Use theme color if color mode is set to notification color
                     // and pulse is not because of notification.
                     if (colorMode == ColorMode.NOTIFICATION && reason != DozeLog.PULSE_REASON_NOTIFICATION) {
-                        edgeLightView?.setColor(Utils.getColorAccentDefaultColor(context))
+                        edgeLightView?.setColor(getThemeColor())
                     }
                     if (screenOn) {
                         logD("setPulsing: screenOn: show()")
@@ -340,8 +341,7 @@ class EdgeLightViewController @Inject constructor(
 }
 
 private enum class ColorMode {
-    ACCENT,
+    THEME,
     NOTIFICATION,
-    WALLPAPER,
     CUSTOM
 }
