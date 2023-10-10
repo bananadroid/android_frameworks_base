@@ -1252,11 +1252,10 @@ class ProcessRecord implements WindowProcessListener {
             killProcessGroup = true;
         }
         if (killProcessGroup) {
-            if (async) {
-                ProcessList.killProcessGroup(uid, mPid);
-            } else {
+            if (!async) {
                 Process.sendSignalToProcessGroup(uid, mPid, OsConstants.SIGKILL);
             }
+            ProcessList.killProcessGroup(uid, mPid);
         }
     }
 
