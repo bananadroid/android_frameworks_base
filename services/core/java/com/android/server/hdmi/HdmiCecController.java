@@ -1109,7 +1109,7 @@ final class HdmiCecController {
                     hdmiPortInfo[i] = new HdmiPortInfo.Builder(
                                     portInfo.portId,
                                     portInfo.type,
-                                    portInfo.physicalAddress)
+                                    Short.toUnsignedInt((short)portInfo.physicalAddress))
                                     .setCecSupported(portInfo.cecSupported)
                                     .setMhlSupported(false)
                                     .setArcSupported(portInfo.arcSupported)
