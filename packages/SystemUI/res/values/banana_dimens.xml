@@ -87,4 +87,8 @@
 
     <!-- Height of the faceunlock image view -->
     <dimen name="keyguard_face_unlock_margin_bottom">@dimen/keyguard_lock_height</dimen>
+
+    <!-- Island notification -->
+    <dimen name="island_icon_size">48dp</dimen>
+    <dimen name="island_side_margin">12dp</dimen>
 </resources>
