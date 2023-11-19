@@ -33,6 +33,7 @@ public class PixelPropsUtils {
 
     private static final String TAG = PixelPropsUtils.class.getSimpleName();
     private static final String DEVICE = "ro.product.device";
+    private static final String PACKAGE_AIAI = "com.google.android.apps.miphone.aiai.AiaiApplication";
     private static final boolean DEBUG = false;
 
     private static final String SPOOF_PIXEL_GAPPS = "persist.sys.pixelprops.gapps";
@@ -235,7 +236,7 @@ public class PixelPropsUtils {
     public static void setProps(String packageName) {
         propsToChangeGeneric.forEach((k, v) -> setPropValue(k, v));
 
-        if (packageName == null || packageName.isEmpty()) {
+        if (packageName == null || packageName.isEmpty() || packageName.equals(PACKAGE_AIAI)) {
             return;
         }
         if (packageName.startsWith("com.google.")
