@@ -53,6 +53,7 @@ import android.util.proto.ProtoOutputStream;
 import android.view.Surface;
 
 import com.android.internal.annotations.VisibleForTesting;
+import com.android.server.biometrics.AuthenticationStatsCollector;
 import com.android.server.biometrics.SensorServiceStateProto;
 import com.android.server.biometrics.SensorStateProto;
 import com.android.server.biometrics.UserStateProto;
@@ -62,6 +63,7 @@ import com.android.server.biometrics.log.BiometricLogger;
 import com.android.server.biometrics.sensors.AcquisitionClient;
 import com.android.server.biometrics.sensors.AuthenticationConsumer;
 import com.android.server.biometrics.sensors.BaseClientMonitor;
+import com.android.server.biometrics.sensors.BiometricNotificationImpl;
 import com.android.server.biometrics.sensors.BiometricNotificationUtils;
 import com.android.server.biometrics.sensors.BiometricScheduler;
 import com.android.server.biometrics.sensors.BiometricStateCallback;
@@ -127,6 +129,7 @@ public class SenseProvider implements ServiceProvider {
     @Nullable private IBiometricsFace mDaemon;
     @NonNull private final HalResultController mHalResultController;
     @NonNull private final BiometricContext mBiometricContext;
+    @NonNull private final AuthenticationStatsCollector mAuthenticationStatsCollector;
     SparseArray<ISenseService> mServices;
     // for requests that do not use biometric prompt
     @NonNull private final AtomicLong mRequestCounter = new AtomicLong(0);
@@ -368,6 +371,9 @@ public class SenseProvider implements ServiceProvider {
         });
         mCurrentUserId = ActivityManager.getCurrentUser();
 
+        mAuthenticationStatsCollector = new AuthenticationStatsCollector(mContext,
+                BiometricsProtoEnums.MODALITY_FACE, new BiometricNotificationImpl());
+
         try {
             ActivityManager.getService().registerUserSwitchObserver(mUserSwitchObserver, TAG);
         } catch (RemoteException e) {
@@ -562,7 +568,7 @@ public class SenseProvider implements ServiceProvider {
             }
             scheduleUpdateActiveUserWithoutHandler(userId);
 
-            BiometricNotificationUtils.cancelReEnrollNotification(mContext);
+            BiometricNotificationUtils.cancelFaceReEnrollNotification(mContext);
 
             final FaceEnrollClient client = new FaceEnrollClient(mContext, mLazyDaemon, token,
                     new ClientMonitorCallbackConverter(receiver), userId, hardwareAuthToken,
@@ -1073,7 +1079,7 @@ public class SenseProvider implements ServiceProvider {
 
     private BiometricLogger createLogger(int statsAction, int statsClient) {
         return new BiometricLogger(mContext, BiometricsProtoEnums.MODALITY_FACE,
-                statsAction, statsClient);
+                statsAction, statsClient, mAuthenticationStatsCollector);
     }
 
     /**
