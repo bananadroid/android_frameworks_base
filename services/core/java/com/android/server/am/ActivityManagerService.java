@@ -14021,7 +14021,7 @@ public class ActivityManagerService extends IActivityManager.Stub
                     // sticky broadcast, no flag specified (flag isn't required)
                     flags |= Context.RECEIVER_EXPORTED;
                 } else if (requireExplicitFlagForDynamicReceivers && !explicitExportStateDefined &&
-                            !Arrays.asList(packagesExempted).contains(callerPackage)) {
+                            !Arrays.asList(packagesExempted).contains(callerPackage) && !"com.android.systemui".equals(callerPackage)) {
                     throw new SecurityException(
                             callerPackage + ": One of RECEIVER_EXPORTED or "
                                     + "RECEIVER_NOT_EXPORTED should be specified when a receiver "
