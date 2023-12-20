@@ -3996,7 +3996,7 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
             }
 
             case MotionEvent.ACTION_UP: {
-                onTouchUp(ev);
+                onTouchUp(ev, vtev);
                 break;
             }
 
@@ -4187,7 +4187,7 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         }
     }
 
-    private void onTouchUp(MotionEvent ev) {
+    private void onTouchUp(MotionEvent ev, MotionEvent vtev) {
         switch (mTouchMode) {
             case TOUCH_MODE_DOWN:
             case TOUCH_MODE_TAP:
@@ -4276,6 +4276,7 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
                         reportScrollStateChange(OnScrollListener.SCROLL_STATE_IDLE);
                     } else {
                         final VelocityTracker velocityTracker = mVelocityTracker;
+                        velocityTracker.addMovement(vtev);
                         velocityTracker.computeCurrentVelocity(1000, mMaximumVelocity);
 
                         final int initialVelocity = (int)
@@ -4345,6 +4346,7 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
                     mFlingRunnable = new FlingRunnable();
                 }
                 final VelocityTracker velocityTracker = mVelocityTracker;
+                velocityTracker.addMovement(vtev);
                 velocityTracker.computeCurrentVelocity(1000, mMaximumVelocity);
                 final int initialVelocity = (int) velocityTracker.getYVelocity(mActivePointerId);
 
