@@ -8159,6 +8159,42 @@ public final class ActivityThread extends ClientTransactionHandler
             }
         }
 
+        private void copyContentsAndDir(final Path source, final Path target)
+                throws IOException {
+            Files.walkFileTree(source, new java.nio.file.SimpleFileVisitor<Path>() {
+                private java.nio.file.FileVisitResult copyFileOrEmptyDir(final Path source,
+                        final Path sourceRoot, final Path targetRoot) throws IOException {
+                    final Path target = targetRoot.resolve(sourceRoot.relativize(source));
+                    Files.copy(source, target, StandardCopyOption.REPLACE_EXISTING,
+                            StandardCopyOption.COPY_ATTRIBUTES,
+                            java.nio.file.LinkOption.NOFOLLOW_LINKS);
+                    return java.nio.file.FileVisitResult.CONTINUE;
+                }
+                @Override
+                public java.nio.file.FileVisitResult preVisitDirectory(Path sourceDir,
+                        java.nio.file.attribute.BasicFileAttributes attrs) throws IOException {
+                    return copyFileOrEmptyDir(sourceDir, source, target);
+                }
+                @Override
+                public java.nio.file.FileVisitResult visitFile(Path sourceFile,
+                        java.nio.file.attribute.BasicFileAttributes attrs) throws IOException {
+                    return copyFileOrEmptyDir(sourceFile, source, target);
+                }
+                @Override
+                public java.nio.file.FileVisitResult postVisitDirectory(Path sourceDir,
+                        IOException exc) throws IOException {
+                    if (exc != null) {
+                        throw exc;
+                    }
+                    final Path targetDir = target.resolve(source.relativize(sourceDir));
+                    final java.nio.file.attribute.FileTime lastModifiedTime =
+                            Files.getLastModifiedTime(sourceDir);
+                    Files.setLastModifiedTime(targetDir, lastModifiedTime);
+                    return java.nio.file.FileVisitResult.CONTINUE;
+                }
+            });
+        }
+
         @Override
         public void rename(String oldPath, String newPath) throws ErrnoException {
             try {
@@ -8175,8 +8211,23 @@ public final class ActivityThread extends ClientTransactionHandler
                         && newPath.startsWith("/storage/emulated")) {
                     Log.v(TAG, "Recovering failed rename " + oldPath + " to " + newPath);
                     try {
-                        Files.move(new File(oldPath).toPath(), new File(newPath).toPath(),
-                                StandardCopyOption.REPLACE_EXISTING);
+                        final Path target = new File(newPath).toPath();
+                        if (Files.isDirectory(target)
+                                && Files.list(target).findFirst().isPresent()) {
+                            // If the target is a non-empty directory, nothing should be done.
+                            throw new java.nio.file.DirectoryNotEmptyException(newPath);
+                        }
+                        final Path source = new File(oldPath).toPath();
+                        if (Files.isDirectory(source)
+                                && Files.list(source).findFirst().isPresent()) {
+                            // When the source is a nonempty directory, first copy the whole
+                            // directory with Files.copy() and then remove the source, since
+                            // Files.move() would fail with DirectoryNotEmptyException.
+                            copyContentsAndDir(source, target);
+                            FileUtils.deleteContentsAndDir(source.toFile());
+                        } else {
+                            Files.move(source, target, StandardCopyOption.REPLACE_EXISTING);
+                        }
                     } catch (IOException e2) {
                         Log.e(TAG, "Rename recovery failed ", e2);
                         throw e;
