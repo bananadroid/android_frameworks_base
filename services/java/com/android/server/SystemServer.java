@@ -1178,7 +1178,6 @@ public final class SystemServer implements Dumpable {
         mActivityManagerService = ActivityManagerService.Lifecycle.startService(
                 mSystemServiceManager, atm);
         mActivityManagerService.setSystemServiceManager(mSystemServiceManager);
-        mActivityManagerService.setInstaller(installer);
         mWindowManagerGlobalLock = atm.getGlobalLock();
         t.traceEnd();
 
