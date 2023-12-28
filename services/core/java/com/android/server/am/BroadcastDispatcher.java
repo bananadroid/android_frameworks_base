@@ -259,7 +259,6 @@ public class BroadcastDispatcher {
      * Deferred LOCKED_BOOT_COMPLETED and BOOT_COMPLETED broadcasts that is sent to a user.
      */
     static class DeferredBootCompletedBroadcastPerUser {
-        private int mUserId;
         // UID that has process started at least once, ready to execute LOCKED_BOOT_COMPLETED
         // receivers.
         @VisibleForTesting
@@ -284,9 +283,7 @@ public class BroadcastDispatcher {
         @VisibleForTesting
         boolean mBootCompletedBroadcastReceived;
 
-        DeferredBootCompletedBroadcastPerUser(int userId) {
-            this.mUserId = userId;
-        }
+        DeferredBootCompletedBroadcastPerUser() {}
 
         public void updateUidReady(int uid) {
             if (!mLockedBootCompletedBroadcastReceived
@@ -474,7 +471,7 @@ public class BroadcastDispatcher {
             return mUser2Deferred.get(userId);
         } else {
             final DeferredBootCompletedBroadcastPerUser temp =
-                    new DeferredBootCompletedBroadcastPerUser(userId);
+                    new DeferredBootCompletedBroadcastPerUser();
             mUser2Deferred.put(userId, temp);
             return temp;
         }

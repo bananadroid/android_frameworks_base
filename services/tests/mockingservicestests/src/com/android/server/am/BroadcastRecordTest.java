@@ -771,7 +771,7 @@ public class BroadcastRecordTest {
         assertEquals(PACKAGE_LIST.length, deferred.size());
 
         DeferredBootCompletedBroadcastPerUser deferredPerUser =
-                new DeferredBootCompletedBroadcastPerUser(USER0);
+                new DeferredBootCompletedBroadcastPerUser();
         deferredPerUser.enqueueBootCompletedBroadcasts(action, deferred);
 
         if (action.equals(ACTION_LOCKED_BOOT_COMPLETED)) {
