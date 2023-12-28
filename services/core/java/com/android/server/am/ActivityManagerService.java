@@ -1331,7 +1331,7 @@ public class ActivityManagerService extends IActivityManager.Stub
     }
 
     @CompositeRWLock({"this", "mProcLock"})
-    final PendingTempAllowlists mPendingTempAllowlist = new PendingTempAllowlists(this);
+    final PendingTempAllowlists mPendingTempAllowlist = new PendingTempAllowlists();
 
     public static final class FgsTempAllowListItem {
         final long mDuration;

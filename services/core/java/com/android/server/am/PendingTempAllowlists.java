@@ -21,14 +21,10 @@ import android.util.SparseArray;
 /** Allowlists of uids to temporarily bypass Power Save mode. */
 final class PendingTempAllowlists {
 
-    private ActivityManagerService mService;
-
     private final SparseArray<ActivityManagerService.PendingTempAllowlist> mPendingTempAllowlist =
             new SparseArray<>();
 
-    PendingTempAllowlists(ActivityManagerService service) {
-        mService = service;
-    }
+    PendingTempAllowlists() {}
 
     void put(int uid, ActivityManagerService.PendingTempAllowlist value) {
         synchronized (mPendingTempAllowlist) {
