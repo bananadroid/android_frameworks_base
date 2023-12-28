@@ -16569,11 +16569,9 @@ public class ActivityManagerService extends IActivityManager.Stub
     }
 
     static final class ProcStatsRunnable implements Runnable {
-        private final ActivityManagerService mService;
         private final ProcessStatsService mProcessStats;
 
-        ProcStatsRunnable(ActivityManagerService service, ProcessStatsService mProcessStats) {
-            this.mService = service;
+        ProcStatsRunnable(ProcessStatsService mProcessStats) {
             this.mProcessStats = mProcessStats;
         }
 

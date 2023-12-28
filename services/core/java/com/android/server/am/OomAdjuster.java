@@ -1073,7 +1073,7 @@ public class OomAdjuster {
         synchronized (mService.mProcessStats.mLock) {
             final long nowUptime = SystemClock.uptimeMillis();
             if (mService.mProcessStats.shouldWriteNowLocked(nowUptime)) {
-                mService.mHandler.post(new ActivityManagerService.ProcStatsRunnable(mService,
+                mService.mHandler.post(new ActivityManagerService.ProcStatsRunnable(
                         mService.mProcessStats));
             }
 
