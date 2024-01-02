@@ -283,6 +283,9 @@ final class RemoteInputConnection implements InputConnection {
 
     @AnyThread
     public boolean commitText(CharSequence text, int newCursorPosition) {
+        if (text == null) {
+            return false;
+        }
         final boolean handled = mInvoker.commitText(text, newCursorPosition);
         if (handled) {
             notifyUserActionIfNecessary();
