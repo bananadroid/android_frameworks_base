@@ -40,6 +40,7 @@ import java.net.UnknownServiceException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 /** @hide */
 public class MediaHTTPConnection extends IMediaHTTPConnection.Stub {
@@ -282,7 +283,40 @@ public class MediaHTTPConnection extends IMediaHTTPConnection.Stub {
                             "Range", "bytes=" + offset + "-");
                 }
 
-                response = mConnection.getResponseCode();
+                AtomicInteger responseAtomic = new AtomicInteger(-1);
+                AtomicReference<IOException> ioexceptionRef = new AtomicReference<>();
+                Thread responseThread = new Thread(() -> {
+                    try{
+                        responseAtomic.set(mConnection.getResponseCode());
+                    } catch(IOException e){
+                        ioexceptionRef.set(e);
+                    }
+                });
+                responseThread.start();
+                long startTime = System.currentTimeMillis();
+                long interval = 500;
+                while(responseAtomic.get() == -1 && responseThread.isAlive()){
+                    if(mNumDisconnectingThreads.get() > 0){
+                        responseThread.interrupt();
+                        throw new IOException("concurrently disconnecting");
+                    }
+                    if(System.currentTimeMillis() - startTime > CONNECT_TIMEOUT_MS){
+                        responseThread.interrupt();
+                        Log.e(TAG, "getResponseCode timeout");
+                        throw new IOException("Timeout during getResponseCode");
+                    }
+                    if(ioexceptionRef.get() instanceof IOException){
+                        Log.e(TAG, "getResponseCode IOException");
+                        throw new IOException("getResponseCode IOException");
+                    }
+                    try{
+                        Thread.sleep(interval);
+                    } catch(InterruptedException e){
+                        e.printStackTrace();
+                        throw new IOException();
+                    }
+                }
+                response = responseAtomic.get();
                 if (response != HttpURLConnection.HTTP_MULT_CHOICE &&
                         response != HttpURLConnection.HTTP_MOVED_PERM &&
                         response != HttpURLConnection.HTTP_MOVED_TEMP &&
