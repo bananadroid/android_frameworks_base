@@ -123,7 +123,6 @@ class FaceScanningOverlay(
         // Delay the relayout until the end of the animation when hiding,
         // otherwise we'd clip it.
         if (showScanningAnim) {
-            FaceUnlockImageView.setBouncerState(FaceUnlockImageView.State.SCANNING)
             visibility = View.VISIBLE
             requestLayout()
         }
@@ -157,10 +156,13 @@ class FaceScanningOverlay(
 
         rimAnimator?.cancel()
         rimAnimator = if (showScanningAnim) {
+            FaceUnlockImageView.setBouncerState(FaceUnlockImageView.State.SCANNING)
             createFaceScanningRimAnimator()
         } else if (faceAuthSucceeded) {
+            FaceUnlockImageView.setBouncerState(FaceUnlockImageView.State.SUCCESS)
             createFaceSuccessRimAnimator()
         } else {
+            FaceUnlockImageView.setBouncerState(FaceUnlockImageView.State.NOT_VERIFIED)
             createFaceNotSuccessRimAnimator()
         }
         rimAnimator?.apply {
@@ -330,6 +332,7 @@ class FaceScanningOverlay(
 
     private fun hide() {
         visibility = INVISIBLE
+        FaceUnlockImageView.setBouncerState(FaceUnlockImageView.State.HIDDEN)
         hideOverlayRunnable?.run()
         hideOverlayRunnable = null
         requestLayout()

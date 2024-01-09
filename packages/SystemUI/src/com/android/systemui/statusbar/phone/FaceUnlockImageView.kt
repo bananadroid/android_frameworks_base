@@ -17,14 +17,13 @@ package com.android.systemui.statusbar.phone
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
-import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
+import android.animation.TimeInterpolator
 import android.content.Context
 import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.graphics.Color
-import android.os.AsyncTask
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.util.AttributeSet
@@ -34,6 +33,7 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.LinearInterpolator
 import android.view.animation.OvershootInterpolator
 
+import androidx.core.animation.doOnStart
 import androidx.core.animation.doOnEnd
 import androidx.core.animation.doOnCancel
 
@@ -44,31 +44,39 @@ class FaceUnlockImageView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : ImageView(context, attrs, defStyleAttr) {
 
-    enum class State {
-        SCANNING, NOT_VERIFIED, SUCCESS, HIDDEN
-    }
+    enum class State { SCANNING, NOT_VERIFIED, SUCCESS, HIDDEN }
 
-    private val DELAY_HIDE_DURATION = 1500
-    private var currentState: State = State.HIDDEN
-    private var colorState: ColorStateList? = null
-    private val startAnimation: ObjectAnimator = createScaleAnimation(start = true)
-    private val dismissAnimation: ObjectAnimator = createScaleAnimation(start = false)
-    private val scanningAnimation: ObjectAnimator = createScanningAnimation()
-    private val successAnimation: ObjectAnimator = createSuccessRotationAnimation()
-    private val failureShakeAnimation: ObjectAnimator = createShakeAnimation(10f)
+    private enum class AnimationState { NONE, SCANNING, DISMISS, SUCCESS, FAILED }
+
+    private val startAnimation = createScaleAnimation(true)
+    private val dismissAnimation = createScaleAnimation(start = false)
+    private val scanningAnimation = createScanningAnimation()
+    private val successAnimation = createSuccessRotationAnimation()
+    private val failureShakeAnimation = createShakeAnimation(10f)
+
+    private var currentAnimationState = AnimationState.NONE
+    
+    private var colorState: ColorStateList = ColorStateList.valueOf(Color.WHITE)
+    private var iconStateResId: Int = 0
+
     private val vibrator: Vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
 
     companion object {
+        private const val BIOMETRICS_SCANNING_TIMEOUT: Long = 5000
+        private const val SUCCESS_ANIMATION_DURATION: Long = 800
+        private const val FAILED_ANIMATION_DURATION: Long = 500
+
         private lateinit var configurationController: ConfigurationController
         private var instance: FaceUnlockImageView? = null
 
         @JvmStatic
         fun setConfigurationController(cfgController: ConfigurationController) {
-            this.configurationController = cfgController
+            configurationController = cfgController
         }
 
-        fun getConfigurationController(): ConfigurationController? {
-            return this.configurationController
+        @JvmStatic
+        fun getConfigurationController(): ConfigurationController {
+            return configurationController
         }
 
         @JvmStatic
@@ -86,30 +94,25 @@ class FaceUnlockImageView @JvmOverloads constructor(
 
     init {
         visibility = View.GONE
-        updateFaceIconState()
+        setImageResource(0)
     }
 
     public override fun onAttachedToWindow() {
         setInstance(this)
-        getConfigurationController()?.addCallback(configurationChangedListener)
+        getConfigurationController().addCallback(configurationChangedListener)
     }
 
     public override fun onDetachedFromWindow() {
-        getConfigurationController()?.removeCallback(configurationChangedListener)
+        getConfigurationController().removeCallback(configurationChangedListener)
     }
 
-    private val configurationChangedListener =
-        object : ConfigurationController.ConfigurationListener {
-            override fun onUiModeChanged() {
-                updateColor()
-            }
-            override fun onThemeChanged() {
-                updateColor()
-            }
+    private val configurationChangedListener = object : ConfigurationController.ConfigurationListener {
+        override fun onUiModeChanged() = updateColor()
+        override fun onThemeChanged() = updateColor()
     }
 
     fun setKeyguardColorState(color: ColorStateList) {
-        this.colorState = color
+        colorState = color
         updateColor()
     }
 
@@ -119,47 +122,61 @@ class FaceUnlockImageView @JvmOverloads constructor(
         imageTintList = if (this.id == R.id.bouncer_face_unlock_icon) {
             if (isDark) ColorStateList.valueOf(Color.WHITE) else ColorStateList.valueOf(Color.BLACK)
         } else {
-            colorState ?: ColorStateList.valueOf(Color.WHITE)
+            colorState
         }
+    }
+
+    fun setOnDozingChanged(dozing: Boolean) {
+        if (dozing) {
+            setState(State.HIDDEN)
+        }
+    }
+
+    fun setBiometricMessage(msg: CharSequence) {
+        setState(
+            when (msg) {
+                context.getString(R.string.keyguard_face_successful_unlock) -> State.SUCCESS
+                context.getString(R.string.keyguard_face_failed) -> State.NOT_VERIFIED
+                context.getString(R.string.face_unlock_recognizing) -> State.SCANNING
+                else -> State.HIDDEN
+            }
+        )
     }
 
     fun setState(state: State) {
-        if (currentState != state) {
-            currentState = state
-            updateFaceIconState()
-            handleAnimationForState(state)
-        }
+        updateFaceIconState(state)
+        handleAnimationForState(state)
     }
 
-    private fun updateFaceIconState() {
-        setImageResource(when (currentState) {
+    private fun updateFaceIconState(state: State) {
+        iconStateResId = when (state) {
             State.SCANNING -> R.drawable.face_scanning
             State.NOT_VERIFIED -> R.drawable.face_not_verified
             State.SUCCESS -> R.drawable.face_success
-            State.HIDDEN -> 0
-        })
+            State.HIDDEN -> iconStateResId
+        }
+        setImageResource(iconStateResId)
     }
 
     private fun createScanningAnimation(): ObjectAnimator {
         val scaleX = PropertyValuesHolder.ofFloat(View.SCALE_X, 1f, 1.2f, 1f)
         val scaleY = PropertyValuesHolder.ofFloat(View.SCALE_Y, 1f, 1.2f, 1f)
         return ObjectAnimator.ofPropertyValuesHolder(this, scaleX, scaleY).apply {
-            duration = 1000
-            repeatCount = ObjectAnimator.INFINITE
+            duration = 5000
             interpolator = LinearInterpolator()
         }
     }
 
     private fun createSuccessRotationAnimation(): ObjectAnimator {
         return ObjectAnimator.ofFloat(this, View.ROTATION_Y, 0f, 360f).apply {
-            duration = 800
+            duration = SUCCESS_ANIMATION_DURATION
             interpolator = AccelerateDecelerateInterpolator()
         }
     }
 
     private fun createShakeAnimation(amplitude: Float): ObjectAnimator {
         return ObjectAnimator.ofFloat(this, View.TRANSLATION_X, 0f, amplitude, -amplitude, amplitude, -amplitude, 0f).apply {
-            duration = 500
+            duration = FAILED_ANIMATION_DURATION
             interpolator = AccelerateDecelerateInterpolator()
         }
     }
@@ -173,7 +190,9 @@ class FaceUnlockImageView @JvmOverloads constructor(
             duration = 500
             interpolator = AccelerateDecelerateInterpolator()
             if (!start) {
-                doOnEnd { visibility = View.GONE }
+                doOnEnd {
+                    startDismissAnimation()
+                }
             }
         }
     }
@@ -185,58 +204,78 @@ class FaceUnlockImageView @JvmOverloads constructor(
         }
     }
 
+    private fun startDismissAnimation() {
+        if (currentAnimationState != AnimationState.DISMISS) {
+            val delay = when (currentAnimationState) {
+                AnimationState.FAILED -> FAILED_ANIMATION_DURATION + 150L
+                AnimationState.SUCCESS -> SUCCESS_ANIMATION_DURATION + 150L
+                else -> 150L
+            }
+            postOnAnimationDelayed({
+                if (currentAnimationState != AnimationState.DISMISS) {
+                    dismissAnimation.start()
+                    currentAnimationState = AnimationState.DISMISS
+                    clearResources()
+                }
+            }, delay)
+        }
+    }
+
     private fun handleAnimationForState(state: State) {
+        scanningAnimation.cancel()
+        if (state != State.HIDDEN) cancelAnimations()
+        visibility = View.VISIBLE
         when (state) {
             State.SCANNING -> {
-                visibility = View.VISIBLE
-                failureShakeAnimation.cancel()
-                successAnimation.cancel()
-                postOnAnimation { startAnimation.start() }
-                startAnimation.doOnEnd {
-                    postOnAnimation {
-                        scanningAnimation.start()
+                postOnAnimation {
+                    startAnimation.start()
+                    startAnimation.doOnEnd {
+                        postOnAnimation {
+                            scanningAnimation.start()
+                            currentAnimationState = AnimationState.SCANNING
+                        }
                     }
                 }
-            }
-            State.NOT_VERIFIED -> {
-                scanningAnimation.cancel()
-                successAnimation.cancel()
-                failureShakeAnimation.start()
-                failureShakeAnimation.doOnEnd {
-                    postOnAnimation {
-                        dismissAnimation.start()
-                    }
-                }
-                vibrate(VibrationEffect.EFFECT_DOUBLE_CLICK)
             }
             State.SUCCESS -> {
-                scanningAnimation.cancel()
-                failureShakeAnimation.cancel()
                 successAnimation.start()
-                successAnimation.doOnEnd {
-                    postOnAnimation {
-                        dismissAnimation.start()
-                    }
-                }
-                vibrate(VibrationEffect.EFFECT_CLICK)
+                currentAnimationState = AnimationState.SUCCESS
+            }
+            State.NOT_VERIFIED -> {
+                failureShakeAnimation.start()
+                currentAnimationState = AnimationState.FAILED
             }
             State.HIDDEN -> {
-                scanningAnimation.cancel()
                 scanningAnimation.doOnCancel {
                     postOnAnimation {
-                        dismissAnimation.start()
+                        startDismissAnimation()
                     }
                 }
-                failureShakeAnimation.doOnEnd {
-                    postOnAnimation {
-                        dismissAnimation.start()
-                    }
+                clearResources()
+            }
+        }
+        listOf(scanningAnimation, successAnimation, failureShakeAnimation).forEach {
+            it.doOnEnd {
+                postOnAnimation {
+                    startDismissAnimation()
                 }
-                successAnimation.doOnEnd {
-                    postOnAnimation {
-                        dismissAnimation.start()
-                    }
-                }
+            }
+        }
+        vibrate(if (state == State.NOT_VERIFIED) VibrationEffect.EFFECT_DOUBLE_CLICK else VibrationEffect.EFFECT_CLICK)
+    }
+
+    private fun cancelAnimations() {
+        dismissAnimation.cancel()
+        failureShakeAnimation.cancel()
+        successAnimation.cancel()
+    }
+    
+    private fun clearResources() {
+        if (currentAnimationState == AnimationState.DISMISS) {
+            dismissAnimation.doOnEnd {
+                visibility = View.GONE
+                setImageResource(0)
+                currentAnimationState = AnimationState.NONE
             }
         }
     }
