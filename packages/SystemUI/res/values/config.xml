@@ -78,7 +78,7 @@
 
     <!-- The default tiles to display in QuickSettings -->
     <string name="quick_settings_tiles_default" translatable="false">
-        internet,bt,flashlight,dnd,alarm,airplane,nfc,controls,wallet,rotation,battery,cast,screenrecord,mictoggle,cameratoggle,custom(com.android.permissioncontroller/.permission.service.SafetyCenterQsTileService)
+        wifi,cell,bt,flashlight,airplane,hotspot,location,sound,cast,screenrecord,nfc,night,reduce_brightness,rotation,volume_panel,dataswitch
     </string>
 
     <!-- The class path of the Safety Quick Settings Tile -->
@@ -91,7 +91,7 @@
 
     <!-- Tiles native to System UI. Order should match "quick_settings_tiles_default" -->
     <string name="quick_settings_tiles_stock" translatable="false">
-        internet,wifi,cell,bt,flashlight,dnd,alarm,airplane,nfc,controls,wallet,rotation,battery,cast,screenrecord,mictoggle,cameratoggle,location,hotspot,inversion,saver,dark,work,night,reverse,reduce_brightness,qr_code_scanner,onehanded,color_correction,dream,font_scaling,ambient_display,aod,caffeine,heads_up,reading_mode,sync,powershare,usb_tether,vpn,sound,cpuinfo,fpsinfo,compass,dataswitch,volume_panel,smartpixels,weather,refresh_rate,screenshot,soundsearch,locale,dc_dimming
+        wifi,cell,bt,flashlight,airplane,hotspot,location,sound,cast,screenrecord,nfc,night,reduce_brightness,rotation,volume_panel,dataswitch,internet,dnd,alarm,controls,wallet,battery,mictoggle,cameratoggle,inversion,saver,dark,work,reverse,qr_code_scanner,onehanded,color_correction,dream,font_scaling,ambient_display,aod,caffeine,heads_up,reading_mode,sync,powershare,usb_tether,vpn,cpuinfo,fpsinfo,compass,smartpixels,weather,refresh_rate,screenshot,soundsearch,locale,dc_dimming
     </string>
 
     <!-- The tiles to display in QuickSettings -->
