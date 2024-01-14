@@ -141,6 +141,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -5071,6 +5072,8 @@ public class AccountManagerService
             if (!bindToAuthenticator(mAccountType)) {
                 Log.d(TAG, "bind attempt failed for " + toDebugString());
                 onError(AccountManager.ERROR_CODE_REMOTE_EXCEPTION, "bind failure");
+            } else {
+                startTimeout();
             }
         }
 
@@ -5081,6 +5084,11 @@ public class AccountManagerService
                     mContext.unbindService(this);
                 }
             }
+        }
+
+        public void startTimeout() {
+            mHandler.sendMessageDelayed(mHandler.obtainMessage(
+                        MESSAGE_TIMED_OUT, this), TimeUnit.SECONDS.toMillis(60));
         }
 
         public void cancelTimeout() {
