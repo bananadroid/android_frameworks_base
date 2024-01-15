@@ -108,7 +108,7 @@ import com.android.internal.protolog.common.ProtoLog;
 import com.android.server.am.HostingRecord;
 import com.android.server.LocalServices;
 import com.android.server.pm.pkg.AndroidPackage;
-import com.android.server.policy.WindowManagerPolicy;
+
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -1901,30 +1901,7 @@ class TaskFragment extends WindowContainer<WindowContainer> {
     private boolean shouldReportOrientationUnspecified() {
         // Apps and their containers are not allowed to specify orientation from adjacent
         // TaskFragment.
-        if (getAdjacentTaskFragment() == null || !isVisibleRequested()) {
-            return false;
-        }
-        // Once the device orientation is locked, apps may keeps rotating when the screen is
-        // rotated. For example, activity A is the top activity of a fullscreen mode task and it's
-        // orientation is SCREEN_ORIENTATION_SENSOR. Once app rotate to landscape along with sensor
-        // orientation, it will enter embedding window mode. The app will start activity B with
-        // SCREEN_ORIENTATION_UNSPECIFIED orientation in right task fragment and it will rotate to
-        // portrait mode again.
-        if (getDisplayContent().getDisplayRotation().getUserRotationMode()
-                == WindowManagerPolicy.USER_ROTATION_LOCKED) {
-            final ActivityRecord top = getTopNonFinishingActivity();
-            final ActivityRecord adjacentTop = getAdjacentTaskFragment()
-                    .getTopNonFinishingActivity();
-            return (top == null || !isSensorOrientation(top.getRequestedOrientation()))
-                    && (adjacentTop == null || !isSensorOrientation(
-                            adjacentTop.getRequestedOrientation()));
-        }
-        return true;
-    }
-
-    private static boolean isSensorOrientation(@ActivityInfo.ScreenOrientation int orientation) {
-        return orientation == ActivityInfo.SCREEN_ORIENTATION_SENSOR
-                || orientation == ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR;
+        return getAdjacentTaskFragment() != null && isVisibleRequested();
     }
 
     @Override
