@@ -32,12 +32,18 @@ import libcore.util.EmptyArray;
 import java.lang.reflect.Array;
 import java.util.IdentityHashMap;
 
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 /**
  * This is the class for text whose content and markup can both be changed.
  */
 public class SpannableStringBuilder implements CharSequence, GetChars, Spannable, Editable,
         Appendable, GraphicsOperations {
     private final static String TAG = "SpannableStringBuilder";
+    
+    private Lock SpannableStringBuilderLock = new ReentrantLock();
+
     /**
      * Create a new SpannableStringBuilder with empty contents
      */
@@ -966,27 +972,32 @@ public class SpannableStringBuilder implements CharSequence, GetChars, Spannable
             if (spanEnd > mGapStart) {
                 spanEnd -= mGapLength;
             }
-            if (spanEnd >= queryStart &&
-                    (spanStart == spanEnd || queryStart == queryEnd ||
-                        (spanStart != queryEnd && spanEnd != queryStart)) &&
-                        (Object.class == kind || kind.isInstance(mSpans[i]))) {
-                int spanPriority = mSpanFlags[i] & SPAN_PRIORITY;
-                int target = count;
-                if (sort) {
-                    priority[target] = spanPriority;
-                    insertionOrder[target] = mSpanOrder[i];
-                } else if (spanPriority != 0) {
-                    //insertion sort for elements with priority
-                    int j = 0;
-                    for (; j < count; j++) {
-                        int p = getSpanFlags(ret[j]) & SPAN_PRIORITY;
-                        if (spanPriority > p) break;
+            try {
+                SpannableStringBuilderLock.lock();
+                if (spanEnd >= queryStart &&
+                        (spanStart == spanEnd || queryStart == queryEnd ||
+                            (spanStart != queryEnd && spanEnd != queryStart)) &&
+                            (Object.class == kind || kind.isInstance(mSpans[i]))) {
+                    int spanPriority = mSpanFlags[i] & SPAN_PRIORITY;
+                    int target = count;
+                    if (sort) {
+                        priority[target] = spanPriority;
+                        insertionOrder[target] = mSpanOrder[i];
+                    } else if (spanPriority != 0) {
+                        //insertion sort for elements with priority
+                        int j = 0;
+                        for (; j < count; j++) {
+                            int p = getSpanFlags(ret[j]) & SPAN_PRIORITY;
+                            if (spanPriority > p) break;
+                        }
+                        System.arraycopy(ret, j, ret, j + 1, count - j);
+                        target = j;
                     }
-                    System.arraycopy(ret, j, ret, j + 1, count - j);
-                    target = j;
+                    ret[target] = (T) mSpans[i];
+                    count++;
                 }
-                ret[target] = (T) mSpans[i];
-                count++;
+            } finally {
+                SpannableStringBuilderLock.unlock();
             }
             if (count < ret.length && (i & 1) != 0) {
                 count = getSpansRec(queryStart, queryEnd, kind, rightChild(i), ret, priority,
