@@ -5743,7 +5743,7 @@ class Task extends TaskFragment {
                     (deferred) -> {
                         // Need to check again if deferred since the system might
                         // be in a different state.
-                        if (!isAttached() || (deferred && !canMoveTaskToBack(tr))) {
+                        if (!tr.isAttached() || (deferred && !canMoveTaskToBack(tr))) {
                             Slog.e(TAG, "Failed to move task to back after saying we could: "
                                     + tr.mTaskId);
                             transition.abort();
