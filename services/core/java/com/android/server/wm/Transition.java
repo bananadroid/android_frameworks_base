@@ -1314,6 +1314,10 @@ class Transition implements BLASTSyncEngine.TransactionReadyListener {
             // unexpectedly, e.g. launch-task-behind.
             if (ar != null && (ar.isVisibleRequested()
                     || !ar.isState(ActivityRecord.State.INITIALIZING))) {
+                // Set a flag when recent animation is finished
+                if ((mFlags & TRANSIT_FLAG_IS_RECENTS) != 0) {
+                    ar.mDisplayContent.mFixedRotationTransitionListener.isRecentOff = true;
+                }
                 mController.dispatchLegacyAppTransitionFinished(ar);
             }
         }
