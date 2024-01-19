@@ -34,6 +34,8 @@
 #include "src/core/SkRuntimeEffectPriv.h"
 #endif
 
+#include <SkColorMatrix.h>
+
 namespace android::uirenderer {
 
 using namespace renderthread;
@@ -73,6 +75,19 @@ void DrawGainmapBitmap(SkCanvas* c, const sk_sp<const SkImage>& image, const SkR
     float targetSdrHdrRatio = getTargetHdrSdrRatio(destColorspace.get());
     if (targetSdrHdrRatio > 1.f && gainmapImage) {
         SkPaint gainmapPaint = *paint;
+        auto gammaCorrectedDimmingRatio =
+                std::pow(1.f / targetSdrHdrRatio, 1.f / 2.2f);
+        SkColorMatrix colorMatrix;
+        colorMatrix.setScale(gammaCorrectedDimmingRatio, gammaCorrectedDimmingRatio,
+                                    gammaCorrectedDimmingRatio, 1.f);
+        auto colorFilter =
+                SkColorFilters::Matrix(colorMatrix);
+        if (gainmapPaint.getColorFilter()) {
+            gainmapPaint.setColorFilter(SkColorFilters::Compose(gainmapPaint.refColorFilter(),
+                                                                colorFilter));
+        } else {
+            gainmapPaint.setColorFilter(colorFilter);
+        }
         float sX = gainmapImage->width() / (float)image->width();
         float sY = gainmapImage->height() / (float)image->height();
         SkRect gainmapSrc = src;
@@ -83,7 +98,9 @@ void DrawGainmapBitmap(SkCanvas* c, const sk_sp<const SkImage>& image, const SkR
         gainmapSrc.fBottom *= sY;
         auto shader =
                 SkGainmapShader::Make(image, src, sampling, gainmapImage, gainmapSrc, sampling,
-                                      gainmapInfo, dst, targetSdrHdrRatio, destColorspace);
+                                      gainmapInfo, dst, targetSdrHdrRatio,
+                                      SkColorSpace::MakeRGB(SkNamedTransferFn::kSRGB,
+                                                            SkNamedGamut::kDisplayP3));
         gainmapPaint.setShader(shader);
         c->drawRect(dst, gainmapPaint);
     } else
