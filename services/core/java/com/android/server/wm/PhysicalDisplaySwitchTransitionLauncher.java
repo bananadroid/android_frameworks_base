@@ -148,6 +148,8 @@ public class PhysicalDisplaySwitchTransitionLauncher {
 
         if (!started) {
             markTransitionAsReady();
+        } else {
+            mTransition.setReady(mDisplayContent, false);
         }
     }
 
