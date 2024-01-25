@@ -22,7 +22,6 @@ import static android.Manifest.permission.CAPTURE_SECURE_VIDEO_OUTPUT;
 import static android.Manifest.permission.CAPTURE_VIDEO_OUTPUT;
 import static android.Manifest.permission.INTERNAL_SYSTEM_WINDOW;
 import static android.app.ActivityManager.RunningAppProcessInfo.IMPORTANCE_CACHED;
-import static android.app.ActivityManager.RunningAppProcessInfo.IMPORTANCE_GONE;
 import static android.hardware.display.DisplayManager.EventsMask;
 import static android.hardware.display.DisplayManager.VIRTUAL_DISPLAY_FLAG_ALWAYS_UNLOCKED;
 import static android.hardware.display.DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR;
@@ -441,11 +440,6 @@ public final class DisplayManagerService extends SystemService {
     // Temporary callback list, used when sending display events to applications.
     // May be used outside of the lock but only on the handler thread.
     private final ArrayList<CallbackRecord> mTempCallbacks = new ArrayList<CallbackRecord>();
-
-    // Pending callback records indexed by calling process uid.
-    // Must be used outside of the lock mSyncRoot and should be selflocked.
-    @GuardedBy("mPendingCallbackSelfLocked")
-    public final SparseArray<PendingCallback> mPendingCallbackSelfLocked = new SparseArray<>();
 
     // Temporary viewports, used when sending new viewport information to the
     // input system.  May be used outside of the lock but only on the handler thread.
@@ -918,29 +912,21 @@ public final class DisplayManagerService extends SystemService {
     private class UidImportanceListener implements ActivityManager.OnUidImportanceListener {
         @Override
         public void onUidImportance(int uid, int importance) {
-            synchronized (mPendingCallbackSelfLocked) {
-                if (importance >= IMPORTANCE_GONE) {
-                    // Clean up as the app is already gone
-                    Slog.d(TAG, "Drop pending events for gone uid " + uid);
-                    mPendingCallbackSelfLocked.delete(uid);
-                    return;
-                } else if (importance >= IMPORTANCE_CACHED) {
-                    // Nothing to do as the app is still in cached mode
-                    return;
-                }
+            if (importance >= IMPORTANCE_CACHED) {
+                // Nothing to do as the app is still in cached mode
+                return;
+            }
 
-                // Do we care about this uid?
-                PendingCallback pendingCallback = mPendingCallbackSelfLocked.get(uid);
-                if (pendingCallback == null) {
-                    return;
+            final int count = mCallbacks.size();
+            for (int i = 0; i < count; i++) {
+                CallbackRecord callbackRecord = mCallbacks.valueAt(i);
+                if (callbackRecord.mUid == uid) {
+                    // Send the pending events out when a certain uid becomes non-cached
+                    if (DEBUG) {
+                        Slog.d(TAG, "Uid " + uid + " becomes " + importance);
+                    }
+                    callbackRecord.sendPendingDisplayEvent();
                 }
-
-                // Send the pending events out when a certain uid becomes non-cached
-                if (DEBUG) {
-                    Slog.d(TAG, "Uid " + uid + " becomes " + importance);
-                }
-                pendingCallback.sendPendingDisplayEvent();
-                mPendingCallbackSelfLocked.delete(uid);
             }
         }
     }
@@ -2913,15 +2899,7 @@ public final class DisplayManagerService extends SystemService {
             final int uid = callbackRecord.mUid;
             if (isUidCached(uid)) {
                 // For cached apps, save the pending event until it becomes non-cached
-                synchronized (mPendingCallbackSelfLocked) {
-                    PendingCallback pendingCallback = mPendingCallbackSelfLocked.get(uid);
-                    if (pendingCallback == null) {
-                        mPendingCallbackSelfLocked.put(uid,
-                                new PendingCallback(callbackRecord, displayId, event));
-                    } else {
-                        pendingCallback.addDisplayEvent(displayId, event);
-                    }
-                }
+                callbackRecord.addPendingEvent(displayId, event);
             } else {
                 callbackRecord.notifyDisplayEventAsync(displayId, event);
             }
@@ -3349,6 +3327,9 @@ public final class DisplayManagerService extends SystemService {
         private final IDisplayManagerCallback mCallback;
         private @EventsMask AtomicLong mEventsMask;
 
+        @GuardedBy("mPendingEvents")
+        private final ArrayList<Pair<Integer, Integer>> mPendingEvents;
+
         public boolean mWifiDisplayScanRequested;
 
         CallbackRecord(int pid, int uid, IDisplayManagerCallback callback,
@@ -3357,6 +3338,7 @@ public final class DisplayManagerService extends SystemService {
             mUid = uid;
             mCallback = callback;
             mEventsMask = new AtomicLong(eventsMask);
+            mPendingEvents = new ArrayList<>();
         }
 
         public void updateEventsMask(@EventsMask long eventsMask) {
@@ -3409,46 +3391,40 @@ public final class DisplayManagerService extends SystemService {
                     return true;
             }
         }
-    }
 
-    private static final class PendingCallback {
-        private final CallbackRecord mCallbackRecord;
-        private final ArrayList<Pair<Integer, Integer>> mDisplayEvents;
-
-        PendingCallback(CallbackRecord cr, int displayId, int event) {
-            mCallbackRecord = cr;
-            mDisplayEvents = new ArrayList<>();
-            mDisplayEvents.add(new Pair<>(displayId, event));
-        }
-
-        public void addDisplayEvent(int displayId, int event) {
+        public void addPendingEvent(int displayId, int event) {
             // Ignore redundant events. Further optimization is possible by merging adjacent events.
-            Pair<Integer, Integer> last = mDisplayEvents.get(mDisplayEvents.size() - 1);
-            if (last.first == displayId && last.second == event) {
-                Slog.d(TAG,
-                        "Ignore redundant display event " + displayId + "/" + event + " to "
-                                + mCallbackRecord.mUid + "/" + mCallbackRecord.mPid);
-                return;
-            }
+            synchronized (mPendingEvents) {
+                if (!mPendingEvents.isEmpty()) {
+                    Pair<Integer, Integer> last = mPendingEvents.get(mPendingEvents.size() - 1);
+                    if (last.first == displayId && last.second == event) {
+                        Slog.d(TAG,
+                                "Ignore redundant display event " + displayId + "/" + event + " to "
+                                        + mUid + "/" + mPid);
+                        return;
+                    }
+                }
 
-            mDisplayEvents.add(new Pair<>(displayId, event));
+                mPendingEvents.add(new Pair<>(displayId, event));
+            }
         }
 
         public void sendPendingDisplayEvent() {
-            for (int i = 0; i < mDisplayEvents.size(); i++) {
-                Pair<Integer, Integer> displayEvent = mDisplayEvents.get(i);
-                if (DEBUG) {
-                    Slog.d(TAG, "Send pending display event #" + i + " " + displayEvent.first + "/"
-                            + displayEvent.second + " to " + mCallbackRecord.mUid + "/"
-                            + mCallbackRecord.mPid);
+            synchronized (mPendingEvents) {
+                for (int i = 0; i < mPendingEvents.size(); i++) {
+                    Pair<Integer, Integer> displayEvent = mPendingEvents.get(i);
+                    if (DEBUG) {
+                        Slog.d(TAG, "Send pending display event #" + i + " " + displayEvent.first
+                                + "/" + displayEvent.second + " to " + mUid + "/" + mPid);
+                    }
+                    if (!notifyDisplayEventAsync(displayEvent.first,
+                            displayEvent.second)) {
+                        Slog.d(TAG, "Drop pending events for dead process " + mPid);
+                        break;
+                    }
                 }
-                if (!mCallbackRecord.notifyDisplayEventAsync(displayEvent.first,
-                        displayEvent.second)) {
-                    Slog.d(TAG, "Drop pending events for dead process " + mCallbackRecord.mPid);
-                    break;
-                }
+                mPendingEvents.clear();
             }
-            mDisplayEvents.clear();
         }
     }
 
