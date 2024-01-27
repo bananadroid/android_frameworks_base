@@ -1331,6 +1331,9 @@ public final class ActivityRecord extends WindowToken implements WindowManagerSe
         if (dumpPackage != null && !dumpPackage.equals(r.packageName)) {
             return false;
         }
+        if (r.getTask() == null && r.finishing && !r.attachedToProcess() && !r.isInHistory()) {
+            return false;
+        }
 
         final boolean full = !brief && (complete || !r.isInHistory());
         if (needNL) {
