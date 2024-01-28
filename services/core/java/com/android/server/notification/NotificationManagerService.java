@@ -8334,41 +8334,40 @@ public class NotificationManagerService extends SystemService {
         }
     }
 
-    @VisibleForTesting
-    @GuardedBy("mNotificationLock")
-    void scheduleTimeoutLocked(NotificationRecord record) {
-        if (record.getNotification().getTimeoutAfter() > 0) {
-            final PendingIntent pi = PendingIntent.getBroadcast(getContext(),
-                    REQUEST_CODE_TIMEOUT,
-                    new Intent(ACTION_NOTIFICATION_TIMEOUT)
-                            .setPackage(PackageManagerService.PLATFORM_PACKAGE_NAME)
-                            .setData(new Uri.Builder().scheme(SCHEME_TIMEOUT)
-                                    .appendPath(record.getKey()).build())
-                            .addFlags(Intent.FLAG_RECEIVER_FOREGROUND)
-                            .putExtra(EXTRA_KEY, record.getKey()),
-                    PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-            mAlarmManager.setExactAndAllowWhileIdle(AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                    SystemClock.elapsedRealtime() + record.getNotification().getTimeoutAfter(), pi);
-        }
-    }
+	@VisibleForTesting
+	@GuardedBy("mNotificationLock")
+	private PendingIntent createTimeoutPendingIntent(NotificationRecord record, int flags) {
+		return PendingIntent.getBroadcast(getContext(),
+			    REQUEST_CODE_TIMEOUT,
+			    new Intent(ACTION_NOTIFICATION_TIMEOUT)
+			            .setPackage(PackageManagerService.PLATFORM_PACKAGE_NAME)
+			            .setData(new Uri.Builder().scheme(SCHEME_TIMEOUT)
+			                    .appendPath(record.getKey()).build())
+			            .addFlags(Intent.FLAG_RECEIVER_FOREGROUND)
+			            .putExtra(EXTRA_KEY, record.getKey()),
+			    flags | PendingIntent.FLAG_IMMUTABLE);
+	}
 
-    @VisibleForTesting
-    @GuardedBy("mNotificationLock")
-    void unscheduledTimeoutLocked(NotificationRecord record) {
-        final PendingIntent pi = PendingIntent.getBroadcast(getContext(),
-                REQUEST_CODE_TIMEOUT,
-                new Intent(ACTION_NOTIFICATION_TIMEOUT)
-                        .setPackage(PackageManagerService.PLATFORM_PACKAGE_NAME)
-                        .setData(new Uri.Builder().scheme(SCHEME_TIMEOUT)
-                                .appendPath(record.getKey()).build())
-                        .addFlags(Intent.FLAG_RECEIVER_FOREGROUND)
-                        .putExtra(EXTRA_KEY, record.getKey()),
-                PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_UPDATE_CURRENT
-                        | PendingIntent.FLAG_IMMUTABLE);
-        if (pi != null) {
-            mAlarmManager.cancel(pi);
-        }
-    }
+	@VisibleForTesting
+	@GuardedBy("mNotificationLock")
+	void scheduleTimeoutLocked(NotificationRecord record) {
+		if (record.getNotification().getTimeoutAfter() > 0) {
+			final int flags = PendingIntent.FLAG_UPDATE_CURRENT;
+			final PendingIntent pi = createTimeoutPendingIntent(record, flags);
+			mAlarmManager.setExactAndAllowWhileIdle(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+			        SystemClock.elapsedRealtime() + record.getNotification().getTimeoutAfter(), pi);
+		}
+	}
+
+	@VisibleForTesting
+	@GuardedBy("mNotificationLock")
+	void unscheduledTimeoutLocked(NotificationRecord record) {
+		final int flags = PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_UPDATE_CURRENT;
+		final PendingIntent pi = createTimeoutPendingIntent(record, flags);
+		if (pi != null) {
+			mAlarmManager.cancel(pi);
+		}
+	}
 
     @VisibleForTesting
     @GuardedBy("mNotificationLock")
