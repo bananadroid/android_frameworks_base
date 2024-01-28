@@ -99,4 +99,7 @@
     <item name="config_behind_scrim_transparency_amount" translatable="false" format="float" type="dimen">
         0
     </item>
+
+    <!-- Whether to enable edge light only when the device face down -->
+    <bool name="config_showEdgeLightOnlyWhenFaceDown">false</bool>
 </resources>
