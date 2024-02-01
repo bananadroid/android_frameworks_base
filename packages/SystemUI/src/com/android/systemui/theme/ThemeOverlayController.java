@@ -811,6 +811,14 @@ public class ThemeOverlayController implements CoreStartable, Dumpable, TunerSer
 
         tonalPalette.getAllShadesMapped().forEach((key, value) -> {
             String resourceName = resourcePrefix + "_" + key;
+            // Update our transparent resource
+            if (resourceName.equals("android:color/system_accent1_50")) {
+                overlay.setResourceValue("android:color/system_accent_transparent_background_light", TYPE_INT_COLOR_ARGB8,
+                        ColorUtils.setAlphaComponent(value, 0xB1), null /* configuration */);
+            } else if (resourceName.equals("android:color/system_accent1_900")) {
+                overlay.setResourceValue("android:color/system_accent_transparent_background_dark", TYPE_INT_COLOR_ARGB8,
+                        ColorUtils.setAlphaComponent(value, 0xAE), null /* configuration */);
+            }
             int colorValue = ColorUtils.setAlphaComponent(value, 0xFF);
             overlay.setResourceValue(resourceName, TYPE_INT_COLOR_ARGB8, colorValue,
                     null /* configuration */);
