@@ -892,9 +892,9 @@ public class AppOpsCheckingServiceImpl implements AppOpsCheckingServiceInterface
                     }
                     return;
                 } catch (XmlPullParserException e) {
-                    throw new RuntimeException(e);
+                    Slog.w(TAG, "Failed parsing " + e);
                 } catch (IOException e) {
-                    throw new RuntimeException(e);
+                    Slog.w(TAG, "Failed parsing " + e);
                 }
             }
         }
@@ -937,9 +937,10 @@ public class AppOpsCheckingServiceImpl implements AppOpsCheckingServiceInterface
             String tagName = parser.getName();
             if (tagName.equals("op")) {
                 final int code = parser.getAttributeInt(null, "n");
-                final int mode = parser.getAttributeInt(null, "m");
+                final int defaultMode = opToDefaultMode(code);
+                final int mode = parser.getAttributeInt(null, "m", defaultMode);
 
-                if (mode != opToDefaultMode(code)) {
+                if (mode != defaultMode) {
                     modes.put(code, mode);
                 }
             } else {
