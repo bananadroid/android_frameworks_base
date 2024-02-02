@@ -67,6 +67,8 @@ class OwnersData {
     private static final String TAG_DEVICE_OWNER_PROTECTED_PACKAGES =
             "device-owner-protected-packages";
     private static final String TAG_POLICY_ENGINE_MIGRATION = "policy-engine-migration";
+    private static final String TAG_USER_RESTRICTIONS_ENGINE_MIGRATION =
+            "user-restrictions-engine-migration";
 
     private static final String ATTR_NAME = "name";
     private static final String ATTR_PACKAGE = "package";
@@ -86,6 +88,9 @@ class OwnersData {
     private static final String ATTR_DEVICE_OWNER_TYPE_VALUE = "value";
 
     private static final String ATTR_MIGRATED_TO_POLICY_ENGINE = "migratedToPolicyEngine";
+
+    private static final String ATTR_USER_RESTICTIONS_MIGRATED_TO_POLICY_ENGINE =
+            "userRestrictionsMigratedToPolicyEngine";
 
     // Internal state for the device owner package.
     OwnerInfo mDeviceOwner;
@@ -113,6 +118,8 @@ class OwnersData {
     private final PolicyPathProvider mPathProvider;
 
     boolean mMigratedToPolicyEngine = false;
+
+    boolean mUserRestrictionsMigratedToPolicyEngine = false;
 
     OwnersData(PolicyPathProvider pathProvider) {
         mPathProvider = pathProvider;
@@ -399,6 +406,11 @@ class OwnersData {
             out.attributeBoolean(null, ATTR_MIGRATED_TO_POLICY_ENGINE, mMigratedToPolicyEngine);
             out.endTag(null, TAG_POLICY_ENGINE_MIGRATION);
 
+            out.startTag(null, TAG_USER_RESTRICTIONS_ENGINE_MIGRATION);
+            out.attributeBoolean(null, ATTR_USER_RESTICTIONS_MIGRATED_TO_POLICY_ENGINE,
+                    mUserRestrictionsMigratedToPolicyEngine);
+            out.endTag(null, TAG_USER_RESTRICTIONS_ENGINE_MIGRATION);
+
         }
 
         @Override
@@ -457,6 +469,10 @@ class OwnersData {
                 case TAG_POLICY_ENGINE_MIGRATION:
                     mMigratedToPolicyEngine = parser.getAttributeBoolean(
                             null, ATTR_MIGRATED_TO_POLICY_ENGINE, false);
+                    break;
+                case TAG_USER_RESTRICTIONS_ENGINE_MIGRATION:
+                    mUserRestrictionsMigratedToPolicyEngine = parser.getAttributeBoolean(
+                            null, ATTR_USER_RESTICTIONS_MIGRATED_TO_POLICY_ENGINE, false);
                     break;
                 default:
                     Slog.e(TAG, "Unexpected tag: " + tag);
