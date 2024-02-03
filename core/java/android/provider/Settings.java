@@ -6310,13 +6310,6 @@ public final class Settings {
         public static final String CAMERA_LAUNCH = "camera_launch";
 
         /**
-         * Action to perform when the screen edge is long-swiped. (Default is 0)
-         * (See KEY_HOME_LONG_PRESS_ACTION for valid values)
-         * @hide
-         */
-        public static final String KEY_EDGE_LONG_SWIPE_ACTION = "key_edge_long_swipe_action";
-
-        /**
          * Force show navigation bar setting.
          * @hide
          */
@@ -7508,7 +7501,6 @@ public final class Settings {
             PRIVATE_SETTINGS.add(AUTO_BRIGHTNESS_ONE_SHOT);
             PRIVATE_SETTINGS.add(CLICK_PARTIAL_SCREENSHOT);
             PRIVATE_SETTINGS.add(SWAP_VOLUME_KEYS_ON_ROTATION);
-            PRIVATE_SETTINGS.add(KEY_EDGE_LONG_SWIPE_ACTION);
             PRIVATE_SETTINGS.add(BACK_GESTURE_HAPTIC);
             PRIVATE_SETTINGS.add(SENSOR_BLOCK);
             PRIVATE_SETTINGS.add(CUSTOM_UI_TOGGLE);

@@ -23,8 +23,6 @@ import static com.android.systemui.classifier.Classifier.BACK_GESTURE;
 import static com.android.systemui.navigationbar.gestural.Utilities.isTrackpadScroll;
 import static com.android.systemui.navigationbar.gestural.Utilities.isTrackpadThreeFingerSwipe;
 
-import static com.android.internal.util.lineage.DeviceKeysConstants.Action;
-
 import android.annotation.NonNull;
 import android.app.ActivityManager;
 import android.content.ComponentName;
@@ -126,8 +124,6 @@ public class EdgeBackGestureHandler implements PluginListener<NavigationEdgeBack
     private static final int MAX_LONG_PRESS_TIMEOUT = SystemProperties.getInt(
             "gestures.back_timeout", 250);
 
-    private static final String KEY_EDGE_LONG_SWIPE_ACTION =
-            "customsystem:" + Settings.System.KEY_EDGE_LONG_SWIPE_ACTION;
     private static final String BACK_GESTURE_HEIGHT =
             "system:" + Settings.System.BACK_GESTURE_HEIGHT;
 
@@ -269,7 +265,6 @@ public class EdgeBackGestureHandler implements PluginListener<NavigationEdgeBack
     private boolean mIsEnabled;
     private boolean mIsNavBarShownTransiently;
     private boolean mIsBackGestureAllowed;
-    private boolean mIsLongSwipeEnabled;
     private boolean mGestureBlockingActivityRunning;
     private boolean mIsNewBackAffordanceEnabled;
     private boolean mIsTrackpadGestureFeaturesEnabled;
@@ -284,7 +279,6 @@ public class EdgeBackGestureHandler implements PluginListener<NavigationEdgeBack
     private int mLeftInset;
     private int mRightInset;
     private int mSysUiFlags;
-    private float mLongSwipeWidth;
 
     private int mEdgeHeight;
     private int mEdgeHeightSetting = 0;
@@ -318,7 +312,7 @@ public class EdgeBackGestureHandler implements PluginListener<NavigationEdgeBack
     private final NavigationEdgeBackPlugin.BackCallback mBackCallback =
             new NavigationEdgeBackPlugin.BackCallback() {
                 @Override
-                public void triggerBack(boolean isLongPress) {
+                public void triggerBack() {
                     if (mEdgeHapticEnabled) {
                         vibrateBack(true /* Click */);
                     }
@@ -327,10 +321,8 @@ public class EdgeBackGestureHandler implements PluginListener<NavigationEdgeBack
                     mFalsingManager.isFalseTouch(BACK_GESTURE);
                     // Only inject back keycodes when ahead-of-time back dispatching is disabled.
                     if (mBackAnimation == null) {
-                        boolean sendDown = sendEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_BACK,
-                                isLongPress ? KeyEvent.FLAG_LONG_SWIPE : 0);
-                        boolean sendUp = sendEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_BACK,
-                                isLongPress ? KeyEvent.FLAG_LONG_SWIPE : 0);
+                        boolean sendDown = sendEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_BACK);
+                        boolean sendUp = sendEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_BACK);
                         if (DEBUG_MISSING_GESTURE) {
                             Log.d(DEBUG_MISSING_GESTURE_TAG, "Triggered back: down="
                                     + sendDown + ", up=" + sendUp);
@@ -356,13 +348,6 @@ public class EdgeBackGestureHandler implements PluginListener<NavigationEdgeBack
                 public void setTriggerBack(boolean triggerBack) {
                     if (mBackAnimation != null) {
                         mBackAnimation.setTriggerBack(triggerBack);
-                    }
-                }
-
-                @Override
-                public void setTriggerLongSwipe(boolean triggerLongSwipe) {
-                    if (mBackAnimation != null) {
-                        mBackAnimation.setTriggerLongSwipe(triggerLongSwipe);
                     }
                 }
             };
@@ -575,7 +560,6 @@ public class EdgeBackGestureHandler implements PluginListener<NavigationEdgeBack
         if (mMLEnableWidth > mEdgeWidthLeft) mMLEnableWidth = mEdgeWidthLeft;
 
         final TunerService tunerService = Dependency.get(TunerService.class);
-        tunerService.addTunable(this, KEY_EDGE_LONG_SWIPE_ACTION);
         tunerService.addTunable(this, BACK_GESTURE_HEIGHT);
 
         // Reduce the default touch slop to ensure that we can intercept the gesture
@@ -748,7 +732,6 @@ public class EdgeBackGestureHandler implements PluginListener<NavigationEdgeBack
                 // Add a nav bar panel window
                 mIsNewBackAffordanceEnabled = mFeatureFlags.isEnabled(Flags.NEW_BACK_AFFORDANCE);
                 resetEdgeBackPlugin();
-                updateLongSwipeWidth();
                 mPluginManager.addPluginListener(
                         this, NavigationEdgeBackPlugin.class, /*allowMultiple=*/ false);
             }
@@ -800,19 +783,9 @@ public class EdgeBackGestureHandler implements PluginListener<NavigationEdgeBack
 
     @Override
     public void onTuningChanged(String key, String newValue) {
-        if (KEY_EDGE_LONG_SWIPE_ACTION.equals(key)) {
-            mIsLongSwipeEnabled = Action.fromIntSafe(TunerService.parseInteger(
-                    newValue, 0)) != Action.NOTHING;
-            updateLongSwipeWidth();
-        } else if (BACK_GESTURE_HEIGHT.equals(key)) {
+        if (BACK_GESTURE_HEIGHT.equals(key)) {
             mEdgeHeightSetting = TunerService.parseInteger(newValue, 0);
             updateEdgeHeightValue();
-        }
-    }
-
-    private void updateLongSwipeWidth() {
-        if (mIsEnabled && mEdgeBackPlugin != null) {
-            mEdgeBackPlugin.setLongSwipeEnabled(mIsLongSwipeEnabled);
         }
     }
 
@@ -1296,7 +1269,6 @@ public class EdgeBackGestureHandler implements PluginListener<NavigationEdgeBack
             mEdgeBackPlugin.setDisplaySize(mDisplaySize);
         }
         updateBackAnimationThresholds();
-        updateLongSwipeWidth();
         updateEdgeHeightValue();
     }
 
@@ -1309,11 +1281,11 @@ public class EdgeBackGestureHandler implements PluginListener<NavigationEdgeBack
         mBackAnimation.setSwipeThresholds(linearDistance, maxDistance, mNonLinearFactor);
     }
 
-    private boolean sendEvent(int action, int code, int flags) {
+    private boolean sendEvent(int action, int code) {
         long when = SystemClock.uptimeMillis();
         final KeyEvent ev = new KeyEvent(when, when, action, code, 0 /* repeat */,
                 0 /* metaState */, KeyCharacterMap.VIRTUAL_KEYBOARD, 0 /* scancode */,
-                flags | KeyEvent.FLAG_FROM_SYSTEM | KeyEvent.FLAG_VIRTUAL_HARD_KEY,
+                KeyEvent.FLAG_FROM_SYSTEM | KeyEvent.FLAG_VIRTUAL_HARD_KEY,
                 InputDevice.SOURCE_KEYBOARD);
 
         ev.setDisplayId(mContext.getDisplay().getDisplayId());

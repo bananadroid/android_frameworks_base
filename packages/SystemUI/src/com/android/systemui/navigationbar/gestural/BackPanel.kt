@@ -121,8 +121,6 @@ class BackPanel(
             maximumValue = 1f
     )
 
-    var triggerLongSwipe = false
-
     private val allAnimatedFloat = setOf(
             arrowLength,
             arrowHeight,
@@ -295,9 +293,6 @@ class BackPanel(
         arrowPath.lineTo(0f, 0f)
         arrowPath.lineTo(dx, dy)
         arrowPath.moveTo(dx, -dy)
-        if (triggerLongSwipe) {
-            arrowPath.addPath(arrowPath, arrowPaint.strokeWidth * 2.0f * -1, 0.0f)
-        }
         return arrowPath
     }
 
@@ -507,9 +502,6 @@ class BackPanel(
         val arrowPath = calculateArrowPath(dx = dx, dy = dy)
         val arrowPaint = arrowPaint
                 .apply { alpha = (255 * min(arrowAlpha.pos, backgroundAlpha.pos)).toInt() }
-        if (isLeftPanel) {
-            canvas.scale(-1f, 1f, dx / 2f, dy / 2f)
-        }
         canvas.drawPath(arrowPath, arrowPaint)
         canvas.restore()
 
