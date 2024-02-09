@@ -919,13 +919,16 @@ public final class DisplayManagerService extends SystemService {
 
             final int count = mCallbacks.size();
             for (int i = 0; i < count; i++) {
-                CallbackRecord callbackRecord = mCallbacks.valueAt(i);
-                if (callbackRecord.mUid == uid) {
-                    // Send the pending events out when a certain uid becomes non-cached
-                    if (DEBUG) {
-                        Slog.d(TAG, "Uid " + uid + " becomes " + importance);
+                // Ensure the index is within bounds
+                if (i < mCallbacks.size()) {
+                    CallbackRecord callbackRecord = mCallbacks.valueAt(i);
+                    if (callbackRecord.mUid == uid) {
+                        // Send the pending events out when a certain uid becomes non-cached
+                        if (DEBUG) {
+                            Slog.d(TAG, "Uid " + uid + " becomes " + importance);
+                        }
+                        callbackRecord.sendPendingDisplayEvent();
                     }
-                    callbackRecord.sendPendingDisplayEvent();
                 }
             }
         }
