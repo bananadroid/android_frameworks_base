@@ -407,16 +407,6 @@ public class KeyguardClockSwitchController extends ViewController<KeyguardClockS
     void onLocaleListChanged() {
         updateViews();
         updateCustomClock();
-        if (mSmartspaceController.isEnabled()) {
-            removeViewsFromStatusArea();
-            addSmartspaceView();
-            if (mSmartspaceController.isDateWeatherDecoupled()) {
-                mDateWeatherView.removeView(mWeatherView);
-                addDateWeatherView();
-                setDateWeatherVisibility();
-                setWeatherVisibility();
-            }
-        }
     }
 
     private void addDateWeatherView() {
