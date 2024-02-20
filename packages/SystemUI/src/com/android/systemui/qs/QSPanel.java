@@ -76,14 +76,6 @@ public class QSPanel extends LinearLayout implements Tunable {
             "system:" + Settings.System.QS_TILE_ANIMATION_DURATION;
     public static final String QS_TILE_ANIMATION_INTERPOLATOR =
             "system:" + Settings.System.QS_TILE_ANIMATION_INTERPOLATOR;
-    public static final String QS_LAYOUT_COLUMNS =
-            "system:" + Settings.System.QS_LAYOUT_COLUMNS;
-    public static final String QS_LAYOUT_COLUMNS_LANDSCAPE =
-            "system:" + Settings.System.QS_LAYOUT_COLUMNS_LANDSCAPE;
-    public static final String QQS_LAYOUT_ROWS =
-            "system:" + Settings.System.QQS_LAYOUT_ROWS;
-    public static final String QQS_LAYOUT_ROWS_LANDSCAPE =
-            "system:" + Settings.System.QQS_LAYOUT_ROWS_LANDSCAPE;
 
     private static final String TAG = "QSPanel";
 
@@ -337,7 +329,7 @@ public class QSPanel extends LinearLayout implements Tunable {
     }
 
     private void updateViewPositions() {
-        if (mChildrenLayoutTop == null || mChildrenLayoutTop.isEmpty() || mTileLayout == null) {
+        if (mChildrenLayoutTop == null || mChildrenLayoutTop.isEmpty()) {
             return;
         }
         // Adjust view positions based on tile squishing
@@ -407,12 +399,6 @@ public class QSPanel extends LinearLayout implements Tunable {
             case QS_TILE_ANIMATION_INTERPOLATOR:
                 mInterpolatorType =
                        TunerService.parseInteger(newValue, 0);
-                break;
-            case QS_LAYOUT_COLUMNS:
-            case QS_LAYOUT_COLUMNS_LANDSCAPE:
-            case QQS_LAYOUT_ROWS:
-            case QQS_LAYOUT_ROWS_LANDSCAPE:
-                needsDynamicRowsAndColumns();
                 break;
             default:
                 break;
@@ -486,7 +472,6 @@ public class QSPanel extends LinearLayout implements Tunable {
         super.onConfigurationChanged(newConfig);
         mOnConfigurationChangedListeners.forEach(
                 listener -> listener.onConfigurationChange(newConfig));
-        needsDynamicRowsAndColumns();
     }
 
     @Override
@@ -520,11 +505,8 @@ public class QSPanel extends LinearLayout implements Tunable {
         return false;
     }
 
-    public void needsDynamicRowsAndColumns() {
-        if (mTileLayout != null) {
-            mTileLayout.setMinRows(mTileLayout.getResourceRows());
-            mTileLayout.setMaxColumns(mTileLayout.getResourceColumns());
-        }
+    private boolean needsDynamicRowsAndColumns() {
+        return true;
     }
 
     private void switchAllContentToParent(ViewGroup parent, QSTileLayout newLayout) {
@@ -721,7 +703,10 @@ public class QSPanel extends LinearLayout implements Tunable {
                 mBrightnessRunnable.run();
             }
             reAttachMediaHost(mediaHostView, horizontal);
-            needsDynamicRowsAndColumns();
+            if (needsDynamicRowsAndColumns()) {
+                mTileLayout.setMinRows(horizontal ? 2 : 1);
+                mTileLayout.setMaxColumns(horizontal ? 2 : 4);
+            }
             updateMargins(mediaHostView);
             if (mHorizontalLinearLayout == null) return;
             mHorizontalLinearLayout.setVisibility(horizontal ? View.VISIBLE : View.GONE);
@@ -849,12 +834,6 @@ public class QSPanel extends LinearLayout implements Tunable {
         int getNumVisibleTiles();
 
         default void setLogger(QSLogger qsLogger) { }
-
-        int getResourceColumns();
-
-        int getResourceRows();
-
-        void updateSettings();
     }
 
     interface OnConfigurationChangedListener {
