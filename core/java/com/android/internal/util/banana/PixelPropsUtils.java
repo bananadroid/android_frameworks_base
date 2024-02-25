@@ -170,7 +170,6 @@ public class PixelPropsUtils {
 
     private static volatile boolean sIsGms = false;
     private static volatile boolean sIsFinsky = false;
-    private static volatile boolean sIsExcluded = false;
 
     static {
         propsToKeep = new HashMap<>();
@@ -250,7 +249,6 @@ public class PixelPropsUtils {
 
             if (Arrays.asList(packagesToKeep).contains(packageName) ||
                     packageName.startsWith("com.google.android.GoogleCamera")) {
-                sIsExcluded = true;
                 return;
             }
 
@@ -422,7 +420,7 @@ public class PixelPropsUtils {
 
     public static void onEngineGetCertificateChain() {
         // Check stack for SafetyNet or Play Integrity
-        if ((isCallerSafetyNet() || sIsFinsky) && !sIsExcluded) {
+        if (isCallerSafetyNet() || sIsFinsky) {
             Log.i(TAG, "Blocked key attestation sIsGms=" + sIsGms + " sIsFinsky=" + sIsFinsky);
             throw new UnsupportedOperationException();
         }
