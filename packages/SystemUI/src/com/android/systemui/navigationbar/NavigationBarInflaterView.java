@@ -229,7 +229,9 @@ public class NavigationBarInflaterView extends FrameLayout implements TunerServi
             mIsKeyboardNavigationDisabled = TunerService.parseIntegerSwitch(
                 Settings.Secure.getString(mContentResolver, KEY_KEYBOARD_NO_NAVIGATION), false);
             updateHint();
-            onLikelyDefaultLayoutChange();
+            mContext.getMainExecutor().execute(() -> {
+                onLikelyDefaultLayoutChange();
+            });
         } else if (NAV_BAR_INVERSE.equals(key)) {
             mInverseLayout = TunerService.parseIntegerSwitch(newValue, false);
             updateLayoutInversion();
