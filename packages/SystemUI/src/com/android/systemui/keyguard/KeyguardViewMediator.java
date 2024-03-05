@@ -2868,10 +2868,17 @@ public class KeyguardViewMediator implements CoreStartable, Dumpable,
         }
     };
 
-    private final Runnable mHideAnimationFinishedRunnable = () -> {
-        Log.e(TAG, "mHideAnimationFinishedRunnable#run");
-        mHideAnimationRunning = false;
-        tryKeyguardDone();
+    private final Runnable mHideAnimationFinishedRunnable = new Runnable() {
+    	@Override
+    	public void run() {
+    	    Log.e(TAG, "mHideAnimationFinishedRunnable#run");
+    	    mHideAnimationRunning = false;
+    	    try {
+    	        tryKeyguardDone();
+    	    } catch (Exception e) {
+    	        Log.e(TAG, "Error occurred in mHideAnimationFinishedRunnable#run: " + e.getMessage());
+    	    }
+    	}
     };
 
     private void setUnlockAndWakeFromDream(boolean updatedValue,
