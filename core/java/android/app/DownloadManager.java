@@ -574,28 +574,21 @@ public class DownloadManager {
             }
 
             final Context context = AppGlobals.getInitialApplication();
-            if (context.getApplicationInfo().targetSdkVersion
-                    >= Build.VERSION_CODES.Q || !Environment.isExternalStorageLegacy()) {
-                try (ContentProviderClient client = context.getContentResolver()
-                        .acquireContentProviderClient(Downloads.Impl.AUTHORITY)) {
-                    final Bundle extras = new Bundle();
-                    extras.putString(Downloads.DIR_TYPE, dirType);
-                    client.call(Downloads.CALL_CREATE_EXTERNAL_PUBLIC_DIR, null, extras);
-                } catch (RemoteException e) {
-                    throw new IllegalStateException("Unable to create directory: "
-                            + file.getAbsolutePath());
-                }
-            } else {
-                if (file.exists()) {
-                    if (!file.isDirectory()) {
-                        throw new IllegalStateException(file.getAbsolutePath()
-                                + " already exists and is not a directory");
-                    }
-                } else if (!file.mkdirs()) {
-                    throw new IllegalStateException("Unable to create directory: "
-                            + file.getAbsolutePath());
-                }
-            }
+            if (context == null) {
+        	throw new IllegalStateException("Failed to get initial application context");
+    	    }
+            
+            try (ContentProviderClient client = context.getContentResolver().acquireContentProviderClient(Downloads.Impl.AUTHORITY)) {
+        	if (client == null) {
+        	    throw new IllegalStateException("Failed to acquire ContentProviderClient");
+        	}
+
+        	final Bundle extras = new Bundle();
+        	extras.putString(Downloads.DIR_TYPE, dirType);
+        	client.call(Downloads.CALL_CREATE_EXTERNAL_PUBLIC_DIR, null, extras);
+    	  } catch (RemoteException e) {
+        	throw new IllegalStateException("Unable to create directory: " + file.getAbsolutePath());
+    	  }
             setDestinationFromBase(file, subPath);
             return this;
         }
